@@ -1,5 +1,7 @@
 #include <iostream>
 #include <math.h>
+#include <fstream>
+#include <iterator>
 
 double * linspace(double start, double end, double lin[], int n)
 {
@@ -13,15 +15,6 @@ double * linspace(double start, double end, double lin[], int n)
     return lin;
 }
 
-double * Poisson_analytical(double lin[], double u_array[], int n)
-{
-    for (int i=0; i<n; i++)
-    {
-        u_array[i] = 1 - (1-exp(-10)) * lin[i] - exp(-10 * lin[i]);
-    }
-    return u_array;
-}
-
 double * fill_array(double array[], int n, double element)
 {
     for(int i = 0; i < n; i++)
@@ -31,20 +24,35 @@ double * fill_array(double array[], int n, double element)
     return array;
 }
 
-double * Thomas(double u_array[], double a_array[], double b_array[], double c_array[], double x_zeros[], int n)
+double * Thomas(double lin[], double a_array[], double b_array[], double c_array[], double v_zeros[], int n)
 {
     double b = b_array[0];
-    double alpha[n];
     double beta[n];
+    double gamma[n];
+    double h = lin[1]-lin[0];
+    // std::cout << h;
 
-    alpha[0] = b_array[0];
+    beta[0] = b_array[0];
+    gamma[0] = 0;
 
+    // set up b~ and g
     for(int i = 1; i < n; i++)
     {
-        alpha[i] = b_array[i] - a_array[i-1]/alpha[i-1]*c_array[i-1];
+        beta[i]  = b_array[i] - (a_array[i]/beta[i-1])*c_array[i-1];
+        gamma[i] = 100*exp(-10*lin[i])*h*h - (a_array[i]/beta[i-1])*gamma[i-1];
     }    
-    return 0;
 
+    // fill out v_zeros
+    v_zeros[n] = 0;
+    v_zeros[0] = 0;
+    
+    for(int i = n-2; i > 0; i--)
+    {
+        v_zeros[i] = (gamma[i] - v_zeros[i+1]*c_array[i])/beta[i];
+        std::cout << i <<'\n';
+    }
+    
+    return v_zeros;
 }
 
 void print_array(double array[], int n)
@@ -53,6 +61,17 @@ void print_array(double array[], int n)
     {
         std::cout << array[i] << '\n';
     }
+}
+
+void write_to_file(double array[], double lin[], int n)
+{
+    std::fstream file;
+    file.open("values2.txt", std::ios::out);
+    for (int i=0; i<n; i++)
+    {
+        file << lin[i] << ' ' << array[i] << '\n';
+    }
+    file.close();
 }
 
 int main()
@@ -72,21 +91,29 @@ int main()
     double a_zeros[n-1];
     double b_zeros[n];
     double c_zeros[n];
-    double x_zeros[n];
+    double v_zeros[n];
 
     double * lins = linspace(0, 1, lin, n);
     std::cout << "-----linspace------" << '\n';
     print_array(lins, n);
 
-    double * u_array = Poisson_analytical(lins, u_zeros, n);
-    double * a_array = fill_array(a_zeros, n-1, a_value);
+    double * a_array = fill_array(a_zeros, n, a_value);
     double * b_array = fill_array(b_zeros, n, b_value);
     double * c_array = fill_array(c_zeros, n, c_value);
 
     std::cout << "-----Array print-----" << '\n';
-    print_array(a_array, n-1);
+    print_array(a_array, n);
     print_array(b_array, n);
     print_array(c_array, n);
+
+    double * v_filled = Thomas(lins, a_array, b_array, c_array, v_zeros, n);
+
+    
+    std::cout << "-----V print-----" << '\n';
+    print_array(v_filled, n);
+
+    write_to_file(v_filled, lins, n);
+
 
 
 

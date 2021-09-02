@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 x = []
 u = []
 
-with open('values.txt', 'r') as file:
+with open('values2.txt', 'r') as file:
     for line in file.readlines():
         l = line.split()
         x.append(float(l[0]))

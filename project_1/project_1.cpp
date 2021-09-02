@@ -45,5 +45,7 @@ int main()
     float * u = Poisson_analytical(x_array, u_array, size);
     write_to_file(x_array, u, size);
 
+    
+
     return 0;
 }
