@@ -2,24 +2,33 @@
 #include <math.h>
 #include <fstream>
 #include <iomanip>
-#include <armadillo>
 
-float * Poisson_analytical(arma::vec x_array, float u_array[], int size)
-{
-    for (int i=0; i<size; i++)
-    {
-        u_array[i] = 1 - (1-exp(-10)) * x_array[i] - exp(-10 * x_array[i]);
-        std::cout << std::setprecision(6) << x_array[i] << ' ' << u_array[i];
-        std::cout << '\n';
-    }
-    return u_array;
+float * linspace(float a, float b, int N) // From a to b in N steps
+{   
+    float array[N];
+    for (int i=0; i<N; i++)
+        array[i] = a + (b-a)*i/N;
+    return array;
 }
 
-void write_to_file(arma::vec array, float poisson[], int size)
+
+float * Poisson_analytical(float x[])
+{   
+    float u[sizeof(x)];
+    for (int i=0; i<sizeof(x); i++)
+    {
+        u[i] = 1 - (1-exp(-10)) * x[i] - exp(-10 * x[i]);
+        //std::cout << std::setprecision(6) << x[i] << ' ' << u[i];
+        //std::cout << '\n';
+    }
+    return u;
+}
+
+void write_to_file(float array[], float poisson[])
 {
     std::fstream file;
     file.open("values.txt", std::ios::out);
-    for (int i=0; i<size; i++)
+    for (int i=0; i<sizeof(array); i++)
     {
         file << std::setprecision(6) << array[i] << ' ' << poisson[i] << '\n';
     }
@@ -28,22 +37,17 @@ void write_to_file(arma::vec array, float poisson[], int size)
 
 int main()
 {
-    int start;
-    int end;
-    int size;
+    float start;
+    float end;
+    int length;
 
-    std::cout << "Start value: ";
-    std::cin >> start;
-    std::cout << "End value: ";
-    std::cin >> end;
-    std::cout << "Array size: ";
-    std::cin >> size;
+    float x[length];
+    float u[length];
 
-    arma::vec x_array = arma::linspace(start, end, size);
-    float u_array[size];
+    x = linspace(start, end, length);
 
-    float * u = Poisson_analytical(x_array, u_array, size);
-    write_to_file(x_array, u, size);
+    u = Poisson_analytical(x);
+    write_to_file(x, u);
 
     
 

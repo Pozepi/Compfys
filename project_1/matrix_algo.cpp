@@ -1,5 +1,6 @@
 #include <iostream>
 #include <math.h>
+#include <time.h>
 
 double * linspace(double start, double end, double lin[], int n)
 {
@@ -12,6 +13,19 @@ double * linspace(double start, double end, double lin[], int n)
     }
     return lin;
 }
+
+float * Poisson_analytical(float x[])
+{   
+    float u[sizeof(x)];
+    for (int i=0; i<sizeof(x); i++)
+    {
+        u[i] = 1 - (1-exp(-10)) * x[i] - exp(-10 * x[i]);
+        //std::cout << std::setprecision(6) << x[i] << ' ' << u[i];
+        //std::cout << '\n';
+    }
+    return u;
+}
+
 
 double * fill_array(double array[], int n, double element)
 {
@@ -48,15 +62,18 @@ void print_array(double array[], int n)
 
 int main()
 {   
+    // Start measuring time
+    clock_t t1 = clock();
+
     int n;
     double a_value;
     double b_value;
     double c_value;
 
     std::cin >> n;
-    std::cin >> a_value;
-    std::cin >> b_value;
-    std::cin >> c_value;
+    double a_value = -1;
+    double b_value =  2;
+    double c_value = -1;
 
     double lin[n];
     double u_zeros[n];
@@ -79,6 +96,11 @@ int main()
     print_array(b_array, n);
     print_array(c_array, n);
 
+    // Stop measuring time
+    clock_t t2 = clock();
+
+    // Calculate the elapsed time.
+    double duration_seconds = ((double) (t2 - t1)) / CLOCKS_PER_SEC;
 
 
     return 0;
