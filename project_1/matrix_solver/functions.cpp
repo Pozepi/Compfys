@@ -1,4 +1,6 @@
 #include "functions.hpp"
+#include <math.h>  // ??
+
 double * linspace(double start, double end, double lin[], int n)
 {
     lin[0] = start;
@@ -9,6 +11,18 @@ double * linspace(double start, double end, double lin[], int n)
         lin[i] = h + lin[i-1];
     }
     return lin;
+}
+
+double * Poisson_analytical(double x[])
+{   
+    double u[sizeof(x)];
+    for (int i=0; i<sizeof(x); i++)
+    {
+        u[i] = 1 - (1-exp(-10)) * x[i] - exp(-10 * x[i]);
+        //std::cout << std::setprecision(6) << x[i] << ' ' << u[i];
+        //std::cout << '\n';
+    }
+    return u;
 }
 
 void print_array(double array[], int n)
@@ -66,4 +80,26 @@ void write_to_file(double array[], double lin[], int n)
         file << lin[i] << ' ' << array[i] << '\n';
     }
     file.close();
+}
+
+double * Delta(double u[], double v[])
+{   
+    double error[sizeof(u)];
+    for (int i=0; i<sizeof(u); i++)
+    {
+        error[i] = log(abs(u[i]-v[i]));
+        //std::cout << std::setprecision(6) << x[i] << ' ' << u[i];
+        //std::cout << '\n';
+    }
+    return error;
+}
+
+double * epsilon(double u[], double v[])
+{
+    double eps[sizeof(u)];
+    for (int i=0; i<sizeof(u); i++)
+    {
+        eps[i] = log(abs((u[i]-v[i])/u[i]));
+    }
+    return eps;
 }
