@@ -127,6 +127,8 @@ elif problem_number == '4':
             u.append(float(l[1]))
 
     plt.plot(x, u)
+    plt.xlabel('Step length N')
+    plt.ylabel(r'log$_{10}($max($\epsilon_i$))')
     #plt.yscale('log')
     plt.xscale('log')
     plt.show()

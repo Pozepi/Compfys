@@ -65,6 +65,36 @@ void solving_matrix(double dummy[], double x[], double a_array[], double b_array
     }
 }
 
+void solving_special(double dummy[], double x[], int n)
+{   
+    double a = -1;
+    double b =  2;
+    double c = -1;
+
+    double h = x[1] - x[0];
+
+    double beta[n];
+    double gamma[n];
+
+    beta[0]  = b;
+    gamma[0] = 0;
+
+    for (int i = 1; i < n; i++)
+    {
+        beta[i]  = b - (a/beta[i-1])*c;
+        gamma[i] = 100*exp(-10*x[i])*h*h - (a/beta[i-1])*gamma[i-1];
+    }
+
+    dummy[n] = 0;
+    dummy[0] = 0;
+    
+    for(int j = n-1; j > 1; j--)
+    {
+        dummy[j] = (gamma[j] - dummy[j+1]*c)/beta[j];
+    }
+
+}
+
 void write_to_file(std::string filename, double array[], double lin[], int n)
 {
     std::fstream file;
@@ -91,7 +121,7 @@ void Delta(double dummy[], double u[], double v[], int n)
 
 void epsilon(double dummy[], double u[], double v[], int n)
 {
-    for (int i=1; i<n-1; i++)
+    for (int i=0; i<n; i++)
     {
         dummy[i] = abs((u[i]-v[i])/u[i]);
     }

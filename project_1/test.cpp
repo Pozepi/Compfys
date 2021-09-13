@@ -125,19 +125,34 @@ int main()
 
             // u is true, v is descrete
             double error[length];
+            
             Delta(error, u, v, length);
-
-            std::string filename0 = "error_values_N_";
-            std::string s = std::to_string(i);
-
-            write_to_file(filename0+s, error, x, length);
+            
 
             /// RELATIVE ERROR ///
             double relerror[length];
             epsilon(relerror, u, v, length);
 
+            /// chop chop, it seems the arrays are too big. Lets cut them, shall we ;)
+            double x_[length-2];
+            double relerror_[length-2];
+            double error_[length-2];
+            
+            int j = 0;
+            for (int k=1;k<length-1;k++)
+            {
+               x_[j] = x[k];
+               relerror_[j] = relerror[k];
+               error_[j] = error[k];
+               j++;
+            }
+
+            std::string filename0 = "error_values_N_";
+            std::string s = std::to_string(i);
+
+            write_to_file(filename0+s, error_, x_, length-2);
             std::string filename1 = "rel_error_values_N_";
-            write_to_file(filename1+s, relerror, x, length);
+            write_to_file(filename1+s, relerror_, x_, length-2);
          }
          
          break;
@@ -168,35 +183,36 @@ int main()
             /// NUMERICAL ///
             double v[length];
 
-            double a_value = -1;
-            double b_value =  2;
-            double c_value = -1;
-            double a_array[length-1]; // diagonal a
-            double b_array[length];   // diagonal b
-            double c_array[length];   // ...
-
-            fill_array(a_array, length, a_value);
-            fill_array(b_array, length, b_value);
-            fill_array(c_array, length, c_value);
-            
-
-            solving_matrix(v, x, a_array, b_array, c_array, length);
+            solving_special(v, x, length);
+            print_array(v, length);
 
             /// RELATIVE ERROR ///
-            double relerror[length-2];
-            double tmp = 0;
-            double tmp2 = 0;
-            double max = 0;
-            epsilon(relerror, u, v, length);
             
-            for (int j = 0; j < length; j++)
+            double relerror[length];
+            
+            epsilon(relerror, u, v, length);
+
+            // Cut down array (remove boundaries)
+            double x_[length-2];
+            double relerror_[length-2];
+            
+            int j = 0;
+            for (int k=1;k<length-1;k++)
             {
-               if (relerror[j] > max)
+               x_[j] = x[k];
+               relerror_[j] = relerror[k];
+               j++;
+            }
+            // Find max
+            double max = 0;
+            for (int l = 0; l < length-2; l++)
+            {
+               if (relerror_[l] > max)
                {
-                  max = relerror[j];
+                  max = relerror_[l];
                }
             }
-            maxeps[i] = max;
+            maxeps[i] = max; 
             //maxeps[i] = *std::max_element(relerror, relerror+length);
             std::cout << maxeps[i] << '\n';
             
