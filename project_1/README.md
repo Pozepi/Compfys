@@ -62,39 +62,39 @@ Markup :
 
 ## Usage
 The functions found in functions.cpp are as follows:\
-\
+
 * void linspace(double dummy[], double start, double end, int n)\
 \
 The linspace() function creates an array with [n] evenly spaced out values from [start] to [end]. An empty array, [dummy], with [n] length must be provided to be fille out. \
-\
+
 * void Poisson\_analytical(double dummy[], double x[], int n)\
 \
 The Poisson\_analytical() function solves the analytical Poisson equation. An empty [dummy] array with [n] length must be provided, as well as an array, [x], with [n] length containing values to base the calculations on. \
-\
+
 * void print\_array(double array[], int n)\
 \
 print\_array() prints a provided array [array] with [n] length.\
-\
+
 * void fill\_array(double dummy[], int n, double element)\
 \
 fill\_array() fills the [dummy] array of size [n] with an element provided in the [element] argument.\
-\
+
 * void solving\_matrix(double dummy[], double x[], double a\_array[], double b\_array[], double c\_array[], int n)\
 \
 solving\_matrix() solves a matrix A to be used in the numerical solution of the Poisson equation. An empty [dummy] array with length [n] must be provided, as well as an array [x] containing x-values and [a\_array], [b\_array] and [c\_array] containing the values for the subdiagonal, main diagonal and superdiagonal of matrix A. \
-\
+
 * void solving\_special(double dummy[], double x[], int n)\
 \
 solving\_special() solves the numerical solution of the Poisson equation with a specialized algorithm, which is faster than the general algorithm found in the solving\_matrix() function. Empty [dummy] array with length [n] is provided and filled out based on x-values found in [x].\
-\
+
 * void write\_to\_file(std::string filename, double array[], double lin[], int n)\
 \
 write\_to\_file() is a function for writing two arrays, [array] and [lin], with length [n] into a file with filename [filename].txt. \
-\
+
 * void Delta(double dummy[], double u[], double v[], int n)\
 \
 Delta() is a function for calculating the absolute error between arrays [u] and [v] with length [n]. An empty array, [dummy], with length [n] must be provided to be filled out.\
-\
+
 * void epsilon(double dummy[], double u[], double v[], int n)\
 \
 epsilon() is a function for calculating the relative error between arrays [u] and [v] with length [n]. An empty array, [dummy], with length [n] must be provided to be filled out.
