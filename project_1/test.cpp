@@ -1,9 +1,6 @@
 #include "functions.hpp"
 int main()
 {   
-   // Start measuring time
-   clock_t t1 = clock();
-
    // local variable declaration:
    int problem;
    std::cout << "Choose problem: \n";
@@ -11,6 +8,7 @@ int main()
    std::cout << "[2] Problem 7\n";         // problem 2
    std::cout << "[3] Problem 8\n";
    std::cout << "[4] Problem 8c\n";
+   std::cout << "[5] Problem 10\n";
 
    std::cin >> problem;
    switch(problem)
@@ -184,7 +182,7 @@ int main()
             double v[length];
 
             solving_special(v, x, length);
-            print_array(v, length);
+            // print_array(v, length);
 
             /// RELATIVE ERROR ///
             
@@ -224,17 +222,114 @@ int main()
 
          break;
       }
+
+      case 5:
+      {
+         // Problem 10
+         double start = 0;
+         double end   = 1;
+         double N[5] = {10, 100, 1000, 10000, 100000};
+
+         // General Algorithm
+
+         double time_in[50];
+         double N_in[50];
+         
+         int k = 0;
+         for (int i=0;i<10;i++)
+         {
+            for (int j=0;j<5;j++)
+            {
+               // Start measuring time
+               clock_t t1 = clock();
+
+               // CODE : 
+               int n = N[j];
+
+               double a_value = -1;
+               double b_value =  2;
+               double c_value = -1;
+
+               double x[n]; // empty x array
+               double u[n]; // empty Poisson array
+
+               double a_array[n-1]; // diagonal a
+               double b_array[n];   // diagonal b
+               double c_array[n];   // ...
+
+               double v[n];   // solution
+
+               linspace(x, 0, 1, n); // x array
+
+               fill_array(a_array, n, a_value);
+               fill_array(b_array, n, b_value);
+               fill_array(c_array, n, c_value);
+
+               solving_matrix(v, x, a_array, b_array, c_array, n);
+
+               // Stop measuring time
+               clock_t t2 = clock();
+
+               // Calculate the elapsed time.
+               double duration_seconds = ((double) (t2 - t1)) / CLOCKS_PER_SEC;
+
+               std::cout << "\nRuntime (s) : " << duration_seconds;
+
+               time_in[k] = duration_seconds;
+               N_in[k]    = n; 
+               k++;
+            }
+         }
+
+         write_to_file("time_general", time_in, N_in, 50);
+
+         // Special Algorithm
+
+
+         double time_in2[50];
+         double N_in2[50];
+         
+         int k2 = 0;
+         for (int i=0;i<10;i++)
+         {
+            for (int j=0;j<5;j++)
+            {
+               // Start measuring time
+               clock_t t1 = clock();
+
+               // CODE : 
+               int length = N[j];
+               
+               double x[length]; // dummy x array to be filled and abused
+               
+               linspace(x, start, end, length);
+
+               /// NUMERICAL ///
+               double v[length];
+
+               solving_special(v, x, length);
+
+               // Stop measuring time
+               clock_t t2 = clock();
+
+               // Calculate the elapsed time.
+               double duration_seconds = ((double) (t2 - t1)) / CLOCKS_PER_SEC;
+
+               std::cout << "\nRuntime (s) : " << duration_seconds;
+
+               time_in2[k2] = duration_seconds;
+               N_in2[k2]    = length; 
+               k2++;
+            }
+         }
+
+         write_to_file("time_special", time_in2, N_in2, 50);
+
+      }
       default:
          std::cout << "Default statement";
          break;
    }  
-   // Stop measuring time
-   clock_t t2 = clock();
-
-   // Calculate the elapsed time.
-   double duration_seconds = ((double) (t2 - t1)) / CLOCKS_PER_SEC;
-
-   std::cout << "\nRuntime (s) : " << duration_seconds;
 
    return 0;
 }

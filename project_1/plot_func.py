@@ -1,16 +1,17 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-print('Please input your number \n \n')
+print('Please input your number and hit enter \n \n')
 
 print('[1] Problem 2\n')
 print('[2] Problem 7\n')
 print('[3] Problem 8\n')
 print('[4] Problem 8.c\n')
+print('[5] Problem 10\n')
 problem_number = input()
 
 if problem_number == '1':
-    """Problem 1 plotting"""
+    """Problem 2 plotting"""
     filename = 'values1'
 
     x = []
@@ -21,11 +22,14 @@ if problem_number == '1':
             x.append(float(l[0]))
             u.append(float(l[1]))
 
+    plt.xlabel('x values')
+    plt.ylabel('Poisson u(x)')
     plt.plot(x, u)
+    plt.title('Analytical Poisson solution')
     plt.show()
 
 elif problem_number == '2':
-    """Problem 2 plotting goes here"""
+    """Problem 7 plotting goes here"""
 
     filenames = 'u_values_N_'
     
@@ -54,6 +58,7 @@ elif problem_number == '2':
 
 
     plt.plot(x_a, u_a, label='Analytical')
+    plt.title('Numerical Poisson solution')
 
     plt.xlabel('x values')
     plt.ylabel('Poisson u(x)')
@@ -99,16 +104,18 @@ elif problem_number == '3':
         #plt.plot(x_e[i], u_e[i], label='Error N = 10^'+str(i+1),)
         #plt.plot(x_r[i], u_r[i], label='Rel Error N = 10^'+str(i+1))
 
-    ax[0].set_ylabel('Error')
+    ax[0].set_ylabel('Error $\log_{10}(\Delta_i)$')
     ax[0].set_xlabel('x values')
     ax[0].set_yscale('log')
     ax[0].set_xticks(np.linspace(0,1,10))
+    ax[0].set_title('Absolute Error')
     ax[0].legend()
 
-    ax[1].set_ylabel('Relative Error')
+    ax[1].set_ylabel('Relative Error $\log_{10}(\epsilon_i)$')
     ax[1].set_xlabel('x values')
     ax[1].set_yscale('log')
     ax[1].set_xticks(np.linspace(0,1,10))
+    ax[1].set_title('Relative Error')
     ax[1].legend()
 
     plt.show()
@@ -127,8 +134,40 @@ elif problem_number == '4':
             u.append(float(l[1]))
 
     plt.plot(x, u)
-    plt.xlabel('Step length N')
+    plt.title('Max relative error')
+    plt.xlabel('Array size N')
     plt.ylabel(r'log$_{10}($max($\epsilon_i$))')
     #plt.yscale('log')
     plt.xscale('log')
+    plt.show()
+
+elif problem_number == '5':
+    """Time comparison"""
+    filename0 = 'time_general'
+
+    x0 = []
+    y0 = []
+    with open(filename0+'.txt', 'r') as file:
+        for line in file.readlines():
+            l = line.split()
+            x0.append(float(l[0]))
+            y0.append(float(l[1]))
+
+    filename0 = 'time_special'
+
+    x1 = []
+    y1 = []
+    with open(filename0+'.txt', 'r') as file:
+        for line in file.readlines():
+            l = line.split()
+            x1.append(float(l[0]))
+            y1.append(float(l[1]))
+
+    plt.plot(x0, y0, 'r.', label='General algorithm time')
+    plt.plot(x1, y1, 'b.', label='Special algorithm time')
+    plt.xscale('log')
+    plt.legend()
+    plt.xlabel('Array size $N$')
+    plt.ylabel('Runtime (s)')
+    plt.title('Runtime for a given array size $N$')
     plt.show()
