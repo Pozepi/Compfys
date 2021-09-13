@@ -1,0 +1,224 @@
+#include "functions.hpp"
+int main()
+{   
+   // Start measuring time
+   clock_t t1 = clock();
+
+   // local variable declaration:
+   int problem;
+   std::cout << "Choose problem: \n";
+   std::cout << "[1] Problem 2\n";
+   std::cout << "[2] Problem 7\n";         // problem 2
+   std::cout << "[3] Problem 8\n";
+   std::cout << "[4] Problem 8c\n";
+
+   std::cin >> problem;
+   switch(problem)
+   {
+      case 1:
+      {
+         // problem 2
+         double start = 0;
+         double end   = 1;
+         int length;
+         std::cout << "Size of array: \n";
+         std::cin >> length;
+
+         double x[length]; // define x and u
+         double u[length]; 
+
+         linspace(x, start, end, length); // fill x with linspace values
+         Poisson_analytical(u, x, length);
+
+         std::string filename = "values1";
+         write_to_file(filename, u, x, length);
+         
+         break;
+      }
+
+      case 2: 
+      {
+         // problem 7
+
+         int N[4] = {10, 100, 1000, 10000};
+         for (int i=0; i<4; i++)
+         {
+            int n = N[i];
+
+            double a_value = -1;
+            double b_value =  2;
+            double c_value = -1;
+
+            // std::cin >> a_value;
+            // std::cin >> b_value;
+            // std::cin >> c_value;
+
+            double x[n]; // empty x array
+            double u[n]; // empty Poisson array
+
+            double a_array[n-1]; // diagonal a
+            double b_array[n];   // diagonal b
+            double c_array[n];   // ...
+
+            double v[n];   // solution
+
+            linspace(x, 0, 1, n); // x array
+
+            fill_array(a_array, n, a_value);
+            fill_array(b_array, n, b_value);
+            fill_array(c_array, n, c_value);
+
+            solving_matrix(v, x, a_array, b_array, c_array, n);
+
+            
+            // std::cout << "-----V print-----" << '\n';
+            // print_array(v_filled, n);
+            // std::string filename = "values2";
+
+            std::string filename = "u_values_N_";
+            std::string s = std::to_string(i);
+            write_to_file(filename+s, v, x, n);
+         }
+
+         break;
+      }
+
+      case 3:
+      {
+         // problem 8.a., 8.b.
+
+         double start = 0;
+         double end   = 1;
+         
+         int lengths[4] = {10, 100, 1000, 10000};
+         for (int i=0;i<4;i++)
+         {
+            int length = lengths[i];
+
+            double x[length]; // dummy x-array to be filled and abused
+
+            linspace(x, start, end, length);
+
+            /// ANALYTICAL ///
+            double u[length];
+
+            Poisson_analytical(u, x, length);
+
+            /// NUMERICAL ///
+            double v[length];
+
+            double a_value = -1;
+            double b_value =  2;
+            double c_value = -1;
+
+            double a_array[length-1]; // diagonal a
+            double b_array[length];   // diagonal b
+            double c_array[length];   // ...
+
+            fill_array(a_array, length-1, a_value);
+            fill_array(b_array, length, b_value);
+            fill_array(c_array, length, c_value);
+
+            solving_matrix(v, x, a_array, b_array, c_array, length);
+
+            /// ERROR ///
+
+            // u is true, v is descrete
+            double error[length];
+            Delta(error, u, v, length);
+
+            std::string filename0 = "error_values_N_";
+            std::string s = std::to_string(i);
+
+            write_to_file(filename0+s, error, x, length);
+
+            /// RELATIVE ERROR ///
+            double relerror[length];
+            epsilon(relerror, u, v, length);
+
+            std::string filename1 = "rel_error_values_N_";
+            write_to_file(filename1+s, relerror, x, length);
+         }
+         
+         break;
+      }
+      
+      case 4:
+      {
+         // Problem 8.c.
+         double start = 0;
+         double end   = 1;
+
+         double N[5] = {10, 100, 1000, 10000, 100000};
+         double maxeps[5];
+         
+         
+         for (int i=0;i<5;i++)
+         {
+            int length = N[i];
+            
+            double x[length]; // dummy x array to be filled and abused
+            
+            linspace(x, start, end, length);
+            
+            /// ANALYTICAL ///
+            double u[length];
+            Poisson_analytical(u, x, length);
+
+            /// NUMERICAL ///
+            double v[length];
+
+            double a_value = -1;
+            double b_value =  2;
+            double c_value = -1;
+            double a_array[length-1]; // diagonal a
+            double b_array[length];   // diagonal b
+            double c_array[length];   // ...
+
+            fill_array(a_array, length, a_value);
+            fill_array(b_array, length, b_value);
+            fill_array(c_array, length, c_value);
+            
+
+            solving_matrix(v, x, a_array, b_array, c_array, length);
+
+            /// RELATIVE ERROR ///
+            double relerror[length-2];
+            double tmp = 0;
+            double tmp2 = 0;
+            double max = 0;
+            epsilon(relerror, u, v, length);
+            
+            for (int j = 0; j < length; j++)
+            {
+               if (relerror[j] > max)
+               {
+                  max = relerror[j];
+               }
+            }
+            maxeps[i] = max;
+            //maxeps[i] = *std::max_element(relerror, relerror+length);
+            std::cout << maxeps[i] << '\n';
+            
+         }
+         std::string filename = "max_eps";
+
+         //double Nin[] = {10, pow(10,2), pow(10,3), pow(10,4), pow(10,5), pow(10,6), pow(10,7)};
+         write_to_file(filename, maxeps, N, 5);
+
+         break;
+      }
+      default:
+         std::cout << "Default statement";
+         break;
+   }  
+   // Stop measuring time
+   clock_t t2 = clock();
+
+   // Calculate the elapsed time.
+   double duration_seconds = ((double) (t2 - t1)) / CLOCKS_PER_SEC;
+
+   std::cout << "\nRuntime (s) : " << duration_seconds;
+
+   return 0;
+}
