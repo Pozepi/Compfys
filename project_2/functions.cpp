@@ -79,9 +79,55 @@ arma::vec eigenvalues(double a, double d, int n)
     */
     arma::vec values(n); 
 
-    for (int i=1; i<n; i++)
+    for (int i=1; i<n+1; i++)
     {
-        values(i) = d + 2*a*std::cos(i*3.1415/(n+1));
+        values(i-1) = d + 2*a*std::cos(i*3.1415/(n+1));
     }
     return values;
+}
+
+arma::mat eigenvectors(int n)
+{
+    /* DOCSTRING */
+    arma::mat vectors(n,n);
+    
+    for (int i=1; i<n+1; i++)
+    {
+        for (int j=1; j<n+1; j++)
+        {
+            vectors(i-1,j-1) = std::sin(j*i*3.1415/(n+1));
+        }
+    }
+    arma::mat transposed = vectors.t();
+    return transposed;
+}
+
+double largest_off_element(arma::mat A, int& k, int& l, int n)
+{
+    /*
+    Finds largest element value and index off of the diagonal in a symetric matrix
+    Args:
+        A (armada matrix) : Matrix to search for the max element in 
+        k (int&)          : used to record index of max element
+        l (int&)          : used to record index of max element
+        n (int)           : length of the matrix (matrix is nxn)
+    */
+    double max = -1;
+    int null;
+    for (int i=0; i<n; i++)
+    {
+        for (int j=0; j<n; j++)
+        {
+            if (i != j)
+            {
+                if (fabs(A(i,j)) > max)
+                {   
+                    max = fabs(A(i,j));
+                    k = i;
+                    l = j;
+                }
+            }
+        }
+    }
+    return max;
 }
