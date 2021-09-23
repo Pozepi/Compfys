@@ -15,5 +15,6 @@ void jacobi_eigensolver(arma::mat&, arma::vec&, arma::mat&,
                         const int, int&, bool&, int);
 void linspace(arma::vec&, double, double, int);
 void write_eig_to_file(arma::vec, arma::mat, int n, std::string);
+void write_lin_to_file(arma::vec, int, std::string);
 
 #endif

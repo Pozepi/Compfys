@@ -242,3 +242,13 @@ void write_eig_to_file(arma::vec V, arma::mat R, int n, std::string filename)
     file.close();
 }
 
+void write_lin_to_file(arma::vec x, int n, std::string filename)
+{
+    std::fstream file;
+    file.open(filename+".txt", std::ios::out);
+    for (int i=0; i < n; i++)
+    {
+        file << x(i) << '\n';
+    }
+    file.close();
+}
