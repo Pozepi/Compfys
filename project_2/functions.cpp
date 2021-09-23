@@ -209,7 +209,6 @@ void jacobi_eigensolver(arma::mat& A, arma::vec& eigenvalues, arma::mat& eigenve
             converged = true;
         }
     } 
-    
     if (sum < eps)
     {
         for (int i=0;i<n;i++)
