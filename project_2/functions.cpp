@@ -153,10 +153,10 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l, int n)
     c = 1/(sqrt(1+t*t)); // cosine
     s = c*t;             // sine
 
-    arma::mat tmp = A; // bii = aii included
+    //arma::mat tmp = A; // bii = aii included
 
     // b_kk = a_kk * cos^2θ − 2 * a_kl * cosθ * sinθ + a_ll * sin^2θ
-    
+    /*
     A(k,k) = tmp(k,k)*c*c - 2.0*tmp(k,l)*c*s + tmp(l,l)*s*s;
     A(l,l) = tmp(k,k)*s*s + 2.0*tmp(k,l)*c*s + tmp(l,l)*c*c;
     A(k,l) = 0.0;//(tmp(k,k) - tmp(l,l))*c*s + tmp(k,l)*(c*c - s*s);
@@ -179,7 +179,7 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l, int n)
         R(i,k) = tmp_ik*c - tmp_il*s;
         R(i,l) = tmp_il*c + tmp_ik*s;
     }
-    /*
+    */
     A(k,k) = A(k,k)*c*c - 2.0*A(k,l)*c*s + A(l,l)*s*s;
     A(l,l) = A(k,k)*s*s + 2.0*A(k,l)*c*s + A(l,l)*c*c;
     A(k,l) = 0.0;//(tmp(k,k) - tmp(l,l))*c*s + tmp(k,l)*(c*c - s*s);
@@ -201,7 +201,7 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l, int n)
         double tmp_il = R(i,l);
         R(i,k) = tmp_ik*c - tmp_il*s;
         R(i,l) = tmp_il*c + tmp_ik*s;
-    }*/
+    }
 }
 
 // Jacobi method eigensolver:
@@ -215,7 +215,7 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l, int n)
 void jacobi_eigensolver(arma::mat& A, arma::vec& eigenvalues, arma::mat& eigenvectors, 
                         const int maxiter, int& counter, bool& converged, int n)
 {
-    double eps = 1e-4;
+    double eps = 1e-7;
     double sum = 0;
     int k;
     int l; 
