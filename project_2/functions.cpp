@@ -215,7 +215,7 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l, int n)
 void jacobi_eigensolver(arma::mat& A, arma::vec& eigenvalues, arma::mat& eigenvectors, 
                         const int maxiter, int& counter, bool& converged, int n)
 {
-    double eps = 1e-5;
+    double eps = 1e-4;
     double sum = 0;
     int k;
     int l; 
