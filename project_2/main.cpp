@@ -60,13 +60,36 @@ int main()
     
     std::cout << "------ARMADILLO------ \n";
     tri_matrix = tridiagonal_matrix(a, d, N);
-    arma::vec eigval = arma::eig_sym(tri_matrix);
+    arma::vec eigval;// = arma::eig_s''ym(tri_matrix);
     arma::mat eigvec;
     
     arma::eig_sym(eigval, eigvec, tri_matrix);
     
     std::cout << eigval << '\n';
     std::cout << eigvec << '\n';
+    
+    std::cout << "------PROBLEM 7------ \n";
+    double n = 10;
+    double h_ = 1/(n+1);
+    double a_ = -1/(h_*h_);
+    double d_ =  2/(h_*h_);
+    arma::vec x = arma::linspace(0,1,n);
+    
+    arma::mat v = tridiagonal_matrix(a_, d_, n);
+    double last = n*n*n;
+    int c = 0;
+    bool conv = false;
+    arma::mat R2;
+    R2.eye(n,n);
+
+    std::cout << R2 << "\n";
+    arma::vec V2(n);
+    jacobi_eigensolver(v, V2, R2, last, c, conv, n);
+
+    std::cout << v << "\n";
+    std::cout << R2 << "\n";
+    std::cout << V2 << "\n";
+    std::cout << counter << "\n";
     
 
     return 0;

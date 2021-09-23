@@ -182,7 +182,7 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l, int n)
     */
     A(k,k) = A(k,k)*c*c - 2.0*A(k,l)*c*s + A(l,l)*s*s;
     A(l,l) = A(k,k)*s*s + 2.0*A(k,l)*c*s + A(l,l)*c*c;
-    A(k,l) = 0.0;//(tmp(k,k) - tmp(l,l))*c*s + tmp(k,l)*(c*c - s*s);
+    A(k,l) = 0.0; //(A(k,k) - A(l,l))*c*s + A(k,l)*(c*c - s*s);
     A(l,k) = 0.0;
 
     for(int i = 0; i<n; i++)
@@ -215,7 +215,7 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l, int n)
 void jacobi_eigensolver(arma::mat& A, arma::vec& eigenvalues, arma::mat& eigenvectors, 
                         const int maxiter, int& counter, bool& converged, int n)
 {
-    double eps = 1e-7;
+    double eps = 1e-15;
     double sum = 0;
     int k;
     int l; 
@@ -240,7 +240,6 @@ void jacobi_eigensolver(arma::mat& A, arma::vec& eigenvalues, arma::mat& eigenve
             converged = true;
         }
     } 
-    
     if (sum < eps)
     {
         for (int i=0;i<n;i++)

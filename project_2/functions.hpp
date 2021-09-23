@@ -13,5 +13,6 @@ double largest_off_element(arma::mat, int&, int&, int);
 void jacobi_rotate(arma::mat&, arma::mat&, int, int, int);
 void jacobi_eigensolver(arma::mat&, arma::vec&, arma::mat&, 
                         const int, int&, bool&, int);
+void linspace(arma::vec&, double, double, int);
 
 #endif
