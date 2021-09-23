@@ -2,30 +2,30 @@
 
 int main()
 {
-    double N = 3;
+    double N = 6;
     double h = 1/(N+1);
-    //double a = -1/(h*h);
-    //double d =  2/(h*h);
+    double a = -1/(h*h);
+    double d =  2/(h*h);
 
-    double a = 1;
-    double d = -0.7;
+    //double a = 1;
+    //double d = -0.7;
     arma::mat tri_matrix = tridiagonal_matrix(a, d, N);
-    //std::cout << tri_matrix << '\n';
+    std::cout << tri_matrix << '\n';
 
-    //arma::vec eigval = arma::eig_sym(tri_matrix);
-    //arma::mat eigvec;
+    arma::vec eigval = arma::eig_sym(tri_matrix);
+    arma::mat eigvec;
     
-    //arma::eig_sym(eigval, eigvec, tri_matrix);
+    arma::eig_sym(eigval, eigvec, tri_matrix);
     
-    //std::cout << eigval << '\n';
-    //std::cout << eigvec << '\n';
+    std::cout << eigval << '\n';
+    std::cout << eigvec << '\n';
 
     arma::vec eigenval = eigenvalues(a, d, N);
     arma::mat eigenvec = eigenvectors(N);
     arma::mat normalised = arma::normalise(eigenvec);
-    //std::cout << "-----Analytical----- \n";
-    //std::cout << eigenval << "\n";
-    //std::cout << normalised << "\n";
+    std::cout << "-----Analytical----- \n";
+    std::cout << eigenval << "\n";
+    std::cout << normalised << "\n";
 
     //std::cout << "-----Max Element----- \n";
     arma::mat test_matrix = {{1, 0, 0, 0.5}, {0, 1, -0.7, 0}, {0, -0.7, 1, 0}, {0.5, 0, 0, 1}};
@@ -65,6 +65,7 @@ int main()
     std::cout << eigval << '\n';
     std::cout << eigvec << '\n';
     */
+
     return 0;
 }
 
