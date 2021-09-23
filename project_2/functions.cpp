@@ -116,18 +116,141 @@ double largest_off_element(arma::mat A, int& k, int& l, int n)
     int null;
     for (int i=0; i<n; i++)
     {
-        for (int j=0; j<n; j++)
+        for (int j=i+1; j<n; j++)
         {
             if (i != j)
             {
                 if (fabs(A(i,j)) > max)
                 {   
                     max = fabs(A(i,j));
-                    k = i;
-                    l = j;
+                    l = i;
+                    k = j;
                 }
             }
         }
     }
     return max;
+}
+
+// Performs a single Jacobi rotation, to "rotate away"
+// the off-diagonal element at A(k,l).
+// - Assumes symmetric matrix, so we only consider k < l
+// - Modifies the input matrices A and R
+void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l, int n)
+{
+    //double theta = std::arctan(phi + sqrt(phi*phi + 1));
+    //for (int i=0; i>n;i++)
+    
+    double c;
+    double s;
+    double phi = (A(l,l) - A(k,k))/(2*A(k,l));
+
+    double t = 1/(fabs(phi) + sqrt(phi*phi+1)); 
+
+    if(phi<0)
+        t = -t;  
+    
+    c = 1/(sqrt(1+t*t)); // cosine
+    s = c*t;             // sine
+
+    arma::mat tmp = A; // bii = aii included
+
+    // b_kk = a_kk * cos^2θ − 2 * a_kl * cosθ * sinθ + a_ll * sin^2θ
+    
+    A(k,k) = tmp(k,k)*c*c - 2.0*tmp(k,l)*c*s + tmp(l,l)*s*s;
+    A(l,l) = tmp(k,k)*s*s + 2.0*tmp(k,l)*c*s + tmp(l,l)*c*c;
+    A(k,l) = 0.0;//(tmp(k,k) - tmp(l,l))*c*s + tmp(k,l)*(c*c - s*s);
+    A(l,k) = 0.0;
+
+    for(int i = 0; i<n; i++)
+    {
+        if (i != k && i != l)
+        {
+            // b_ik = a_ik * cosθ − a_il * sinθ, i != k, i != l 
+            // b_il = a_il * cosθ + a_ik * sinθ, i != k, i != l
+            A(i,k) = tmp(i,k)*c - tmp(i,l)*s;
+            A(i,l) = tmp(i,l)*c + tmp(i,k)*s;
+            A(k,i) = tmp(i,k);
+            A(l,i) = tmp(i,l);
+        }
+
+        double tmp_ik = R(i,k);
+        double tmp_il = R(i,l);
+        R(i,k) = tmp_ik*c - tmp_il*s;
+        R(i,l) = tmp_il*c + tmp_ik*s;
+    }
+    /*
+    A(k,k) = A(k,k)*c*c - 2.0*A(k,l)*c*s + A(l,l)*s*s;
+    A(l,l) = A(k,k)*s*s + 2.0*A(k,l)*c*s + A(l,l)*c*c;
+    A(k,l) = 0.0;//(tmp(k,k) - tmp(l,l))*c*s + tmp(k,l)*(c*c - s*s);
+    A(l,k) = 0.0;
+
+    for(int i = 0; i<n; i++)
+    {
+        if (i != k && i != l)
+        {
+            // b_ik = a_ik * cosθ − a_il * sinθ, i != k, i != l 
+            // b_il = a_il * cosθ + a_ik * sinθ, i != k, i != l
+            A(i,k) = A(i,k)*c - A(i,l)*s;
+            A(i,l) = A(i,l)*c + A(i,k)*s;
+            A(k,i) = A(i,k);
+            A(l,i) = A(i,l);
+        }
+
+        double tmp_ik = R(i,k);
+        double tmp_il = R(i,l);
+        R(i,k) = tmp_ik*c - tmp_il*s;
+        R(i,l) = tmp_il*c + tmp_ik*s;
+    }*/
+}
+
+// Jacobi method eigensolver:
+// - Runs jacobo_rotate until max off-diagonal element < eps
+// - Writes the eigenvalues as entries in the vector "eigenvalues"
+// - Writes the eigenvectors as columns in the matrix "eigenvectors"
+//   (The returned eigenvalues and eigenvectors are sorted using arma::sort_index)
+// - Stops if it the number of iterations reaches "maxiter"
+// - Writes the number of iterations to the integer "iterations"
+// - Sets the bool reference "converged" to true if convergence was reached before hitting maxiter
+void jacobi_eigensolver(arma::mat& A, arma::vec& eigenvalues, arma::mat& eigenvectors, 
+                        const int maxiter, int& counter, bool& converged, int n)
+{
+    double eps = 1e-5;
+    double sum = 0;
+    int k;
+    int l; 
+    while (!converged)
+    {
+        counter++;
+        double max = largest_off_element(A, k, l, n);
+        // std::cout << "k : " << k << " l : " << l << "\n";
+        // std::cout << "iteration :" << counter << "\n" << A << "\n";
+        jacobi_rotate(A, eigenvectors, k, l, n);
+
+        double sum = 0;
+        for(int i = 0; i<n-1; i++)
+        {
+            for(int j = i+1; j<n; j++)
+            {
+                sum += fabs(A(i,j));
+            }
+        }
+        if (sum < eps || counter > maxiter)
+        {
+            converged = true;
+        }
+    } 
+    
+    if (sum < eps)
+    {
+        for (int i=0;i<n;i++)
+        {
+            eigenvalues(i) = A(i,i);
+        }
+        std::cout << "SUCEED \n";
+    }
+    if (counter >= maxiter && sum > eps)
+    {
+        std::cout << "Failed \n";
+    }
 }
