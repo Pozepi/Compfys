@@ -222,3 +222,23 @@ void jacobi_eigensolver(arma::mat& A, arma::vec& eigenvalues, arma::mat& eigenve
         std::cout << "Failed \n";
     }
 }
+
+void write_eig_to_file(arma::vec V, arma::mat R, int n, std::string filename)
+{
+    std::fstream file;
+    file.open(filename+".txt", std::ios::out);
+
+    R = R.t();
+    for (int i=0; i < n; i++)
+    {
+        file << V(i) << '\n';
+        for (int j=0; j < n; j++)
+        {
+
+            file << R(i,j) << '\n';
+        }
+        file << '\n';
+    }
+    file.close();
+}
+

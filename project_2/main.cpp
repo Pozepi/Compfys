@@ -55,7 +55,7 @@ int main()
     std::cout << "Iterations : " << counter << "\n";
     
     std::cout << "------PROBLEM 7------ \n";
-    double n = 10;
+    double n = 100;
     double h_ = 1/(n+1);
     double a_ = -1/(h_*h_);
     double d_ =  2/(h_*h_);
@@ -77,6 +77,7 @@ int main()
     std::cout << V2 << "\n";
     std::cout << counter << "\n";
     
+    write_eig_to_file(V2, R2, n, "N_100");
 
     return 0;
 }

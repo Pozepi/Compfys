@@ -14,5 +14,6 @@ void jacobi_rotate(arma::mat&, arma::mat&, int, int, int);
 void jacobi_eigensolver(arma::mat&, arma::vec&, arma::mat&, 
                         const int, int&, bool&, int);
 void linspace(arma::vec&, double, double, int);
+void write_eig_to_file(arma::vec, arma::mat, int n, std::string);
 
 #endif
