@@ -159,8 +159,8 @@ void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l, int n)
     /*
     A(k,k) = tmp(k,k)*c*c - 2.0*tmp(k,l)*c*s + tmp(l,l)*s*s;
     A(l,l) = tmp(k,k)*s*s + 2.0*tmp(k,l)*c*s + tmp(l,l)*c*c;
-    A(k,l) = 0.0;//(tmp(k,k) - tmp(l,l))*c*s + tmp(k,l)*(c*c - s*s);
-    A(l,k) = 0.0;
+    A(k,l) = (A(k,k) - A(l,l))*c*s + A(k,l)*(c*c - s*s);
+    //A(l,k) = 0.0;
 
     for(int i = 0; i<n; i++)
     {
