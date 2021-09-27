@@ -75,35 +75,36 @@ Markup :
 
 ## Usage
 
-The functions found in functions.cpp are as follows:\
-* arma::mat tridiagonal_matrix(double a, double d, double N)\
+The functions found in functions.cpp are as follows:
 
-The tridiagonal_matrix() function creates and returns an NxN matrix with a-values on the subdiagonal and superdiagonal, and d-values on the main diagonal.\
+* arma::mat tridiagonal_matrix(double a, double d, double N)
 
-* arma::vec eigenvalues(double a, double d, int n)\
+The tridiagonal_matrix() function creates and returns an NxN matrix with a-values on the subdiagonal and superdiagonal, and d-values on the main diagonal.
 
-The eigenvalues() functions finds the eigenvalues of a nxn tridiagonal matrix with a-values on the subdiagonal and superdiagonal, and d-values on the main diagonal, analytically, and returns these values.\
+* arma::vec eigenvalues(double a, double d, int n)
 
-* arma::mat eigenvectors(int n)\
+The eigenvalues() functions finds the eigenvalues of a nxn tridiagonal matrix with a-values on the subdiagonal and superdiagonal, and d-values on the main diagonal, analytically, and returns these values.
 
-The eigenvectors() function finds the eigenvectors of a nxn tridiagonal matrix analytically, and returns these vectors.\
+* arma::mat eigenvectors(int n)
 
-* double largest\_off\_element(arma::mat A, int&k, int& l, int n)\
+The eigenvectors() function finds the eigenvectors of a nxn tridiagonal matrix analytically, and returns these vectors.
 
-largest\_off\_element() finds the value of the largest off diagonal element in a matrix, and returns this values. In addition, the function will also save the index of this largest element into variables, k and l. \
+* double largest\_off\_element(arma::mat A, int&k, int& l, int n)
 
-* void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l, int n)\
+largest\_off\_element() finds the value of the largest off diagonal element in a matrix, and returns this values. In addition, the function will also save the index of this largest element into variables, k and l. 
 
-jacobi\_rotate() is a function to perform the Jacobi rotation algorithm on matrix A, and store the eigenvectors into a matrix R. \
+* void jacobi_rotate(arma::mat& A, arma::mat& R, int k, int l, int n)
 
-* void jacobi_eigensolver(arma::mat& A, arma::vec& eigenvalues, arma::mat& eigenvectors, const in maxiter, int& counter bool& converged)\
+jacobi\_rotate() is a function to perform the Jacobi rotation algorithm on matrix A, and store the eigenvectors into a matrix R. 
 
-jacobi_eigensolver() is a function which runs the jacobi\_rotate() function untill the input matrix only consists of values along the main diagonal, and zeros everywhere else, or at least values close to zeros. It will then also save the eigenvalues of the resulting matrix.\
+* void jacobi_eigensolver(arma::mat& A, arma::vec& eigenvalues, arma::mat& eigenvectors, const in maxiter, int& counter bool& converged)
 
-* void write\_eig\_to\_file(arma::vec V, arma::mat R, int n, std::string filename)\
+jacobi_eigensolver() is a function which runs the jacobi\_rotate() function untill the input matrix only consists of values along the main diagonal, and zeros everywhere else, or at least values close to zeros. It will then also save the eigenvalues of the resulting matrix.
 
-write\_eig\_to\_file() is a function for writing the the eigenvalues and cooresponding eigenvectors to a file called [filename].txt. The function will write down the list of eigenvectors and put the cooresponding eigenvalue at the top of this list. \
+* void write\_eig\_to\_file(arma::vec V, arma::mat R, int n, std::string filename)
 
-* void write\_lin\_to\_file(arma::vec x, int n, std::string filename)\
+write\_eig\_to\_file() is a function for writing the the eigenvalues and cooresponding eigenvectors to a file called [filename].txt. The function will write down the list of eigenvectors and put the cooresponding eigenvalue at the top of this list. 
+
+* void write\_lin\_to\_file(arma::vec x, int n, std::string filename)
 
 write\_lin\_to\_file() is a function for writing down the evenly spaced out x-values used in the script into a file called [filename].txt.
