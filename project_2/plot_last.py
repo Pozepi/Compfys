@@ -28,7 +28,6 @@ def magic(filename):
     lambda_ = lambda_[:-1]
 
     lambda_, v = zip(*sorted(zip(lambda_, v))) # sort
-    print(v)
     #print(a)
     N = len(v)
     h = 1/(N+1)
@@ -40,18 +39,8 @@ def magic(filename):
     for i in range(1-1,N):
         v_py.append([])
         for j in range(1,N+1):
-            v_py[i].append(np.sin(j*np.pi/(N + 1)))
-    print(v_py)
+            v_py[i].append(np.sin((i+1)*j*np.pi/(N + 1)))
 
-    """
-    def lowest(a, n): return np.partition(a, n-1)[:n] # find smalles 3 values
-    smoll = lowest(v_py, 3)
-    i_0 = np.where(v_py == smoll[0])[0][0]
-    i_1 = np.where(v_py == smoll[1])[0][0]
-    i_2 = np.where(v_py == smoll[2])[0][0]
-    i_a = [i_0, i_1, i_2] # analytical vectors
-    print(i_a)
-    """
     lambda_py, v_py = zip(*sorted(zip(lambda_py, v_py)))
 
     x = []
