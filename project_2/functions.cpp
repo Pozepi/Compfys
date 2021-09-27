@@ -234,7 +234,6 @@ void write_eig_to_file(arma::vec V, arma::mat R, int n, std::string filename)
         file << V(i) << '\n';
         for (int j=0; j < n; j++)
         {
-
             file << R(i,j) << '\n';
         }
         file << '\n';
