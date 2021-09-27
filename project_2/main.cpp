@@ -6,9 +6,9 @@ int main()
     double h = 1/(N+1);
     double a = -1/(h*h);
     double d =  2/(h*h);
-    
-    arma::mat tri_matrix = tridiagonal_matrix(a, d, N);
 
+    arma::mat tri_matrix = tridiagonal_matrix(a, d, N);
+    
     std::cout << "-----Tridiagonal Matrix------ \n";
     std::cout << tri_matrix << '\n';
     std::cout << "-----Armadillo------ \n";
@@ -19,7 +19,7 @@ int main()
     
     std::cout << eigval << '\n';
     std::cout << eigvec << '\n';
-       
+    
     arma::vec eigenval = eigenvalues(a, d, N);
     arma::mat eigenvec = eigenvectors(N);
     arma::mat normalised = arma::normalise(eigenvec);
@@ -27,7 +27,7 @@ int main()
     std::cout << eigenval << "\n";
     std::cout << normalised << "\n";
     
-    
+
     std::cout << "-----Max Element----- \n";
     arma::mat test_matrix = {{1, 0, 0, 0.5}, {0, 1, -0.7, 0}, {0, -0.7, 1, 0}, {0.5, 0, 0, 1}};
     arma::mat test_matrix_2 = {{1, sqrt(2), 2}, {sqrt(2), 3, sqrt(2)}, {2, sqrt(2), 1}};
@@ -53,7 +53,7 @@ int main()
     std::cout << R << "\n";
     std::cout << V << "\n";
     std::cout << "Iterations : " << counter << "\n";
-    
+
     std::cout << "------PROBLEM 7------ \n";
     double n = 100;
     double h_ = 1/(n+1);
@@ -76,7 +76,7 @@ int main()
     std::cout << R2 << "\n";
     std::cout << V2 << "\n";
     std::cout << counter << "\n";
-    
+
     write_eig_to_file(V2, R2, n, "N_100");
     write_lin_to_file(x, n, "linspace_N_100");
 
