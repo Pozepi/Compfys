@@ -262,6 +262,8 @@ arma::mat tridiagonal_matrix(double a, double d, double N)
         a          (double)          : values adjasent to diagonal 
         b          (double)          : diagonal
         N          (int)             : size of "side" of array
+    Returns: 
+        tri_matrix (armada matrix) : matrix defined by tridiag(a,d,a) with matrix size NxN
     */
 
     arma::mat tri_matrix(N, N);
@@ -329,6 +331,8 @@ arma::vec eigenvalues(double a, double d, int n)
         a (double) : elements adjasent to diagonal
         d (double) : diagonal
         n (int)    : size of vector
+    Returns:
+        values (armada vector) : vector containing eigenvalues
     */
     arma::vec values(n); 
 
@@ -345,6 +349,8 @@ arma::mat eigenvectors(int n)
     Finds the eigenvectors for matrix A = diag(a,d,a)
     Args:
         n (int) : size of side of matrix
+    Returns:
+        transposed (armada matrix) : transposed matrix containing analytical eigenvectors
     */
     arma::mat vectors(n,n);
     
@@ -368,6 +374,8 @@ double largest_off_element(arma::mat A, int& k, int& l, int n)
         k (int&)          : used to record index of max element (along y) 
         l (int&)          : used to record index of max element (along x)
         n (int)           : length of the matrix (matrix is nxn)
+    Returns:
+        max (doube) : max elements in matrix A
     */
     double max = -1;
     int null;
