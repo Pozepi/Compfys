@@ -42,6 +42,12 @@ int main()
 
     arma::mat R;
     R.eye(N,N);
+    
+    // Generate random N*N matrix
+    arma::mat A = arma::mat(N, N).randn();  
+
+    // Symmetrize the matrix by reflecting the upper triangle to lower triangle
+    A = arma::symmatu(A);  
 
     std::cout << R << "\n";
     arma::vec V(N);
@@ -79,6 +85,7 @@ int main()
 
     write_eig_to_file(V2, R2, n, "N_100");
     write_lin_to_file(x, n, "linspace_N_100");
+
 
     return 0;
 }
