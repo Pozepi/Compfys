@@ -45,7 +45,27 @@ arma::vec PenningTrap::external_B_field(arma::vec r)
 // Force on particle i from particle j
 arma::vec PenningTrap::force_particle(int i, int j)
 {
-    arma::vec F = {0,0,0};
+    double ke = 1.38935333e+05;
+    Particle particle_i = particles[i];
+    Particle particle_j = particles[j];
+
+    double rxi = particle_i.position()(0);
+    double ryi = particle_i.position()(1);
+    double rzi = particle_i.position()(2);
+
+    double rxj = particle_j.position()(0);
+    double ryj = particle_j.position()(1);
+    double rzj = particle_j.position()(2);
+    
+    double A = ke*particle_i.charge()*particle_j.charge();
+    arma::vec R = {rxi-rxj,ryi-ryj,rzi-rzj};
+    
+    double Fx = A*R(0)/std::sqrt(R(0)*R(0) + R(1)*R(1) + R(2)*R(2));
+    double Fy = A*R(1)/std::sqrt(R(0)*R(0) + R(1)*R(1) + R(2)*R(2));
+    double Fz = A*R(2)/std::sqrt(R(0)*R(0) + R(1)*R(1) + R(2)*R(2));
+    
+    arma::vec F = {Fx,Fy,Fz};
+
     return F;
 }
 // Total force on particle i from external fields
@@ -65,7 +85,19 @@ arma::vec PenningTrap::total_force_external(int i)
 // Total force on particle i from other particles
 arma::vec PenningTrap::total_force_particles(int i)
 {
-    arma::vec F = {0,0,0};
+    double Fx = 0;
+    double Fy = 0;
+    double Fz = 0;
+    for (int j=0;j<PenningTrap::particle_count();j++)
+    {
+        if (i!=j)
+        {
+            Fx += PenningTrap::force_particle(i,j)(0);
+            Fy += PenningTrap::force_particle(i,j)(1);
+            Fz += PenningTrap::force_particle(i,j)(2);
+        }
+    }
+    arma::vec F = {Fx, Fy, Fz};
     return F;
 }
 // Total force on particle i from both external fields and other particles
