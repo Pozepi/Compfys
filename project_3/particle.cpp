@@ -1,40 +1,29 @@
-#include "functions.hpp"
+#include "particle.hpp"
 
-class Particle
+Particle::Particle(double charge, double mass, arma::vec position, arma::vec velocity)
 {
-    private:
-    double charge_;
-    double mass_;
-    arma::vec position_;
-    arma::vec velocity_;
+    charge_ = charge;
+    mass_ = mass;
+    position_ = position;
+    velocity_ = velocity;
+}
 
-    public:
-    Particle(double charge, double mass, arma::vec position, arma::vec velocity)
-    {
-        charge_ = charge;
-        mass_ = mass;
-        position_ = position;
-        velocity_ = velocity;
-    }
+double Particle::charge()
+{
+    return charge_;
+}
 
-    double charge()
-    {
-        return charge_;
-    }
+double Particle::mass()
+{
+    return mass_;
+}
 
-    double mass()
-    {
-        return mass_;
-    }
+arma::vec Particle::position()
+{
+    return position_;
+}
 
-    arma::vec position()
-    {
-        return position_;
-    }
-
-    arma::vec velocity()
-    {
-        return velocity_;
-    }
-
-};
+arma::vec Particle::velocity()
+{
+    return velocity_;
+}
