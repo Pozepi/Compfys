@@ -57,7 +57,7 @@ arma::vec PenningTrap::total_force_external(int i)
     arma::vec E = PenningTrap::external_E_field(particle_i.position());
 
     double Fx = particle_i.charge()*E(0)+particle_i.charge()*(v(1)*B(2)-v(2)*B(1));
-    double Fy = particle_i.charge()*E(1)+particle_i.charge()*(v(0)*B(2)-v(2)*B(0));
+    double Fy = particle_i.charge()*E(1)-particle_i.charge()*(v(0)*B(2)-v(2)*B(0));
     double Fz = particle_i.charge()*E(2)+particle_i.charge()*(v(0)*B(1)-v(1)*B(0));
     arma::vec F = {Fx, Fy, Fz};
     return F;
