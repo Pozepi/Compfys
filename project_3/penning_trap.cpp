@@ -83,7 +83,7 @@ void PenningTrap::evolve_RK4(double dt)
     int null = 0;
 }
 
-void PenningTrap::evolve_forward_Euler(double dt, double time_stop)
+void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool makefile, std::string filename)
 {
     int size = PenningTrap::particle_count()*3;
     int N = time_stop/dt;
@@ -107,7 +107,8 @@ void PenningTrap::evolve_forward_Euler(double dt, double time_stop)
     }
 
     for(int i=0; i<N-1; i++)
-    {
+    {   
+        // solving for the position and velocity of the particles
         jump = 0;
         for(int j=0; j<PenningTrap::particle_count(); j++)
         {
@@ -141,5 +142,13 @@ void PenningTrap::evolve_forward_Euler(double dt, double time_stop)
             jump += 3;
         }
         time(i+1) = time(i)+dt;
+    }
+    if(makefile)
+    {
+        std::fstream file;
+        file.open(filename+".txt", std::ios::out);
+        file << time << '\n';
+        file << v << '\n';
+        file << pos << '\n';
     }
 }

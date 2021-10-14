@@ -38,7 +38,7 @@ class PenningTrap
 
     void evolve_RK4(double dt);
 
-    void evolve_forward_Euler(double dt, double time_stop);
+    void evolve_forward_Euler(double dt, double time_stop, bool makefile=false, std::string filename="forward_euler");
 };
 
 #endif

@@ -17,7 +17,7 @@ int main()
     penning_test.add_particle(two);
     penning_test.add_particle(three);
 
-    penning_test.evolve_forward_Euler(0.1, 1);
+    penning_test.evolve_forward_Euler(0.1, 1, true);
 
     return 0;
 }
