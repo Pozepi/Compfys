@@ -1,32 +1,37 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-filename = 'forward_euler'
-t = []
-rx = []; ry = []; rz = []
-vx = []; vy = []; vz = []
+filename = 'RK4'#'forward_euler'
 
-i = 0 # quantity that Q will touch
-with open(filename+'.txt', 'r') as file:
-    for line in file.readlines():
-        l = np.array(line.split())
 
-        print(l)
+def find_values(filename):
+    t = []
+    rx = []; ry = []; rz = []
+    vx = []; vy = []; vz = []
+    i = 0
+    with open(filename+'.txt', 'r') as file:
+        for line in file.readlines():
+            l = np.array(line.split())
 
-        if len(l)==0:
-            # then we have reacha new quantity
-            i += 1
-        elif len(l)==1:
-            t.append(float(l[0]))
-        elif len(l)>1:
-            if i == 1:
-                vx.append(float(l[0]))
-                vy.append(float(l[1]))
-                vz.append(float(l[2]))
-            if i == 2:
-                rx.append(float(l[0]))
-                ry.append(float(l[1]))
-                rz.append(float(l[2]))
+            if len(l)==0:
+                # then we have reacha new quantity
+                i += 1
+            elif len(l)==1:
+                t.append(float(l[0]))
+            elif len(l)>1:
+                if i == 1:
+                    vx.append(float(l[0]))
+                    vy.append(float(l[1]))
+                    vz.append(float(l[2]))
+                if i == 2:
+                    rx.append(float(l[0]))
+                    ry.append(float(l[1]))
+                    rz.append(float(l[2]))
+
+    return t, rx, ry, rz, vx, vy, vz
+
+
+t, rx, ry, rz, vx, vy, vz = find_values('RK4')
 
 """ Plot the position """
 fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
@@ -40,6 +45,25 @@ ax1.plot(rx, ry)
 ax1.legend()
 ax2.plot(t, rz)
 plt.show()
+
+fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
+
+[[axi.set_xlabel('X position'), axi.set_ylabel('Y position'), axi.grid()] for axi in [ax1, ax2]]
+ax1.plot(rx[0], ry[0], 'rx', label='Start pos')
+ax1.plot(rx[-1], ry[-1], 'kx', label='End pos')
+ax1.plot(rx, ry)
+ax1.legend()
+ax1.set_title('Runke Kutta 4')
+
+t, rx, ry, rz, vx, vy, vz = find_values('forward_euler')
+ax2.plot(rx[0], ry[0], 'rx', label='Start pos')
+ax2.plot(rx[-1], ry[-1], 'kx', label='End pos')
+ax2.plot(rx, ry)
+ax2.legend()
+ax2.set_title('Forward Euler')
+plt.show()
+
+
 
 
 """ Plot the velocity over time """
