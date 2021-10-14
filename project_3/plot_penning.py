@@ -31,8 +31,6 @@ fig, [ax1, ax2] = plt.subplots(figsize=(15,10), ncols=2)
 ax1.set_xlabel('X position'); ax1.set_ylabel('Y position')
 ax2.set_xlabel('Time [micro seconds]'); ax2.set_ylabel('Z position')
 [axi.grid() for axi in [ax1, ax2]]
-ax1.set_xscale('log')
-ax2.set_yscale('log')
 
 ax1.plot(r[0], r[1])
 ax2.plot(t, r[2])
