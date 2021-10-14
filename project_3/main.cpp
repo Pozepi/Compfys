@@ -21,10 +21,10 @@ int main()
     //penning_test.add_particle(two);
     //penning_test.add_particle(three);
 
-    penning_test.evolve_forward_Euler(1e-4, 100, true);
+    penning_test.evolve_forward_Euler(1e-3, 100, true);
 
 
-    penning_test2.evolve_RK4(1e-4,100, true);
+    penning_test2.evolve_RK4(1e-3,100, true);
 
     return 0;
 }
