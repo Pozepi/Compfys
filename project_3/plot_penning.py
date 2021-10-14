@@ -1,11 +1,41 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+filename = 'forward_euler'
+t = []
+r = [[], [], []]
+v = [[], [], []]
+
+Q = np.array([t,r,v])
+i = 0 # quantity that Q will touch
+with open(filename+'.txt', 'r') as file:
+    for line in file.readlines():
+        l = np.array(line.split())
+
+        if len(l)==0:
+            # then we have reacha new quantity
+            i += 1
+
+        elif len(l)==1:
+            Q[i].append(float(l[0]))
+
+        elif len(l)>1:
+
+            for j in range(len(l)//3): 
+                Q[i][0].append(l[j])
+                Q[i][1].append(l[j+1])
+                Q[i][2].append(l[j+2])
+
+t,r,v=Q
 """ Plot the position """
 fig, [ax1, ax2] = plt.subplots(figsize=(20,10), ncols=2)
-ax1.set_xlabel('X position'); ax1.set_ylabe('Y position')
+ax1.set_xlabel('X position'); ax1.set_ylabel('Y position')
 ax2.set_xlabel('Time [micro seconds]'); ax2.set_ylabel('Z position')
+
+ax1.plot(r[1], r[2])
+ax2.plot()
 plt.grid()
+plt.show()
 
 
 """ Plot the velocity over time """
@@ -15,6 +45,16 @@ fig, [ax1, ax2, ax3] = plt.subplots(figsize=(20,10), ncols=3)
 ax1.set_ylabel('X velocity')
 ax2.set_ylabel('Y velocity')
 ax3.set_ylabel('Z velocity')
+
+
+
+
+# y [[vx, vy, vz], [x, y, z]]
+
+def f(y,t):
+    a1 = 
+
+
 
 """
 def magic(filename):
