@@ -36,7 +36,7 @@ class PenningTrap
 
     arma::vec total_force(int i);
 
-    void evolve_RK4(double dt);
+    void evolve_RK4(double dt, double time_stop, bool makefile=false, std::string filename="RK4");
 
     void evolve_forward_Euler(double dt, double time_stop, bool makefile=false, std::string filename="forward_euler");
 };

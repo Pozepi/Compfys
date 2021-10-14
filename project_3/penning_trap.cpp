@@ -78,9 +78,184 @@ arma::vec PenningTrap::total_force(int i)
     return F;
 }
 
-void PenningTrap::evolve_RK4(double dt)
+void PenningTrap::evolve_RK4(double dt, double time_stop, bool makefile, std::string filename)
 {
-    int null = 0;
+    int size = PenningTrap::particle_count()*3;
+    int N = time_stop/dt;
+    arma::mat v(N, size);
+    arma::mat pos(N, size);
+    arma::vec time(N);
+    
+    int jump = 0;
+    // setting initial values
+    time(0) = 0;
+    for(int k=0; k<PenningTrap::particle_count(); k++)
+    {
+        Particle particle = particles[k];
+        v(0,jump) = particle.velocity()(0);
+        v(0,jump+1) = particle.velocity()(1);
+        v(0,jump+2) = particle.velocity()(2);
+        pos(0,jump) = particle.position()(0);
+        pos(0,jump+1) = particle.position()(1);
+        pos(0,jump+2) = particle.position()(2);
+        jump += 3;
+    }
+    
+
+    for(int i=0; i<N-1; i++)
+    {   
+        // solving for the position and velocity of the particles
+        //
+        // h = t[i+1] - t[i] -> dt
+        // k1 = f(y[i], t[i], *args)
+        // k2 = f(y[i] + k1 * h / 2., t[i] + h / 2., *args)
+        // k3 = f(y[i] + k2 * h / 2., t[i] + h / 2., *args)
+        // k4 = f(y[i] + k3 * h, t[i] + h, *args)
+        // y[i+1] = y[i] + (h / 6.) * (k1 + 2*k2 + 2*k3 + k4)
+        arma::mat k1v(3, PenningTrap::particle_count());
+        arma::mat k1p(3, PenningTrap::particle_count());
+
+        arma::mat k2v(3, PenningTrap::particle_count());
+        arma::mat k2p(3, PenningTrap::particle_count());
+
+        arma::mat k3v(3, PenningTrap::particle_count());
+        arma::mat k3p(3, PenningTrap::particle_count());
+
+        arma::mat k4v(3, PenningTrap::particle_count());
+        arma::mat k4p(3, PenningTrap::particle_count());
+
+        jump=0;
+        for(int j=0; j<PenningTrap::particle_count(); j++)
+        {
+            
+            double charge = particles[j].charge();
+            double mass = particles[j].mass();
+            arma::vec tmp_pos = particles[j].position();
+            arma::vec tmp_vel = particles[j].velocity();
+
+            arma::vec F = PenningTrap::total_force(j);
+
+            k1v(0,j) = F(0)/mass;
+            k1v(1,j) = F(1)/mass;
+            k1v(2,j) = F(2)/mass;
+            
+            k1p(0,j) = tmp_vel(0);
+            k1p(1,j) = tmp_vel(1);
+            k1p(2,j) = tmp_vel(2);
+            
+            tmp_pos = {pos(i,jump) + k1p(0,j)*dt/2, pos(i,jump+1) + k1p(1,j)*dt/2, pos(i,jump+2) + k1p(2,j)*dt/2};
+            tmp_vel = {v(i,jump) + k1v(0,j)*dt/2, v(i,jump+1) + k1v(1,j)*dt/2, v(i,jump+2) + k1v(2,j)*dt/2};
+            particles[j] = {charge, mass, tmp_pos, tmp_vel};
+            jump += 3;
+        }
+        std::cout <<particles[0].position()<< '\n';
+        
+        jump = 0;
+        for(int j=0; j<PenningTrap::particle_count(); j++)
+        {
+            double charge = particles[j].charge();
+            double mass = particles[j].mass();
+            arma::vec tmp_pos = particles[j].position();
+            arma::vec tmp_vel = particles[j].velocity();
+            arma::vec F = PenningTrap::total_force(j);
+
+            k2v(0,j) = F(0)/mass;
+            k2v(1,j) = F(1)/mass;
+            k2v(2,j) = F(2)/mass;
+            
+            k2p(0,j) = tmp_vel(0);
+            k2p(1,j) = tmp_vel(1);
+            k2p(2,j) = tmp_vel(2);
+            
+            tmp_pos = {pos(i,jump) + k2p(0,j)*dt/2, pos(i,jump+1) + k2p(1,j)*dt/2, pos(i,jump+2) + k2p(2,j)*dt/2};
+            tmp_vel = {v(i,jump) + k2v(0,j)*dt/2, v(i,jump+1) + k2v(1,j)*dt/2, v(i,jump+2) + k2v(2,j)*dt/2};
+            particles[j] = {charge, mass, tmp_pos, tmp_vel};  
+            jump+=3;
+        }
+        std::cout <<particles[0].position()<< '\n';
+        jump=0;
+        for(int j=0; j<PenningTrap::particle_count(); j++)
+        {
+            double charge = particles[j].charge();
+            double mass = particles[j].mass();
+            arma::vec tmp_pos = particles[j].position();
+            arma::vec tmp_vel = particles[j].velocity();
+            arma::vec F = PenningTrap::total_force(j);
+
+            k3v(0,j) = F(0)/mass;
+            k3v(1,j) = F(1)/mass;
+            k3v(2,j) = F(2)/mass;
+            
+            k3p(0,j) = tmp_vel(0);
+            k3p(1,j) = tmp_vel(1);
+            k3p(2,j) = tmp_vel(2);
+            
+            tmp_pos = {pos(i,jump) + k3p(0,j)*dt/2, pos(i,jump+1) + k3p(1,j)*dt/2, pos(i,jump+2) + k3p(2,j)*dt/2};
+            tmp_vel = {v(i,jump) + k3v(0,j)*dt/2, v(i,jump+1) + k3v(1,j)*dt/2, v(i,jump+2) + k3v(2,j)*dt/2};
+            particles[j] = {charge, mass, tmp_pos, tmp_vel};
+            jump+=3;  
+        }
+        std::cout <<particles[0].position()<< '\n';
+        for(int j=0; j<PenningTrap::particle_count(); j++)
+        {
+            double charge = particles[j].charge();
+            double mass = particles[j].mass();
+            arma::vec tmp_pos = particles[j].position();
+            arma::vec tmp_vel = particles[j].velocity();
+            arma::vec F = PenningTrap::total_force(j);
+
+            k4v(0,j) = F(0)/mass;
+            k4v(1,j) = F(1)/mass;
+            k4v(2,j) = F(2)/mass;
+            
+            k4p(0,j) = tmp_vel(0);
+            k4p(1,j) = tmp_vel(1);
+            k4p(2,j) = tmp_vel(2);
+        }
+        std::cout <<particles[0].position()<< '\n';
+        // k4 = f(y[i] + k3 * h, t[i] + h, *args)
+        // same as above but with k3 and with dt not dt/2
+
+        // FINALLY update velocity and position using RK4
+        jump = 0;
+        for(int j=0; j<PenningTrap::particle_count(); j++)
+        {
+            v(i+1,jump) = v(i,jump) + (dt / 6) * (k1v(0,j) + 2*k2v(0,j) + 2*k3v(0,j) + k4v(0,j));
+            v(i+1,jump+1) = v(i,jump+1) + (dt / 6) * (k1v(1,j) + 2*k2v(1,j) + 2*k3v(1,j) + k4v(1,j));
+            v(i+1,jump+2) = v(i,jump+2) + (dt / 6) * (k1v(2,j) + 2*k2v(2,j) + 2*k3v(2,j) + k4v(2,j));
+            
+            pos(i+1,jump) = pos(i,jump) + (dt / 6) * (k1p(0,j) + 2*k2p(0,j) + 2*k3p(0,j) + k4p(0,j));
+            pos(i+1,jump+1) = pos(i,jump+1) + (dt / 6) * (k1p(1,j) + 2*k2p(1,j) + 2*k3p(1,j) + k4p(1,j));
+            pos(i+1,jump+2) = pos(i,jump+2) + (dt / 6) * (k1p(2,j) + 2*k2p(2,j) + 2*k3p(2,j) + k4p(2,j));
+            
+            jump += 3;
+        }
+        jump = 0;
+        // updating particles position and velocity for next iteration
+        for(int k=0; k<PenningTrap::particle_count(); k++)
+        {
+            Particle particle = particles[0];
+            double mass = particle.mass();
+            double charge = particle.charge();
+
+            arma::vec update_vel = {v(i+1,jump), v(i+1,jump+1), v(i+1,jump+2)};
+            arma::vec update_pos = {pos(i+1,jump), pos(i+1,jump+1), pos(i+1,jump+2)};
+            Particle update_particle(charge, mass, update_pos, update_vel);
+            particles.erase(particles.begin());
+            PenningTrap::add_particle(update_particle);
+
+            jump += 3;
+        }
+        time(i+1) = time(i)+dt;
+    }
+    if(makefile)
+    {
+        std::fstream file;
+        file.open(filename+".txt", std::ios::out);
+        file << time << '\n';
+        file << v << '\n';
+        file << pos << '\n';
+    }
 }
 
 void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool makefile, std::string filename)
