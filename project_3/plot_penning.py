@@ -20,7 +20,6 @@ with open(filename+'.txt', 'r') as file:
             Q[i].append(float(l[0]))
 
         elif len(l)>1:
-
             for j in range(len(l)//3): 
                 Q[i][0].append(l[j])
                 Q[i][1].append(l[j+1])
@@ -28,13 +27,13 @@ with open(filename+'.txt', 'r') as file:
 
 t,r,v=Q
 """ Plot the position """
-fig, [ax1, ax2] = plt.subplots(figsize=(20,10), ncols=2)
+fig, [ax1, ax2] = plt.subplots(figsize=(15,10), ncols=2)
 ax1.set_xlabel('X position'); ax1.set_ylabel('Y position')
 ax2.set_xlabel('Time [micro seconds]'); ax2.set_ylabel('Z position')
+[axi.grid() for axi in [ax1, ax2]]
 
-ax1.plot(r[1], r[2])
-ax2.plot()
-plt.grid()
+ax1.plot(r[0], r[1])
+ax2.plot(t, r[2])
 plt.show()
 
 
@@ -45,14 +44,6 @@ fig, [ax1, ax2, ax3] = plt.subplots(figsize=(20,10), ncols=3)
 ax1.set_ylabel('X velocity')
 ax2.set_ylabel('Y velocity')
 ax3.set_ylabel('Z velocity')
-
-
-
-
-# y [[vx, vy, vz], [x, y, z]]
-
-def f(y,t):
-    a1 = 
 
 
 
