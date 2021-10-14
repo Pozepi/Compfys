@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-filename = 'RK4'#'forward_euler'
+filename = 'forward_euler'
 t = []
 rx = []; ry = []; rz = []
 vx = []; vy = []; vz = []
