@@ -9,12 +9,15 @@ int main()
 
     PenningTrap penning_test(B0, V0, d);
 
-    Particle one(1, 2, {1,2,3}, {4,5,6});
+    Particle one(1, 1, {1,2,3}, {4,5,6});
+    Particle two(1,1, {0,2,1}, {2,1,7});
+    Particle three(1,1,{5,8,9}, {5,1,2});
 
     penning_test.add_particle(one);
+    penning_test.add_particle(two);
+    penning_test.add_particle(three);
 
-    std::cout << "Number of particles " << penning_test.particle_count() << std::endl;
-    std::cout << "Force on particle: \n" << penning_test.total_force_external(0);
+    penning_test.evolve_forward_Euler(0.1, 1);
 
     return 0;
 }

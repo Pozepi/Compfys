@@ -38,7 +38,7 @@ class PenningTrap
 
     void evolve_RK4(double dt);
 
-    void evolve_forward_Euler(double dt);
+    void evolve_forward_Euler(double dt, double time_stop);
 };
 
 #endif
