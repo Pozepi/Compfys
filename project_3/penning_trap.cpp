@@ -101,7 +101,6 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool makefile, std::st
         jump += 3;
     }
     
-
     for(int i=0; i<N-1; i++)
     {   
         // solving for the position and velocity of the particles
@@ -148,7 +147,6 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool makefile, std::st
             particles[j] = {charge, mass, tmp_pos, tmp_vel};
             jump += 3;
         }
-        std::cout <<particles[0].position()<< '\n';
         
         jump = 0;
         for(int j=0; j<PenningTrap::particle_count(); j++)
@@ -172,7 +170,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool makefile, std::st
             particles[j] = {charge, mass, tmp_pos, tmp_vel};  
             jump+=3;
         }
-        std::cout <<particles[0].position()<< '\n';
+
         jump=0;
         for(int j=0; j<PenningTrap::particle_count(); j++)
         {
@@ -195,7 +193,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool makefile, std::st
             particles[j] = {charge, mass, tmp_pos, tmp_vel};
             jump+=3;  
         }
-        std::cout <<particles[0].position()<< '\n';
+
         for(int j=0; j<PenningTrap::particle_count(); j++)
         {
             double charge = particles[j].charge();
@@ -212,7 +210,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool makefile, std::st
             k4p(1,j) = tmp_vel(1);
             k4p(2,j) = tmp_vel(2);
         }
-        std::cout <<particles[0].position()<< '\n';
+        
         // k4 = f(y[i] + k3 * h, t[i] + h, *args)
         // same as above but with k3 and with dt not dt/2
 
