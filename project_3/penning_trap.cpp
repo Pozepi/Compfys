@@ -101,16 +101,24 @@ arma::vec PenningTrap::total_force_particles(int i)
     return F;
 }
 // Total force on particle i from both external fields and other particles
-arma::vec PenningTrap::total_force(int i)
+arma::vec PenningTrap::total_force(int i, bool interaction)
 {
-    double Fx = PenningTrap::total_force_external(i)(0)+PenningTrap::total_force_particles(i)(0);
-    double Fy = PenningTrap::total_force_external(i)(1)+PenningTrap::total_force_particles(i)(1);
-    double Fz = PenningTrap::total_force_external(i)(2)+PenningTrap::total_force_particles(i)(2);
-    arma::vec F = {Fx,Fy,Fz};
+    arma::vec F;
+    if(interaction)
+    {
+        double Fx = PenningTrap::total_force_external(i)(0)+PenningTrap::total_force_particles(i)(0);
+        double Fy = PenningTrap::total_force_external(i)(1)+PenningTrap::total_force_particles(i)(1);
+        double Fz = PenningTrap::total_force_external(i)(2)+PenningTrap::total_force_particles(i)(2);
+        F = {Fx,Fy,Fz};
+    }
+    if(!interaction)
+    {  
+        F = PenningTrap::total_force_external(i);
+    }
     return F;
 }
 
-void PenningTrap::evolve_RK4(double dt, double time_stop, bool makefile, std::string filename)
+void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, bool makefile, std::string filename)
 {
     int size = PenningTrap::particle_count()*3;
     int N = time_stop/dt;
@@ -163,8 +171,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool makefile, std::st
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
             arma::vec tmp_vel = particles[j].velocity();
-
-            arma::vec F = PenningTrap::total_force(j);
+            arma::vec F = PenningTrap::total_force(j, interaction);
 
             k1v(0,j) = F(0)/mass;
             k1v(1,j) = F(1)/mass;
@@ -187,7 +194,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool makefile, std::st
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
             arma::vec tmp_vel = particles[j].velocity();
-            arma::vec F = PenningTrap::total_force(j);
+            arma::vec F = PenningTrap::total_force(j, interaction);
 
             k2v(0,j) = F(0)/mass;
             k2v(1,j) = F(1)/mass;
@@ -210,7 +217,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool makefile, std::st
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
             arma::vec tmp_vel = particles[j].velocity();
-            arma::vec F = PenningTrap::total_force(j);
+            arma::vec F = PenningTrap::total_force(j, interaction);
 
             k3v(0,j) = F(0)/mass;
             k3v(1,j) = F(1)/mass;
@@ -232,7 +239,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool makefile, std::st
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
             arma::vec tmp_vel = particles[j].velocity();
-            arma::vec F = PenningTrap::total_force(j);
+            arma::vec F = PenningTrap::total_force(j, interaction);
 
             k4v(0,j) = F(0)/mass;
             k4v(1,j) = F(1)/mass;
@@ -288,7 +295,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool makefile, std::st
     }
 }
 
-void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool makefile, std::string filename)
+void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool interaction, bool makefile, std::string filename)
 {
     int size = PenningTrap::particle_count()*3;
     int N = time_stop/dt;
@@ -319,7 +326,7 @@ void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool makefil
         {
             Particle particle_j = particles[j];
 
-            arma::vec F = PenningTrap::total_force(j);
+            arma::vec F = PenningTrap::total_force(j, interaction);
             arma::vec a = {F(0)/particle_j.mass(), F(1)/particle_j.mass(), F(2)/particle_j.mass()};
             v(i+1,jump) = v(i,jump) + a(0)*dt;
             v(i+1,jump+1) = v(i,jump+1) + a(1)*dt;

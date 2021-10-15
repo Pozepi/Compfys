@@ -34,11 +34,11 @@ class PenningTrap
 
     arma::vec total_force_particles(int i); 
 
-    arma::vec total_force(int i);
+    arma::vec total_force(int i, bool interaction=true);
 
-    void evolve_RK4(double dt, double time_stop, bool makefile=false, std::string filename="RK4");
+    void evolve_RK4(double dt, double time_stop, bool interaction=true, bool makefile=false, std::string filename="RK4");
 
-    void evolve_forward_Euler(double dt, double time_stop, bool makefile=false, std::string filename="forward_euler");
+    void evolve_forward_Euler(double dt, double time_stop, bool interaction=true, bool makefile=false, std::string filename="forward_euler");
 };
 
 #endif
