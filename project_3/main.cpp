@@ -19,7 +19,7 @@ int main()
     penning_test_one1.add_particle(one);
 
     PenningTrap penning_test_one2(B0, V0, d);
-    penning_test_one2.add_particle(one)
+    penning_test_one2.add_particle(one);
 
     PenningTrap penning_test(B0, V0, d);
     penning_test.add_particle(one);
@@ -37,13 +37,22 @@ int main()
     penning_test4.add_particle(one);
     penning_test4.add_particle(two);
 
+    PenningTrap penning_test_z1(B0, V0, d);
+    penning_test_z1.add_particle(one_z);
+    penning_test_z1.add_particle(two_z);
+
+    PenningTrap penning_test_z2(B0, V0, d);
+    penning_test_z2.add_particle(one_z);
+    penning_test_z2.add_particle(two_z);
+
     penning_test_one1.evolve_forward_Euler(1e-3,100,false,true,"euler_one_particle");
-    penning_test_one2.evolve_RK4(1e-3,100,false,true )
+    penning_test_one2.evolve_RK4(1e-3,100,false,true, "RK4_one_particle");
     penning_test.evolve_forward_Euler(1e-3, 100, true, true, "euler_two_particles_interaction");
     penning_test2.evolve_RK4(1e-3, 100, true, true, "RK4_two_particles_interaction");
     penning_test3.evolve_forward_Euler(1e-3, 100, false, true, "euler_two_particles_no_interaction");
-    penning_test4.evolve_RK4(1e-3, 100, false, true, "RK4_two_particles_interaction");
-
+    penning_test4.evolve_RK4(1e-3, 100, false, true, "RK4_two_particles_no_interaction");
+    penning_test_z1.evolve_RK4(1e-3, 100, true, true, "RK4_two_particles_interaction_z_start");
+    penning_test_z2.evolve_RK4(1e-3,100,false,true,"RK4_two_particles_no_interaction_z_start");
 
     return 0;
 }
