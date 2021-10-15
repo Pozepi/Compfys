@@ -4,7 +4,7 @@ import numpy as np
 
 """ Plot one particle"""
 
-filename = 'RK4'#'forward_euler'
+filename = 'RK4_one_particle'#'forward_euler'
 
 def find_values(filename):
     t = []
@@ -34,7 +34,7 @@ def find_values(filename):
     return t, rx, ry, rz, vx, vy, vz
 
     
-t, rx, ry, rz, vx, vy, vz = find_values(filename)
+#t, rx, ry, rz, vx, vy, vz = find_values(filename)
 
 """ Plot the position """
 def plot_xy(filename):
@@ -119,11 +119,12 @@ def plot_multiple_particles(filename):
 
     for i in range(particle_N):
         rx_i = rx[i::particle_N]
+        print(rx_i)
         ry_i = ry[i::particle_N]
         rz_i = rz[i::particle_N]
         #ax.plot(rx_i[0], ry_i[-1], 'x')
-        ax.plot3D(rx_i, ry_i, rz_i)
-
+        ax.plot3D(rx_i, ry_i, rz_i, label='Particle %.i'%i)
+    ax.legend()
     plt.show()
 
-plot_multiple_particles()
+plot_multiple_particles('RK4_two_particles_no_interaction')
