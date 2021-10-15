@@ -1,8 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
+%matplotlib inline
+
+
+""" Plot one particle"""
 
 filename = 'RK4'#'forward_euler'
-
 
 def find_values(filename):
     t = []
@@ -20,126 +23,108 @@ def find_values(filename):
                 t.append(float(l[0]))
             elif len(l)>1:
                 if len(l) < 4:
-                    for k in range(0,len(l),3)
                     if i%2 != 0:
-                        vx.append(float(l[k+0]))
+                        vx.append(float(l[0]))
+                        vy.append(float(l[1]))
+                        vz.append(float(l[2]))
+                    if i%2 == 0:
+                        rx.append(float(l[0]))
+                        ry.append(float(l[1]))
+                        rz.append(float(l[2]))
+
+    return t, rx, ry, rz, vx, vy, vz
+
+    
+t, rx, ry, rz, vx, vy, vz = find_values(filename)
+
+""" Plot the position """
+def plot_xy(filename):
+    fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
+    ax1.set_xlabel('X position'); ax1.set_ylabel('Y position')
+    ax2.set_xlabel('Time [micro seconds]'); ax2.set_ylabel('Z position')
+    [axi.grid() for axi in [ax1, ax2]]
+
+    ax1.plot(rx[0], ry[0], 'rx', label='Start pos')
+    ax1.plot(rx[-1], ry[-1], 'kx', label='End pos')
+    ax1.plot(rx, ry)
+    ax1.legend()
+    ax2.plot(t, rz)
+    plt.show()
+
+def plot_compare(filename):
+    fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
+
+    [[axi.set_xlabel('X position'), axi.set_ylabel('Y position'), axi.grid()] for axi in [ax1, ax2]]
+    ax1.plot(rx[0], ry[0], 'rx', label='Start pos')
+    ax1.plot(rx[-1], ry[-1], 'kx', label='End pos')
+    ax1.plot(rx, ry)
+    ax1.legend()
+    ax1.set_title('Runge Kutta 4')
+
+    t, rx, ry, rz, vx, vy, vz = find_values('forward_euler')
+    ax2.plot(rx[0], ry[0], 'rx', label='Start pos')
+    ax2.plot(rx[-1], ry[-1], 'kx', label='End pos')
+    ax2.plot(rx, ry)
+    ax2.legend()
+    ax2.set_title('Forward Euler')
+    plt.show()
+
+def plot_vel():
+    """ Plot the velocity over time """
+    fig, [ax1, ax2, ax3] = plt.subplots(figsize=(20,10), ncols=3)
+
+    [axi.set_xlabel('Time [micro seconds]') for axi in [ax1, ax2, ax3]]
+    ax1.set_ylabel('X velocity')
+    ax2.set_ylabel('Y velocity')
+    ax3.set_ylabel('Z velocity')
+
+
+def plot_multiple_particles(filename):
+    t = []
+    rx = []; ry = []; rz = []
+    vx = []; vy = []; vz = []
+    i = 0
+    with open(filename+'.txt', 'r') as file:
+        for line in file.readlines():
+            # get data
+            l = np.array(line.split())
+
+            # Stage 1: The time array
+            if len(l)==1:
+                t.append(float(l[0]))
+
+            # Stage 2: approaching the velocity
+            elif len(l)==0:
+                # then we have reacha new quantity
+                i += 1
+
+            # Stage 3: append velocity and position
+            elif len(l)>1:
+                particle_N = len(l)//3
+                for k in range(0,len(l),3):
+                    if i%2 != 0:
+                        vx.append(float(l[k+0])) # vx1p1, vx1p2, vx1p3, ..., vx2p1, vx2p2, vx3p3, .... 
                         vy.append(float(l[k+1]))
                         vz.append(float(l[k+2]))
                     if i%2 == 0:
                         rx.append(float(l[k+0]))
                         ry.append(float(l[k+1]))
                         rz.append(float(l[k+2]))
-
-    return t, rx, ry, rz, vx, vy, vz
-
-
-""" Plot the position """
-fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
-ax1.set_xlabel('X position'); ax1.set_ylabel('Y position')
-ax2.set_xlabel('Time [micro seconds]'); ax2.set_ylabel('Z position')
-[axi.grid() for axi in [ax1, ax2]]
-
-ax1.plot(rx[0], ry[0], 'rx', label='Start pos')
-ax1.plot(rx[-1], ry[-1], 'kx', label='End pos')
-ax1.plot(rx, ry)
-ax1.legend()
-ax2.plot(t, rz)
-plt.show()
-
-fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
-
-[[axi.set_xlabel('X position'), axi.set_ylabel('Y position'), axi.grid()] for axi in [ax1, ax2]]
-ax1.plot(rx[0], ry[0], 'rx', label='Start pos')
-ax1.plot(rx[-1], ry[-1], 'kx', label='End pos')
-ax1.plot(rx, ry)
-ax1.legend()
-ax1.set_title('Runge Kutta 4')
-
-t, rx, ry, rz, vx, vy, vz = find_values('forward_euler')
-ax2.plot(rx[0], ry[0], 'rx', label='Start pos')
-ax2.plot(rx[-1], ry[-1], 'kx', label='End pos')
-ax2.plot(rx, ry)
-ax2.legend()
-ax2.set_title('Forward Euler')
-plt.show()
-
-
-
-
-""" Plot the velocity over time """
-fig, [ax1, ax2, ax3] = plt.subplots(figsize=(20,10), ncols=3)
-
-[axi.set_xlabel('Time [micro seconds]') for axi in [ax1, ax2, ax3]]
-ax1.set_ylabel('X velocity')
-ax2.set_ylabel('Y velocity')
-ax3.set_ylabel('Z velocity')
-
-
-
-"""
-def magic(filename):
-    lambda_ = [[]]
-    v       = [[]]
-    i = 0
-    flip = 1
-    with open(filename+'.txt', 'r') as file:
-        for line in file.readlines():
-            l = line.split()
-
-            
-            if len(l) == 0:
-                flip = 1
-                lambda_.append([])
-                v.append([])
-                i += 1
-
-            elif l != '' and flip == 1:
-                lambda_[i].append(float(l[0]))
-                flip = 0
-
-            elif l != '' and flip == 0:
-                v[i].append(float(l[0]))
     
-    v = v[:-1]
-    lambda_ = lambda_[:-1]
+    ax = plt.axes(projection='3d')
+    ax.set_xlabel('X position')
+    ax.set_ylabel('Y position')
+    ax.set_zlabel('Z position')
 
-    lambda_, v = zip(*sorted(zip(lambda_, v))) # sort
-    #print(a)
-    N = len(v)
-    h = 1/(N+1)
-    a_py = -1/(h**2)
-    d_py =  2/(h**2)
+    #ax.scatter3D(xdata, ydata, zdata, c=zdata, cmap='Greens');
 
-    lambda_py = []; [lambda_py.append(d_py + 2*a_py*np.cos(i*np.pi/(N+1))) for i in range(1,N)]
-    v_py = []; 
-    for i in range(1-1,N):
-        v_py.append([])
-        for j in range(1,N+1):
-            v_py[i].append(np.sin((i+1)*j*np.pi/(N + 1)))
+    for i in range(particle_N):
+        rx_i = rx[i::particle_N]
+        ry_i = ry[i::particle_N]
+        rz_i = rz[i::particle_N]
+        #ax.plot(rx_i[0], ry_i[-1], 'x')
+        ax.plot3D(rx_i, ry_i, rz_i)
 
-    lambda_py, v_py = zip(*sorted(zip(lambda_py, v_py)))
+    plt.show()
 
-    x = []
-    with open('linspace_'+filename+'.txt', 'r') as file:
-        for line in file.readlines():
-            l = line.split()
-            #print(l)
-            try: 
-                x.append(float(l[0]))
-            except: 
-                pass
-    
-    # Ploott
-    for i in range(3):
-        plt.plot(x, np.subtract(v[i], v[i][0]), label='v['+str(i)+']')
-        plt.plot(x, np.subtract(v_py[i], v_py[i][0]), label='Analytical v['+str(i)+']')
-    
-    plt.legend()
-    plt.xlabel('Length x')
-    plt.ylabel('Displacement')
-    plt.grid()
-    plt.savefig(filename+'.png')
-    plt.clf()
-    
-    return 0
-"""
+plot_multiple_particles()
