@@ -53,7 +53,7 @@ ax1.plot(rx[0], ry[0], 'rx', label='Start pos')
 ax1.plot(rx[-1], ry[-1], 'kx', label='End pos')
 ax1.plot(rx, ry)
 ax1.legend()
-ax1.set_title('Runke Kutta 4')
+ax1.set_title('Runge Kutta 4')
 
 t, rx, ry, rz, vx, vy, vz = find_values('forward_euler')
 ax2.plot(rx[0], ry[0], 'rx', label='Start pos')
