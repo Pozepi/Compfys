@@ -28,18 +28,39 @@ double PenningTrap::particle_count()
     return particles.size();
 }
 
-arma::vec PenningTrap::external_E_field(arma::vec r)
+bool PenningTrap::particle_outside_trap_check(arma::vec r)
 {
-    double x_der = 2*r[0]*potential_/(2*dimension_*dimension_);
-    double y_der = 2*r[1]*potential_/(2*dimension_*dimension_);
-    double z_der = -4*r[2]*potential_/(2*dimension_*dimension_);
+    bool outside_trap = false;
+    if(std::abs(r(0)) > dimension_ || std::abs(r(1)) > dimension_ || std::abs(r(2)) > dimension_)
+    {
+        outside_trap = true;
+    }
+
+    return outside_trap;
+}
+
+arma::vec PenningTrap::external_E_field(arma::vec r, double time, double f, double wv)
+{
+    double pot = potential_+potential_*f*std::cos(wv*time);
+
+    double x_der = 2*r[0]*pot/(2*dimension_*dimension_);
+    double y_der = 2*r[1]*pot/(2*dimension_*dimension_);
+    double z_der = -4*r[2]*pot/(2*dimension_*dimension_);
+    
     arma::vec E = {x_der,y_der,z_der};
+
+    if(PenningTrap::particle_outside_trap_check(r) == true)
+        E = {0,0,0};
+
     return E;
 }
 
 arma::vec PenningTrap::external_B_field(arma::vec r)
 {
     arma::vec B = {0,0,magnetic_field_};
+    if(PenningTrap::particle_outside_trap_check(r) == true)
+        B = {0,0,0};
+
     return B;
 }
 // Force on particle i from particle j
@@ -69,12 +90,12 @@ arma::vec PenningTrap::force_particle(int i, int j)
     return F;
 }
 // Total force on particle i from external fields
-arma::vec PenningTrap::total_force_external(int i)
+arma::vec PenningTrap::total_force_external(int i, double time, double f, double wv)
 {
     Particle particle_i = particles[i];
     arma::vec v = particle_i.velocity();
     arma::vec B = PenningTrap::external_B_field(particle_i.position());
-    arma::vec E = PenningTrap::external_E_field(particle_i.position());
+    arma::vec E = PenningTrap::external_E_field(particle_i.position(), time, f, wv);
 
     double Fx = particle_i.charge()*E(0)+particle_i.charge()*(v(1)*B(2)-v(2)*B(1));
     double Fy = particle_i.charge()*E(1)-particle_i.charge()*(v(0)*B(2)-v(2)*B(0));
@@ -101,34 +122,34 @@ arma::vec PenningTrap::total_force_particles(int i)
     return F;
 }
 // Total force on particle i from both external fields and other particles
-arma::vec PenningTrap::total_force(int i, bool interaction)
+arma::vec PenningTrap::total_force(int i, bool interaction, double time, double f, double wv)
 {
     arma::vec F;
     if(interaction)
     {
-        double Fx = PenningTrap::total_force_external(i)(0)+PenningTrap::total_force_particles(i)(0);
-        double Fy = PenningTrap::total_force_external(i)(1)+PenningTrap::total_force_particles(i)(1);
-        double Fz = PenningTrap::total_force_external(i)(2)+PenningTrap::total_force_particles(i)(2);
+        double Fx = PenningTrap::total_force_external(i, time, f, wv)(0)+PenningTrap::total_force_particles(i)(0);
+        double Fy = PenningTrap::total_force_external(i, time, f, wv)(1)+PenningTrap::total_force_particles(i)(1);
+        double Fz = PenningTrap::total_force_external(i, time, f, wv)(2)+PenningTrap::total_force_particles(i)(2);
         F = {Fx,Fy,Fz};
     }
     if(!interaction)
     {  
-        F = PenningTrap::total_force_external(i);
+        F = PenningTrap::total_force_external(i, time, f, wv);
     }
     return F;
 }
 
-void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, bool makefile, std::string filename)
+void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, double time, double f, double wv, bool makefile, std::string filename)
 {
     int size = PenningTrap::particle_count()*3;
     int N = time_stop/dt;
     arma::mat v(N, size);
     arma::mat pos(N, size);
-    arma::vec time(N);
+    arma::vec times(N);
     
     int jump = 0;
     // setting initial values
-    time(0) = 0;
+    times(0) = 0;
     for(int k=0; k<PenningTrap::particle_count(); k++)
     {
         Particle particle = particles[k];
@@ -171,7 +192,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, bool
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
             arma::vec tmp_vel = particles[j].velocity();
-            arma::vec F = PenningTrap::total_force(j, interaction);
+            arma::vec F = PenningTrap::total_force(j, interaction, time, f, wv);
 
             k1v(0,j) = F(0)/mass;
             k1v(1,j) = F(1)/mass;
@@ -194,7 +215,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, bool
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
             arma::vec tmp_vel = particles[j].velocity();
-            arma::vec F = PenningTrap::total_force(j, interaction);
+            arma::vec F = PenningTrap::total_force(j, interaction, time, f, wv);
 
             k2v(0,j) = F(0)/mass;
             k2v(1,j) = F(1)/mass;
@@ -217,7 +238,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, bool
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
             arma::vec tmp_vel = particles[j].velocity();
-            arma::vec F = PenningTrap::total_force(j, interaction);
+            arma::vec F = PenningTrap::total_force(j, interaction, time, f, wv);
 
             k3v(0,j) = F(0)/mass;
             k3v(1,j) = F(1)/mass;
@@ -239,7 +260,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, bool
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
             arma::vec tmp_vel = particles[j].velocity();
-            arma::vec F = PenningTrap::total_force(j, interaction);
+            arma::vec F = PenningTrap::total_force(j, interaction, time, f, wv);
 
             k4v(0,j) = F(0)/mass;
             k4v(1,j) = F(1)/mass;
@@ -283,29 +304,29 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, bool
 
             jump += 3;
         }
-        time(i+1) = time(i)+dt;
+        times(i+1) = times(i)+dt;
     }
     if(makefile)
     {
         std::fstream file;
         file.open(filename+".txt", std::ios::out);
-        file << time << '\n';
+        file << times << '\n';
         file << v << '\n';
         file << pos << '\n';
     }
 }
 
-void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool interaction, bool makefile, std::string filename)
+void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool interaction, double time, double f, double wv, bool makefile, std::string filename)
 {
     int size = PenningTrap::particle_count()*3;
     int N = time_stop/dt;
     arma::mat v(N, size);
     arma::mat pos(N, size);
-    arma::vec time(N);
+    arma::vec times(N);
     
     int jump = 0;
     // setting initial values
-    time(0) = 0;
+    times(0) = 0;
     for(int k=0; k<PenningTrap::particle_count(); k++)
     {
         Particle particle = particles[k];
@@ -326,7 +347,7 @@ void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool interac
         {
             Particle particle_j = particles[j];
 
-            arma::vec F = PenningTrap::total_force(j, interaction);
+            arma::vec F = PenningTrap::total_force(j, interaction, time, f, wv);
             arma::vec a = {F(0)/particle_j.mass(), F(1)/particle_j.mass(), F(2)/particle_j.mass()};
             v(i+1,jump) = v(i,jump) + a(0)*dt;
             v(i+1,jump+1) = v(i,jump+1) + a(1)*dt;
@@ -353,14 +374,29 @@ void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool interac
 
             jump += 3;
         }
-        time(i+1) = time(i)+dt;
+        times(i+1) = times(i)+dt;
     }
     if(makefile)
     {
         std::fstream file;
         file.open(filename+".txt", std::ios::out);
-        file << time << '\n';
+        file << times << '\n';
         file << v << '\n';
         file << pos << '\n';
     }
+}
+
+double PenningTrap::particles_inside_trap_count()
+{
+    double N = PenningTrap::particle_count();
+    int count = 0;
+    for(int i=0; i<N; i++)
+    {
+        Particle particle_i = particles[i];
+        arma::vec pos = particle_i.position();
+        if(PenningTrap::particle_outside_trap_check(pos) == false)
+            count += 1;
+    }
+    
+    return count;
 }

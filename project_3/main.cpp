@@ -2,13 +2,16 @@
 
 int main()
 {
+    double volt = 9.64852558e+7;
+    double cm = 1e+4;
     double B0 = 9.65*10;
     double V0 = 9.65e+08;
-    double d = 1e+04;
+    double d = 1e+4;
     double ke = 1.38935333e+05;
     double charge = 1;
     double mass = 38.97;
 
+    /*
     Particle one(charge, mass, {0,1,0}, {-1,0,0});
     Particle two(charge, mass, {0,-1,0}, {0,1,0});
 
@@ -53,6 +56,17 @@ int main()
     penning_test4.evolve_RK4(1e-3, 100, false, true, "RK4_two_particles_no_interaction");
     penning_test_z1.evolve_RK4(1e-3, 100, true, true, "RK4_two_particles_interaction_z_start");
     penning_test_z2.evolve_RK4(1e-3,100,false,true,"RK4_two_particles_no_interaction_z_start");
+    */
+    PenningTrap penning_test_against_analytical(B0, V0, d);
+    Particle against_analytical(charge, mass, {1,0,1}, {0,1,0});
+    penning_test_against_analytical.evolve_RK4(1e-3, 100, false, 0,0,0,true,"RK4_against_analytical");
+
+    double d_10 = 0.05*cm;
+    double V0_10 = 0.0025*volt;
+    // double V0_time = V0*(1+f*std::cos(w_v*t));
+
+    PenningTrap penning_test_10(B0, V0_10, d_10);
+
 
     return 0;
 }
