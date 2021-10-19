@@ -57,7 +57,9 @@ int main()
     penning_test_z1.evolve_RK4(1e-3, 100, true, true, "RK4_two_particles_interaction_z_start");
     penning_test_z2.evolve_RK4(1e-3,100,false,true,"RK4_two_particles_no_interaction_z_start");
     */
+    /*
     PenningTrap penning_test_against_analytical(B0, V0, d);
+
     Particle against_analytical(charge, mass, {1,0,1}, {0,1,0});
     penning_test_against_analytical.add_particle(against_analytical);
     penning_test_against_analytical.evolve_RK4(1e-3, 100, false, 0, 0, true, "RK4_against_analytical");
@@ -67,6 +69,10 @@ int main()
     // double V0_time = V0*(1+f*std::cos(w_v*t));
 
     PenningTrap penning_test_10(B0, V0_10, d_10);
+    */
+    PenningTrap random_test(B0, V0, d);
+    random_test.add_n_random_particles(10, charge, mass);
+    random_test.evolve_RK4(1e-1, 100, true, 0,0,true, "RK4_random_test");
 
 
     return 0;

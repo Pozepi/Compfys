@@ -14,11 +14,13 @@ void PenningTrap::add_particle(Particle particle_in)
     particles.push_back(particle_in);
 }
 
-void PenningTrap::add_n_particles(int n, double charge, double mass, arma::vec position, arma::vec velocity)
+void PenningTrap::add_n_random_particles(int n, double charge, double mass)
 {
     for(int i=0; i<n; i++)
     {
-        Particle new_particle(charge, mass, position, velocity);
+        arma::vec r = arma::vec(3).randn()*0.1*dimension_;
+        arma::vec v = arma::vec(3).randn()*0.1*dimension_;
+        Particle new_particle(charge, mass, r, v);
         add_particle(new_particle);
     }
 }
@@ -400,3 +402,4 @@ double PenningTrap::particles_inside_trap_count()
     
     return count;
 }
+

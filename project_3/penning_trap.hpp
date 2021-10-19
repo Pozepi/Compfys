@@ -16,7 +16,7 @@ class PenningTrap
     PenningTrap() {}
     PenningTrap(double magnetic_field, double potential, double dimension);
     void add_particle(Particle particle_in);
-    void add_n_particles(int n, double charge, double mass, arma::vec position, arma::vec velocity);
+    void add_n_random_particles(int n, double charge, double mass);
     double particle_count();
     bool particle_outside_trap_check(arma::vec r);
     arma::vec external_E_field(arma::vec r, double time=0, double f=0, double wv=0);
