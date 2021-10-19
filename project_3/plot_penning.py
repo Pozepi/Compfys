@@ -233,4 +233,4 @@ def plot_compare_analytical(filename1):
 
 #plot_compare_analytical('RK4_against_analytical')
 
-plot_multiple_particles('RK4_random_test')
+plot_multiple_particles('RK4_random_test_seed_1')
