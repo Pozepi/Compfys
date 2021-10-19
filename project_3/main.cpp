@@ -71,9 +71,9 @@ int main()
     //PenningTrap penning_test_10(B0, V0_10, d_10);
     
     PenningTrap random_test(B0, V0_10, d_10);
-    random_test.add_n_random_particles(10, charge, mass);
-    random_test.evolve_RK4(1e-3, 100, true, 0,0,true, "RK4_random_test");
-    std::cout << "Particles left in the penningtrap " << random_test.particles_inside_trap_count() << "\n";
+    random_test.add_n_random_particles(5, charge, mass);
+    random_test.evolve_RK4(1e-3, 100, false, 0,0,true, "RK4_random_test");
+    std::cout << "Particles left in the penningtrap: " << random_test.particles_inside_trap_count() << "\n";
     
 
     return 0;
