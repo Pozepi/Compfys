@@ -18,7 +18,7 @@ void PenningTrap::add_n_random_particles(int n, double charge, double mass)
 {
     for(int i=0; i<n; i++)
     {
-        arma::arma_rng::set_seed(1);
+        arma::arma_rng::set_seed(i);
         arma::vec r = arma::vec(3).randn()*0.1*dimension_;
         arma::vec v = arma::vec(3).randn()*0.1*dimension_;
         Particle new_particle(charge, mass, r, v);
