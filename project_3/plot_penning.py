@@ -168,6 +168,7 @@ def plot_multiple_particles(filename):
     #FFwriter = animation.FFMpegWriter()
     #ani.save('matplot003.mp4', writer=FFwriter)
     plt.show()
+    
 
 q = 1
 B0 = 9.65e1
@@ -219,6 +220,6 @@ def plot_compare_analytical(filename1):
 #plot_compare('RK4_one_particle', 'euler_one_particle')
 #plot_compare('RK4_two_particles_interaction', 'euler_two_particles_interaction')
 
-plot_compare_analytical('RK4_against_analytical')
+#plot_compare_analytical('RK4_against_analytical')
 
-#plot_multiple_particles('RK4_two_particles_interaction_z_start')
+plot_multiple_particles('RK4_random_test')
