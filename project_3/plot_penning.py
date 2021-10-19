@@ -83,7 +83,7 @@ def plot_vel():
     ax3.set_ylabel('Z velocity')
 
 
-def plot_multiple_particles(filename):
+def plot_multiple_particles(filename, animate=False):
     t = []
     rx = []; ry = []; rz = []
     vx = []; vy = []; vz = []
@@ -115,17 +115,6 @@ def plot_multiple_particles(filename):
                         ry.append(float(l[k+1]))
                         rz.append(float(l[k+2]))
     
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    ax.set_xlabel('X position')
-    ax.set_ylabel('Y position')
-    ax.set_zlabel('Z position')
-
-    lim = 1e4
-    ax.set_xlim3d([-lim, lim])
-    ax.set_ylim3d([-lim, lim]) 
-    ax.set_zlim3d([-lim, lim])
-    
     rx_i = []
     ry_i = []
     rz_i = []
@@ -142,32 +131,54 @@ def plot_multiple_particles(filename):
 
     #line = []
     # set up first frame
-    line = [ax.plot(rx_ij[0], ry_ij[0], rz_ij[0], 'ko')[0] for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
-    """
-    lines = []; [lines.append([]) for i in range(particle_N)] # particle_N lines
-    for j in range(particle_N):
-        lines[j].plot()
-    N = len(rx_i[0])
+    if not animate:
+        fig, ax = plt.subplots(figsize=(10,5))
+        [ax.plot(rx_ii, ry_ii) for rx_ii, ry_ii in zip(rx_i, ry_i)]
+        ax.grid()
+        ax.set_xlabel('X position [μm]')
+        ax.set_ylabel('Y position [μm]')
+        d = 1e4
+        ax.set_xlim(-d, d)
+        ax.set_ylim(-d, d)
+        plt.show()
 
-    def update(i, line):
+    elif animate:
+        fig = plt.figure()
+        ax = fig.add_subplot(projection='3d')
+        ax.set_xlabel('X position [μm]')
+        ax.set_ylabel('Y position [μm]')
+        ax.set_zlabel('Z position [μm]')
+
+        lim = 1e4
+        ax.set_xlim3d([-lim, lim])
+        ax.set_ylim3d([-lim, lim]) 
+        ax.set_zlim3d([-lim, lim])
+        line = [ax.plot(rx_ij[0], ry_ij[0], rz_ij[0], 'ko')[0] for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
+        """
+        lines = []; [lines.append([]) for i in range(particle_N)] # particle_N lines
         for j in range(particle_N):
-            for i in range(len(rx_i)):
-                line[j].set_data(rx_i[:i], ry_i[:i], rz_i[:i])
-    """
+            lines[j].plot()
+        N = len(rx_i[0])
 
-    def update(i):
-        #[[line[i].set_data([rx_ij[:i], ry_ij[:i], rz_ij[:i]]) for i in range(particle_N)] for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
-        [ax.plot(rx_ij[:i], ry_ij[:i], rz_ij[:i], 'r') for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
-        #[[linei.set_data(rx_ij[i], ry_ij[i]) for rx_ij, ry_ij in zip(rx_i, ry_i)] for linei in line]
-        [[linei.set_data_3d(rx_ij[i], ry_ij[i], rz_ij[i]) for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)] for linei in line]
-        #[[linei.set_3d_properties(rz_ij[i]) for rz_ij in rz_i] for linei in line]
+        def update(i, line):
+            for j in range(particle_N):
+                for i in range(len(rx_i)):
+                    line[j].set_data(rx_i[:i], ry_i[:i], rz_i[:i])
+        """
 
-    ani = animation.FuncAnimation(fig, update, len(rx_i[0]), blit=False, interval=1)
+        def update(i):
+            #[[line[i].set_data([rx_ij[:i], ry_ij[:i], rz_ij[:i]]) for i in range(particle_N)] for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
+            [ax.plot(rx_ij[:i], ry_ij[:i], rz_ij[:i], 'r') for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
+            #[[linei.set_data(rx_ij[i], ry_ij[i]) for rx_ij, ry_ij in zip(rx_i, ry_i)] for linei in line]
+            [[linei.set_data_3d(rx_ij[i], ry_ij[i], rz_ij[i]) for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)] for linei in line]
+            #[[linei.set_3d_properties(rz_ij[i]) for rz_ij in rz_i] for linei in line]
+
+        ani = animation.FuncAnimation(fig, update, len(rx_i[0]), blit=False, interval=1)
 
 
-    #FFwriter = animation.FFMpegWriter()
-    #ani.save('matplot003.mp4', writer=FFwriter)
-    plt.show()
+        #FFwriter = animation.FFMpegWriter()
+        #ani.save('matplot003.mp4', writer=FFwriter)
+        plt.show()
     
 
 q = 1
