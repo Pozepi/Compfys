@@ -63,17 +63,18 @@ int main()
     Particle against_analytical(charge, mass, {1,0,1}, {0,1,0});
     penning_test_against_analytical.add_particle(against_analytical);
     penning_test_against_analytical.evolve_RK4(1e-3, 100, false, 0, 0, true, "RK4_against_analytical");
-
+    */
     double d_10 = 0.05*cm;
     double V0_10 = 0.0025*volt;
     // double V0_time = V0*(1+f*std::cos(w_v*t));
 
-    PenningTrap penning_test_10(B0, V0_10, d_10);
-    */
-    PenningTrap random_test(B0, V0, d);
+    //PenningTrap penning_test_10(B0, V0_10, d_10);
+    
+    PenningTrap random_test(B0, V0_10, d_10);
     random_test.add_n_random_particles(10, charge, mass);
-    random_test.evolve_RK4(1e-1, 100, true, 0,0,true, "RK4_random_test");
-
+    random_test.evolve_RK4(1e-3, 100, true, 0,0,true, "RK4_random_test");
+    std::cout << "Particles left in the penningtrap " << random_test.particles_inside_trap_count() << "\n";
+    
 
     return 0;
 }
