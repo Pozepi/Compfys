@@ -139,7 +139,7 @@ arma::vec PenningTrap::total_force(int i, bool interaction, double time, double 
     return F;
 }
 
-void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, double time, double f, double wv, bool makefile, std::string filename)
+void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, double f, double wv, bool makefile, std::string filename)
 {
     int size = PenningTrap::particle_count()*3;
     int N = time_stop/dt;
@@ -192,7 +192,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, doub
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
             arma::vec tmp_vel = particles[j].velocity();
-            arma::vec F = PenningTrap::total_force(j, interaction, time, f, wv);
+            arma::vec F = PenningTrap::total_force(j, interaction, times(i), f, wv);
 
             k1v(0,j) = F(0)/mass;
             k1v(1,j) = F(1)/mass;
@@ -215,7 +215,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, doub
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
             arma::vec tmp_vel = particles[j].velocity();
-            arma::vec F = PenningTrap::total_force(j, interaction, time, f, wv);
+            arma::vec F = PenningTrap::total_force(j, interaction, times(i)+dt/2, f, wv);
 
             k2v(0,j) = F(0)/mass;
             k2v(1,j) = F(1)/mass;
@@ -238,7 +238,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, doub
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
             arma::vec tmp_vel = particles[j].velocity();
-            arma::vec F = PenningTrap::total_force(j, interaction, time, f, wv);
+            arma::vec F = PenningTrap::total_force(j, interaction, times(i)+dt/2, f, wv);
 
             k3v(0,j) = F(0)/mass;
             k3v(1,j) = F(1)/mass;
@@ -260,7 +260,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, doub
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
             arma::vec tmp_vel = particles[j].velocity();
-            arma::vec F = PenningTrap::total_force(j, interaction, time, f, wv);
+            arma::vec F = PenningTrap::total_force(j, interaction, times(i)+dt, f, wv);
 
             k4v(0,j) = F(0)/mass;
             k4v(1,j) = F(1)/mass;
@@ -316,13 +316,13 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, doub
     }
 }
 
-void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool interaction, double time, double f, double wv, bool makefile, std::string filename)
+void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool interaction, double f, double wv, bool makefile, std::string filename)
 {
     int size = PenningTrap::particle_count()*3;
     int N = time_stop/dt;
     arma::mat v(N, size);
     arma::mat pos(N, size);
-    arma::vec times(N);
+    arma::vec times(N);;
     
     int jump = 0;
     // setting initial values
@@ -347,7 +347,7 @@ void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool interac
         {
             Particle particle_j = particles[j];
 
-            arma::vec F = PenningTrap::total_force(j, interaction, time, f, wv);
+            arma::vec F = PenningTrap::total_force(j, interaction, times(i), f, wv);
             arma::vec a = {F(0)/particle_j.mass(), F(1)/particle_j.mass(), F(2)/particle_j.mass()};
             v(i+1,jump) = v(i,jump) + a(0)*dt;
             v(i+1,jump+1) = v(i,jump+1) + a(1)*dt;

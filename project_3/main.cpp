@@ -59,7 +59,8 @@ int main()
     */
     PenningTrap penning_test_against_analytical(B0, V0, d);
     Particle against_analytical(charge, mass, {1,0,1}, {0,1,0});
-    penning_test_against_analytical.evolve_RK4(1e-3, 100, false, 0,0,0,true,"RK4_against_analytical");
+    penning_test_against_analytical.add_particle(against_analytical);
+    penning_test_against_analytical.evolve_RK4(1e-3, 100, false, 0, 0, true, "RK4_against_analytical");
 
     double d_10 = 0.05*cm;
     double V0_10 = 0.0025*volt;
