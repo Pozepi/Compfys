@@ -127,4 +127,4 @@ def plot_multiple_particles(filename):
     ax.legend()
     plt.show()
 
-plot_multiple_particles('RK4_two_particles_no_interaction')
+plot_multiple_particles('RK4_two_particles_interaction_z_start')
