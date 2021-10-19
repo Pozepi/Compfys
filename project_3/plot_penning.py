@@ -184,15 +184,15 @@ omega_minus = 0.5*(omega0 - np.sqrt(omega0**2 - 2*omegaz**2))
 def x(t, v0, x0):
     # v0 initial velocity in y
     # x0 initial position in x
-    A_pluss = -(v0+x0*omega_minus)/(omega_minus - omega_pluss)
-    A_minus = (-v0 + x0*omega_pluss)(omega_minus - omega_pluss)
+    A_pluss = (v0+x0*omega_minus)/(omega_minus - omega_pluss)
+    A_minus = -(v0+x0*omega_pluss)/(omega_minus - omega_pluss)
     return A_pluss*np.cos(omega_pluss*t) + A_minus*np.cos(omega_minus*t)
 
 def y(t, v0, x0):
     # v0 initial velocity in y
     # x0 initial position in x
-    A_pluss = -(v0+x0*omega_minus)/(omega_minus - omega_pluss)
-    A_minus = (-v0 + x0*omega_pluss)(omega_minus - omega_pluss)
+    A_pluss = (v0+x0*omega_minus)/(omega_minus - omega_pluss)
+    A_minus = -(v0+x0*omega_pluss)/(omega_minus - omega_pluss)
     return -A_minus*np.sin(omega_minus*t) - A_pluss*np.sin(omega_pluss*t)
 
 def z(t, z0):
@@ -200,18 +200,20 @@ def z(t, z0):
 
 def plot_compare_analytical(filename1):
     t, rx, ry, rz, vx, vy, vz = find_values(filename1)
+    t = np.array(t)
     fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
 
     ax1.set_xlabel('X position [μm]'); ax1.set_ylabel('Y position [μm]'); ax1.grid()
     ax1.plot(rx, ry, label='Numerical')
-    ax1.plot(x(t, vy[0], rx[0]), y(t, vy[0], rx[0]), label='Analytical')
+    ax1.plot(x(t, vy[0], rx[0]), y(t, vy[0], rx[0]), label='Analytical', ls='--')
     ax1.legend()
     #ax1.set_title()
 
     ax2.set_xlabel('Time [s]'); ax2.set_ylabel('Z position [μm]'); ax2.grid()
     ax2.plot(t, rz, label='Numerical')
-    ax2.plot(t, z(t, rz[0]), label='Analytical')
+    ax2.plot(t, z(t, rz[0]), label='Analytical', ls='--')
     ax2.legend()
+    plt.show()
 
 
 #plot_compare('RK4_one_particle', 'euler_one_particle')
