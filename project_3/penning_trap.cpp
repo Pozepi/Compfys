@@ -83,10 +83,13 @@ arma::vec PenningTrap::force_particle(int i, int j)
     
     double A = ke*particle_i.charge()*particle_j.charge();
     arma::vec R = {rxi-rxj,ryi-ryj,rzi-rzj};
+
+    double value = std::sqrt(R(0)*R(0) + R(1)*R(1) + R(2)*R(2));
+    double value3 = value*value*value;
     
-    double Fx = A*R(0)/std::sqrt(R(0)*R(0) + R(1)*R(1) + R(2)*R(2));
-    double Fy = A*R(1)/std::sqrt(R(0)*R(0) + R(1)*R(1) + R(2)*R(2));
-    double Fz = A*R(2)/std::sqrt(R(0)*R(0) + R(1)*R(1) + R(2)*R(2));
+    double Fx = A*R(0)/value3;
+    double Fy = A*R(1)/value3;
+    double Fz = A*R(2)/value3;
     
     arma::vec F = {Fx,Fy,Fz};
 
