@@ -11,70 +11,121 @@ int main()
     double charge = 1;
     double mass = 38.97;
 
+
+    arma::vec h = {1e-1, 1e-2, 1e-3, 1e-4, 1e-5};
+    Particle one(charge, mass, {1,0,1}, {0,1,0});
+
+    PenningTrap h_I(B0,V0,d);
+    PenningTrap h_II(B0,V0,d);
+    PenningTrap h_III(B0,V0,d);
+    PenningTrap h_IV(B0,V0,d);
+    PenningTrap h_V(B0,V0,d);
+    PenningTrap h_VI(B0,V0,d);
+    PenningTrap h_VII(B0,V0,d);
+    PenningTrap h_VIII(B0,V0,d);
+    PenningTrap h_IX(B0,V0,d);
+    PenningTrap h_X(B0,V0,d);
+
+    h_I.add_particle(one);
+    h_II.add_particle(one);
+    h_III.add_particle(one);
+    h_IV.add_particle(one);
+    h_V.add_particle(one);
+    h_VI.add_particle(one);
+    h_VII.add_particle(one);
+    h_VIII.add_particle(one);
+    h_IX.add_particle(one);
+    h_X.add_particle(one);
+
+    h_I.evolve_RK4(h(0),100,false,0,0,true,"an_RK4_he1");
+    h_II.evolve_RK4(h(1),100,false,0,0,true,"an_RK4_he2");
+    h_III.evolve_RK4(h(2),100,false,0,0,true,"an_RK4_he3");
+    h_IV.evolve_RK4(h(3),100,false,0,0,true,"an_RK4_he4");
+    h_V.evolve_RK4(h(4),100,false,0,0,true,"an_RK4_he5");
+
+    h_VI.evolve_forward_Euler(h(0),100,false,0,0,true,"an_EU_he1");
+    h_VII.evolve_forward_Euler(h(1),100,false,0,0,true,"an_EU_he2");
+    h_VIII.evolve_forward_Euler(h(2),100,false,0,0,true,"an_EU_he3");
+    h_IX.evolve_forward_Euler(h(3),100,false,0,0,true,"an_EU_he4");
+    h_X.evolve_forward_Euler(h(4),100,false,0,0,true,"an_EU_he5");
+
+    
     /*
-    Particle one(charge, mass, {0,1,0}, {-1,0,0});
-    Particle two(charge, mass, {0,-1,0}, {0,1,0});
+    Particle nineone(charge, mass, {1,0,1}, {0,1,0});
 
-    Particle one_z(charge, mass, {0,1,0}, {-1,0,1});
-    Particle two_z(charge, mass, {0,-1,0}, {0,1,-1});
+    PenningTrap nouno(B0, V0, d);
+    PenningTrap nodos(B0, V0, d);
+    PenningTrap notres(B0, V0, d);
+    PenningTrap noquatro(B0, V0, d);
 
-    PenningTrap penning_test_one1(B0, V0, d);
-    penning_test_one1.add_particle(one);
+    nouno.add_particle(nineone);
+    nodos.add_particle(nineone);
+    notres.add_particle(nineone);
+    noquatro.add_particle(nineone);
 
-    PenningTrap penning_test_one2(B0, V0, d);
-    penning_test_one2.add_particle(one);
-
-    PenningTrap penning_test(B0, V0, d);
-    penning_test.add_particle(one);
-    penning_test.add_particle(two);
-
-    PenningTrap penning_test2(B0, V0, d);
-    penning_test2.add_particle(one);
-    penning_test2.add_particle(two);
-
-    PenningTrap penning_test3(B0, V0, d);
-    penning_test3.add_particle(one);
-    penning_test3.add_particle(two);
-
-    PenningTrap penning_test4(B0, V0, d);
-    penning_test4.add_particle(one);
-    penning_test4.add_particle(two);
-
-    PenningTrap penning_test_z1(B0, V0, d);
-    penning_test_z1.add_particle(one_z);
-    penning_test_z1.add_particle(two_z);
-
-    PenningTrap penning_test_z2(B0, V0, d);
-    penning_test_z2.add_particle(one_z);
-    penning_test_z2.add_particle(two_z);
-
-    penning_test_one1.evolve_forward_Euler(1e-3,100,false,true,"euler_one_particle");
-    penning_test_one2.evolve_RK4(1e-3,100,false,true, "RK4_one_particle");
-    penning_test.evolve_forward_Euler(1e-3, 100, true, true, "euler_two_particles_interaction");
-    penning_test2.evolve_RK4(1e-3, 100, true, true, "RK4_two_particles_interaction");
-    penning_test3.evolve_forward_Euler(1e-3, 100, false, true, "euler_two_particles_no_interaction");
-    penning_test4.evolve_RK4(1e-3, 100, false, true, "RK4_two_particles_no_interaction");
-    penning_test_z1.evolve_RK4(1e-3, 100, true, true, "RK4_two_particles_interaction_z_start");
-    penning_test_z2.evolve_RK4(1e-3,100,false,true,"RK4_two_particles_no_interaction_z_start");
+    nouno.evolve_RK4(1e-3, 100, false, 0, 0, true, "nineone_RK4_te3");
+    nodos.evolve_forward_Euler(1e-3, 100, false, 0, 0, true, "nineone_EU_te3");
+    notres.evolve_RK4(1e-4, 100, false, 0, 0, true, "nineone_RK4_te4");
+    noquatro.evolve_forward_Euler(1e-4,100,false, 0,0,true, "nineone_EU_te4");
     */
     /*
-    PenningTrap penning_test_against_analytical(B0, V0, d);
+    Particle ninetwo(charge,mass,{1,0,0},{0,1,0});
+    Particle ninetwotwo(charge,mass,{-1,0,0},{1,0,0});
 
-    Particle against_analytical(charge, mass, {1,0,1}, {0,1,0});
-    penning_test_against_analytical.add_particle(against_analytical);
-    penning_test_against_analytical.evolve_RK4(1e-3, 100, false, 0, 0, true, "RK4_against_analytical");
+    PenningTrap ntuno(B0, V0, d);
+    PenningTrap ntdos(B0, V0, d);
+    PenningTrap nttres(B0, V0, d);
+    PenningTrap ntquatro(B0, V0, d);
+    PenningTrap ntcinco(B0, V0, d);
+
+    ntuno.add_particle(ninetwo);
+    ntuno.add_particle(ninetwotwo);
+    ntdos.add_particle(ninetwo);
+    ntdos.add_particle(ninetwotwo);
+    nttres.add_particle(ninetwo);
+    nttres.add_particle(ninetwotwo);
+    ntquatro.add_particle(ninetwo);
+    ntquatro.add_particle(ninetwotwo);
+    ntcinco.add_particle(ninetwo);
+    ntcinco.add_particle(ninetwotwo);
+
+    ntuno.evolve_RK4(1e-3, 100, false, 0, 0, true, "ninetwo_RK4_te3");
+    ntdos.evolve_RK4(1e-4, 100, false, 0, 0, true, "ninetwo_RK4_te4");
+    nttres.evolve_forward_Euler(1e-3, 100, false, 0, 0, true, "ninetwo_EU_te3");
+    ntquatro.evolve_forward_Euler(1e-4, 100, false, 0, 0, true, "ninetwo_EU_te4");
+    ntcinco.evolve_RK4(1e-3, 100, true, 0, 0, true, "ninetwo_RK4_te3_inter");
     */
+    /*
+    Particle ntto(charge, mass, {1,0,1}, {0,1,0});
+    Particle nttt(charge, mass, {-1,0,-1}, {1,0,1});
+
+    PenningTrap nttuno(B0, V0, d);
+    PenningTrap ntttres(B0, V0, d);
+
+    nttuno.add_particle(ntto);
+    nttuno.add_particle(nttt);
+    ntttres.add_particle(ntto);
+    ntttres.add_particle(nttt);
+
+    nttuno.evolve_RK4(1e-3, 100, false, 0, 0, true, "ninethree_RK4_te3");
+    ntttres.evolve_RK4(1e-3,100,true,0,0,true,"ninethree_RK4_te3_inter");
+    */
+
+    /*
     double d_10 = 0.05*cm;
     double V0_10 = 0.0025*volt;
-    // double V0_time = V0*(1+f*std::cos(w_v*t));
-
-    //PenningTrap penning_test_10(B0, V0_10, d_10);
+    arma::vec f = {0.1,0.4,0.7};
     
+    PenningTrap ten(B0, V0_10, d_10);
+    ten.add_n_random_particles(100, charge, mass);
+    ten.evolve_RK4(1e-3, 500, f(0))
+    */
+    /*
     PenningTrap random_test(B0, V0_10, d_10);
     random_test.add_n_random_particles(5, charge, mass);
     random_test.evolve_RK4(1e-3, 100, true, 0,0,true, "RK4_random_test_seed_1");
     std::cout << "Particles left in the penningtrap: " << random_test.particles_inside_trap_count() << "\n";
-    
+    */
 
     return 0;
 }
