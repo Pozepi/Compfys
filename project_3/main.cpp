@@ -12,6 +12,7 @@ int main()
     double mass = 38.97;
 
 
+    
     arma::vec h = {1e-1, 1e-2, 1e-3, 1e-4, 1e-5};
     Particle one(charge, mass, {1,0,1}, {0,1,0});
 
@@ -37,18 +38,17 @@ int main()
     h_IX.add_particle(one);
     h_X.add_particle(one);
 
-    h_I.evolve_RK4(h(0),100,false,0,0,true,"an_RK4_he1");
-    h_II.evolve_RK4(h(1),100,false,0,0,true,"an_RK4_he2");
-    h_III.evolve_RK4(h(2),100,false,0,0,true,"an_RK4_he3");
-    h_IV.evolve_RK4(h(3),100,false,0,0,true,"an_RK4_he4");
-    h_V.evolve_RK4(h(4),100,false,0,0,true,"an_RK4_he5");
+    h_I.evolve_RK4(h(0),100,false,0,0,true,"1_an_RK4_he1");
+    h_II.evolve_RK4(h(1),100,false,0,0,true,"1_an_RK4_he2");
+    h_III.evolve_RK4(h(2),100,false,0,0,true,"1_an_RK4_he3");
+    h_IV.evolve_RK4(h(3),100,false,0,0,true,"1_an_RK4_he4");
+    h_V.evolve_RK4(h(4),100,false,0,0,true,"1_an_RK4_he5");
 
-    h_VI.evolve_forward_Euler(h(0),100,false,0,0,true,"an_EU_he1");
-    h_VII.evolve_forward_Euler(h(1),100,false,0,0,true,"an_EU_he2");
-    h_VIII.evolve_forward_Euler(h(2),100,false,0,0,true,"an_EU_he3");
-    h_IX.evolve_forward_Euler(h(3),100,false,0,0,true,"an_EU_he4");
-    h_X.evolve_forward_Euler(h(4),100,false,0,0,true,"an_EU_he5");
-
+    h_VI.evolve_forward_Euler(h(0),100,false,0,0,true,"1_an_EU_he1");
+    h_VII.evolve_forward_Euler(h(1),100,false,0,0,true,"1_an_EU_he2");
+    h_VIII.evolve_forward_Euler(h(2),100,false,0,0,true,"1_an_EU_he3");
+    h_IX.evolve_forward_Euler(h(3),100,false,0,0,true,"1_an_EU_he4");
+    h_X.evolve_forward_Euler(h(4),100,false,0,0,true,"1_an_EU_he5");
     
     /*
     Particle nineone(charge, mass, {1,0,1}, {0,1,0});
@@ -63,11 +63,12 @@ int main()
     notres.add_particle(nineone);
     noquatro.add_particle(nineone);
 
-    nouno.evolve_RK4(1e-3, 100, false, 0, 0, true, "nineone_RK4_te3");
-    nodos.evolve_forward_Euler(1e-3, 100, false, 0, 0, true, "nineone_EU_te3");
-    notres.evolve_RK4(1e-4, 100, false, 0, 0, true, "nineone_RK4_te4");
-    noquatro.evolve_forward_Euler(1e-4,100,false, 0,0,true, "nineone_EU_te4");
+    nouno.evolve_RK4(1e-3, 100, false, 0, 0, true, "1_nineone_RK4_te3");
+    nodos.evolve_forward_Euler(1e-3, 100, false, 0, 0, true, "1_nineone_EU_te3");
+    notres.evolve_RK4(1e-4, 100, false, 0, 0, true, "1_nineone_RK4_te4");
+    noquatro.evolve_forward_Euler(1e-4,100,false, 0,0,true, "1_nineone_EU_te4");
     */
+    
     /*
     Particle ninetwo(charge,mass,{1,0,0},{0,1,0});
     Particle ninetwotwo(charge,mass,{-1,0,0},{1,0,0});

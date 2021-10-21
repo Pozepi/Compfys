@@ -3,6 +3,10 @@
 
 #include <armadillo>
 #include <iostream>
+#include <sys/stat.h>
+#include <string>
+#include <cstdlib>
+
 
 class Particle
 {

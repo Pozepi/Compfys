@@ -314,11 +314,11 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, doub
     }
     if(makefile)
     {
-        std::fstream file;
-        file.open(filename+".txt", std::ios::out);
-        file << times << '\n';
-        file << v << '\n';
-        file << pos << '\n';
+        mkdir("output_files",0777);
+        mkdir(("output_files//"+filename).c_str(),0777);
+        times.save("output_files//"+filename+"//"+filename+"_t.txt");
+        v.save("output_files//"+filename+"//"+filename+"_v.txt");
+        pos.save("output_files//"+filename+"//"+filename+"_pos.txt");
     }
 }
 
@@ -384,11 +384,18 @@ void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool interac
     }
     if(makefile)
     {
+        mkdir("output_files",0777);
+        mkdir(("output_files//"+filename).c_str(),0777);
+        times.save("output_files//"+filename+"//"+filename+"_t.txt");
+        v.save("output_files//"+filename+"//"+filename+"_v.txt");
+        pos.save("output_files//"+filename+"//"+filename+"_pos.txt");
+        /*
         std::fstream file;
         file.open(filename+".txt", std::ios::out);
         file << times << '\n';
         file << v << '\n';
         file << pos << '\n';
+        */
     }
 }
 
