@@ -41,7 +41,8 @@ def find_values(filename, particle_jump=0):
 #t, rx, ry, rz, vx, vy, vz = find_values(filename)
 
 """ Plot the position """
-def plot_xy(filename):
+def plot_xy(filename1):
+    t, rx, ry, rz, vx, vy, vz = find_values(filename1)
     fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
     ax1.set_xlabel('X position'); ax1.set_ylabel('Y position')
     ax2.set_xlabel('Time [micro seconds]'); ax2.set_ylabel('Z position')
@@ -83,7 +84,7 @@ def plot_vel():
     ax3.set_ylabel('Z velocity')
 
 
-def plot_multiple_particles(filename, animate=False):
+def plot_multiple_particles(filename, animate=False, anisave=False):
     t = []
     rx = []; ry = []; rz = []
     vx = []; vy = []; vz = []
@@ -149,11 +150,13 @@ def plot_multiple_particles(filename, animate=False):
         ax.set_ylabel('Y position [μm]')
         ax.set_zlabel('Z position [μm]')
 
-        lim = 1e4
+        lim = 1e2
         ax.set_xlim3d([-lim, lim])
         ax.set_ylim3d([-lim, lim]) 
         ax.set_zlim3d([-lim, lim])
-        line = [ax.plot(rx_ij[0], ry_ij[0], rz_ij[0], 'ko')[0] for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
+
+        line = [ax.plot(rx_ij[0], ry_ij[0], rz_ij[0], 'o')[0] for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
+        lines = [ax.plot(rx_ij[0:1], ry_ij[0:1], rz_ij[0:1])[0] for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
         """
         lines = []; [lines.append([]) for i in range(particle_N)] # particle_N lines
         for j in range(particle_N):
@@ -167,17 +170,31 @@ def plot_multiple_particles(filename, animate=False):
         """
 
         def update(i):
+            tail_length = 1000
+            i *= 10 
+            if i - tail_length < 0:
+                j = 0
+            elif i - tail_length >= 0:
+                j = i - tail_length
+            #print(j)
             #[[line[i].set_data([rx_ij[:i], ry_ij[:i], rz_ij[:i]]) for i in range(particle_N)] for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
-            [ax.plot(rx_ij[:i], ry_ij[:i], rz_ij[:i], 'r') for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
+            #[ax.plot(rx_ij[j:i], ry_ij[j:i], rz_ij[j:i], 'r') for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
             #[[linei.set_data(rx_ij[i], ry_ij[i]) for rx_ij, ry_ij in zip(rx_i, ry_i)] for linei in line]
-            [[linei.set_data_3d(rx_ij[i], ry_ij[i], rz_ij[i]) for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)] for linei in line]
+            
+            #lines[0].set_data(rx_i[0][i], ry_i[0][i])
+            #lines[0].set_3d_properties(rz_i[0][i])
+
+            #line[-1].set_data_3d(rx_i[-1][i], ry_i[-1][i], rz_i[-1][i])
+
+            [linei.set_data_3d(rx_ij[i], ry_ij[i], rz_ij[i]) for linei, rx_ij, ry_ij, rz_ij in zip(line, rx_i, ry_i, rz_i)]
+            [linesi.set_data_3d(rx_ij[j:i], ry_ij[j:i], rz_ij[j:i]) for linesi, rx_ij, ry_ij, rz_ij in zip(lines, rx_i, ry_i, rz_i)]
             #[[linei.set_3d_properties(rz_ij[i]) for rz_ij in rz_i] for linei in line]
 
-        ani = animation.FuncAnimation(fig, update, len(rx_i[0]), blit=False, interval=1)
+        ani = animation.FuncAnimation(fig, update, len(rx_i[0])//10, blit=False, interval=1)
 
-
-        #FFwriter = animation.FFMpegWriter()
-        #ani.save('matplot003.mp4', writer=FFwriter)
+        if anisave:
+            FFwriter = animation.FFMpegWriter(fps=1000)
+            ani.save('penning.mp4', writer=FFwriter)
         plt.show()
     
 
@@ -227,10 +244,12 @@ def plot_compare_analytical(filename1):
     ax2.legend()
     plt.show()
 
+#plot_xy('RK4_one_particle')
 
 #plot_compare('RK4_one_particle', 'euler_one_particle')
 #plot_compare('RK4_two_particles_interaction', 'euler_two_particles_interaction')
 
 #plot_compare_analytical('RK4_against_analytical')
 
-plot_multiple_particles('RK4_random_test_seed_1')
+#plot_multiple_particles('RK4_random_test' ,animate=True)
+plot_multiple_particles('RK4_two_particles_interaction_z_start' ,animate=True)
