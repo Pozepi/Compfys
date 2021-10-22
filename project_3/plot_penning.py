@@ -136,6 +136,7 @@ def relerror(plot=False):
         plt.show()
 
 """ Plot the position """
+"""
 def plot_xy_zt(filename1,plot=False):
     t, r, v = find_values_single(filename1)
     fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
@@ -151,7 +152,7 @@ def plot_xy_zt(filename1,plot=False):
     plt.savefig(figure_path)
     if plot:
         plt.show()
-
+"""
 
 
 
@@ -216,9 +217,30 @@ def plot_vel(filename,plot=False,save=False):
 
 
 
-def plot_multiple_particles(filename, animate=False, anisave=False, plot):
+def plot_multiple_particles(filename, animate=False, anisave=False, plot3d=False, saveplot3d=False,
+    plot=False, saveplot=False):
     t, r, v = find_values_single(filename)
-    particle_N = len(r)//3
+    name = filename.split('/')[-1]
+    method = name[5:7]
+    power = name[-1:]
+    interaction = name[2:4]
+
+    if name[-7:-4] == 'noz':
+        z_name = 'no z'
+    else:
+        z_name = 'z start'
+    if interaction == 'no':
+        interaction = 'no interaction'
+    elif interaction == 'in':
+        interaction = 'with interaction'
+    if method == 'EU':
+        method = 'Euler'
+    elif method == 'RK':
+        method = 'Runge Kutta'
+
+    name_title = method + ' ' + interaction + ' ' + z_name
+    
+    particle_N = len(r[0])//3
     rx_i = []
     ry_i = []
     rz_i = []
@@ -229,12 +251,17 @@ def plot_multiple_particles(filename, animate=False, anisave=False, plot):
         #plot both particles
         #ax.plot(rx_i[0], ry_i[-1], 'x')
         #ax.plot3D(rx_i, ry_i, rz_i, label='Particle %.i'%i)
-        rx_i.append(r[:,i::particle_N])
-        ry_i.append(r[:,i::particle_N])
-        rz_i.append(r[:,i::particle_N])
+        rx_i.append(r[:,i*3])
+        ry_i.append(r[:,i*3+1])
+        rz_i.append(r[:,i*3+2])
+    rx_i = np.array(rx_i)
+    ry_i = np.array(ry_i)
+    rz_i = np.array(rz_i)
+
 
     #line = []
     # set up first frame
+    """
     if not animate:
         fig, ax = plt.subplots(figsize=(10,5))
         [ax.plot(rx_ii, ry_ii) for rx_ii, ry_ii in zip(rx_i, ry_i)]
@@ -245,15 +272,33 @@ def plot_multiple_particles(filename, animate=False, anisave=False, plot):
         ax.set_xlim(-d, d)
         ax.set_ylim(-d, d)
         plt.show()
+    """
+    if plot or saveplot:
+        fig,ax = plt.subplots()
+        ax.set_xlabel('X position [μm]')
+        ax.set_ylabel('Y position [μm]')
+        ax.set_title(name_title)
+        ax.grid()
+        for i in range(particle_N):
+            ax.plot(rx_i[i], ry_i[i]) #, label='dt = $10^{-%.i}$'%int(power))
+        if plot:
+            plt.show()
+        elif saveplot:
+            plt.savefig(figure_path+name+'.pdf')
     
-    elif plot:
+    if plot3d or saveplot3d:
         fig = plt.figure()
-        ax = fig.add_sibplot(projection='3d')
+        ax = fig.add_subplot(projection='3d')
         ax.set_xlabel('X position [μm]')
         ax.set_ylabel('Y position [μm]')
         ax.set_zlabel('Z position [μm]')
+        ax.set_title(name_title)
         for i in range(particle_N):
-            ax.plot(rx_i[i], ry_i[i])
+            ax.plot(rx_i[i], ry_i[i], rz_i[i]) #, label='dt = $10^{-%.i}$'%int(power))
+        if plot3d:
+            plt.show()
+        elif saveplot3d:
+            plt.savefig(figure_path+name+'_3d.pdf')
 
         
 
@@ -313,14 +358,16 @@ def plot_multiple_particles(filename, animate=False, anisave=False, plot):
     
 #[plot_compare_analytical(pathi) for pathi in single_particle_paths]
 #relerror()
-[plot_vel(pathi, save=True) for pathi in single_particle_paths]
+#[plot_vel(pathi, save=True) for pathi in single_particle_paths]
 
 #plot_xy('RK4_one_particle')
 
+[plot_multiple_particles(pathi, saveplot3d=True) for pathi in two_particle_paths]
+
+
+
 #plot_compare('RK4_one_particle', 'euler_one_particle')
 #plot_compare('RK4_two_particles_interaction', 'euler_two_particles_interaction')
-
 #plot_compare_analytical('RK4_against_analytical')
-
 #plot_multiple_particles('RK4_random_test' ,animate=True)
 #plot_multiple_particles('RK4_two_particles_interaction_z_start' ,animate=True)
