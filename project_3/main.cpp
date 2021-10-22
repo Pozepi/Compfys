@@ -70,7 +70,7 @@ int main()
     noquatro.evolve_forward_Euler(1e-4,100,false, 0,0,true, "1_nineone_EU_te4");
     */
     
-    /*
+    
     Particle ninetwo(charge,mass,{1,0,0},{0,1,0});
     Particle ninetwotwo(charge,mass,{-1,0,0},{1,0,0});
 
@@ -78,7 +78,6 @@ int main()
     PenningTrap ntdos(B0, V0, d);
     PenningTrap nttres(B0, V0, d);
     PenningTrap ntquatro(B0, V0, d);
-    PenningTrap ntcinco(B0, V0, d);
 
     ntuno.add_particle(ninetwo);
     ntuno.add_particle(ninetwotwo);
@@ -88,16 +87,12 @@ int main()
     nttres.add_particle(ninetwotwo);
     ntquatro.add_particle(ninetwo);
     ntquatro.add_particle(ninetwotwo);
-    ntcinco.add_particle(ninetwo);
-    ntcinco.add_particle(ninetwotwo);
 
-    ntuno.evolve_RK4(1e-3, 100, false, 0, 0, true, "ninetwo_RK4_te3");
-    ntdos.evolve_RK4(1e-4, 100, false, 0, 0, true, "ninetwo_RK4_te4");
-    nttres.evolve_forward_Euler(1e-3, 100, false, 0, 0, true, "ninetwo_EU_te3");
-    ntquatro.evolve_forward_Euler(1e-4, 100, false, 0, 0, true, "ninetwo_EU_te4");
-    ntcinco.evolve_RK4(1e-3, 100, true, 0, 0, true, "ninetwo_RK4_te3_inter");
-    */
-    /*
+    ntuno.evolve_RK4(1e-3, 100, false, 0, 0, true, "2_no_RK4_noz_te3");
+    ntdos.evolve_forward_Euler(1e-3, 100, false, 0, 0, true, "2_no_EU_noz_te3");
+    nttres.evolve_forward_Euler(1e-3, 100, true, 0, 0, true, "2_in_EU_noz_te3");
+    ntquatro.evolve_RK4(1e-3, 100, true, 0, 0, true, "2_in_RK4_noz_te3");
+    
     Particle ntto(charge, mass, {1,0,1}, {0,1,0});
     Particle nttt(charge, mass, {-1,0,-1}, {1,0,1});
 
@@ -109,9 +104,8 @@ int main()
     ntttres.add_particle(ntto);
     ntttres.add_particle(nttt);
 
-    nttuno.evolve_RK4(1e-3, 100, false, 0, 0, true, "ninethree_RK4_te3");
-    ntttres.evolve_RK4(1e-3,100,true,0,0,true,"ninethree_RK4_te3_inter");
-    */
+    nttuno.evolve_RK4(1e-3, 100, false, 0, 0, true, "2_no_RK4_z_te3");
+    ntttres.evolve_RK4(1e-3,100,true,0,0,true,"2_in_RK4_z_te3");
 
     /*
     double d_10 = 0.05*cm;
