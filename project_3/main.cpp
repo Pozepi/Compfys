@@ -70,7 +70,7 @@ int main()
     noquatro.evolve_forward_Euler(1e-4,100,false, 0,0,true, "1_nineone_EU_te4");
     */
     
-    
+    /*
     Particle ninetwo(charge,mass,{1,0,0},{0,1,0});
     Particle ninetwotwo(charge,mass,{-1,0,0},{1,0,0});
 
@@ -106,16 +106,31 @@ int main()
 
     nttuno.evolve_RK4(1e-3, 100, false, 0, 0, true, "2_no_RK4_z_te3");
     ntttres.evolve_RK4(1e-3,100,true,0,0,true,"2_in_RK4_z_te3");
-
-    /*
+    */
+    
+    int N = 1000;
     double d_10 = 0.05*cm;
     double V0_10 = 0.0025*volt;
     arma::vec f = {0.1,0.4,0.7};
-    
-    PenningTrap ten(B0, V0_10, d_10);
-    ten.add_n_random_particles(100, charge, mass);
-    ten.evolve_RK4(1e-3, 500, f(0))
-    */
+    arma::vec wv = arma::linspace(0.2,2.5,N);
+
+    for(int f_ = 0; f_<3; f_++)
+    {
+        arma::mat output(N, 3);
+        std::string filename = std::to_string(f(f_));
+        for(int wv_ = 0; wv_<N; wv_++)
+        {
+            PenningTrap ten(B0, V0_10, d_10);
+            ten.add_n_random_particles(10, charge, mass);
+            ten.evolve_RK4(1e-1, 1, false, f(0), wv(wv_));
+            output(wv_,0) = f(f_);
+            output(wv_,1) = wv(wv_);
+            output(wv_,2) = ten.particles_inside_trap_count();
+        }
+        mkdir("output_files",0777);
+        mkdir("output_files//particles_in_trap_count",0777);
+        output.save("output_files//particles_in_trap_count//"+filename);
+    }
     /*
     PenningTrap random_test(B0, V0_10, d_10);
     random_test.add_n_random_particles(5, charge, mass);
