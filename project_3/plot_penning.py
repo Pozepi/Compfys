@@ -6,6 +6,7 @@ import pyarma as pa
 import os
 import glob
 
+
 figure_path = 'figures/'
 
 if not os.path.isdir(figure_path):

@@ -13,7 +13,7 @@ int main()
 
 
     // For comparison to analytical results
-    
+    /*
     arma::vec h = {1e-1, 1e-2, 1e-3, 1e-4, 1e-5};
     Particle one(charge, mass, {1,0,1}, {0,1,0});
 
@@ -50,7 +50,7 @@ int main()
     h_VIII.evolve_forward_Euler(h(2),100,false,0,0,true,"1_an_EU_he3");
     h_IX.evolve_forward_Euler(h(3),100,false,0,0,true,"1_an_EU_he4");
     h_X.evolve_forward_Euler(h(4),100,false,0,0,true,"1_an_EU_he5");
-    
+    */
     /*
     Particle nineone(charge, mass, {1,0,1}, {0,1,0});
 
@@ -108,25 +108,26 @@ int main()
     ntttres.evolve_RK4(1e-3,100,true,0,0,true,"2_in_RK4_z_te3");
     */
     
-    int N = 1000;
+    int N = 100;
     double d_10 = 0.05*cm;
     double V0_10 = 0.0025*volt;
     arma::vec f = {0.1,0.4,0.7};
     arma::vec wv = arma::linspace(0.2,2.5,N);
 
-    for(int f_ = 0; f_<3; f_++)
+    for(int f_ = 0; f_ < 3; f_++)
     {
         arma::mat output(N, 3);
         std::string filename = std::to_string(f(f_));
-        for(int wv_ = 0; wv_<N; wv_++)
+        for(int i = 0; i < N; i++)
         {
             PenningTrap ten(B0, V0_10, d_10);
-            ten.add_n_random_particles(10, charge, mass);
-            ten.evolve_RK4(1e-1, 1, false, f(0), wv(wv_));
-            output(wv_,0) = f(f_);
-            output(wv_,1) = wv(wv_);
-            output(wv_,2) = ten.particles_inside_trap_count();
+            ten.add_n_random_particles(100, charge, mass);
+            ten.evolve_RK4(1e-3, 500, false, f(0), wv(i));
+            output(i,0) = f(f_);
+            output(i,1) = wv(i);
+            output(i,2) = ten.particles_inside_trap_count();
         }
+        std::cout << "Done iteration" << '\n';
         mkdir("output_files",0777);
         mkdir("output_files//particles_in_trap_count",0777);
         output.save("output_files//particles_in_trap_count//"+filename);
