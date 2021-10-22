@@ -363,7 +363,7 @@ def plot_multiple_particles(filename, animate=False, anisave=False, plot3d=False
 
 #plot_xy('RK4_one_particle')
 
-[plot_multiple_particles(pathi, saveplot3d=True) for pathi in two_particle_paths]
+#[plot_multiple_particles(pathi, saveplot3d=True) for pathi in two_particle_paths]
 
 
 
