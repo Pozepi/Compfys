@@ -13,7 +13,7 @@ int main()
 
 
     // For comparison to analytical results
-    /*
+    
     arma::vec h = {1e-1, 1e-2, 1e-3, 1e-4, 1e-5};
     Particle one(charge, mass, {1,0,1}, {0,1,0});
 
@@ -50,7 +50,7 @@ int main()
     h_VIII.evolve_forward_Euler(h(2),100,false,0,0,true,"1_an_EU_he3");
     h_IX.evolve_forward_Euler(h(3),100,false,0,0,true,"1_an_EU_he4");
     h_X.evolve_forward_Euler(h(4),100,false,0,0,true,"1_an_EU_he5");
-    */
+    
     /*
     Particle nineone(charge, mass, {1,0,1}, {0,1,0});
 
