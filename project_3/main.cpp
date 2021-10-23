@@ -135,7 +135,6 @@ int main()
         mkdir("output_files//particles_in_trap_count",0777);
         output.save("output_files//particles_in_trap_count//"+filename);
     }
-    int x = 1;
     clock_t t2 = clock();
 
     double duration_seconds = ((double) (t2-t1))/CLOCKS_PER_SEC;
