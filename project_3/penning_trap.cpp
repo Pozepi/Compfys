@@ -190,10 +190,10 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, doub
         arma::mat k4v(3, PenningTrap::particle_count());
         arma::mat k4p(3, PenningTrap::particle_count());
 
+
         jump=0;
         for(int j=0; j<PenningTrap::particle_count(); j++)
-        {
-            
+        { 
             double charge = particles[j].charge();
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();
@@ -239,7 +239,7 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, doub
 
         jump=0;
         for(int j=0; j<PenningTrap::particle_count(); j++)
-        {
+        {  
             double charge = particles[j].charge();
             double mass = particles[j].mass();
             arma::vec tmp_pos = particles[j].position();

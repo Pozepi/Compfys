@@ -1,4 +1,5 @@
 #include "penning_trap.hpp"
+#include <time.h>
 
 int main()
 {
@@ -114,6 +115,7 @@ int main()
     arma::vec f = {0.1,0.4,0.7};
     arma::vec wv = arma::linspace(0.2,2.5,N);
 
+    clock_t t1 = clock();
     for(int f_ = 0; f_ < 3; f_++)
     {
         arma::mat output(N, 3);
@@ -121,8 +123,9 @@ int main()
         for(int i = 0; i < N; i++)
         {
             PenningTrap ten(B0, V0_10, d_10);
-            ten.add_n_random_particles(100, charge, mass);
-            ten.evolve_RK4(1e-3, 500, false, f(0), wv(i));
+            std::cout << i << '\n';
+            ten.add_n_random_particles(50, charge, mass);
+            ten.evolve_RK4(1e-3, 100, false, f(0), wv(i));
             output(i,0) = f(f_);
             output(i,1) = wv(i);
             output(i,2) = ten.particles_inside_trap_count();
@@ -132,6 +135,9 @@ int main()
         mkdir("output_files//particles_in_trap_count",0777);
         output.save("output_files//particles_in_trap_count//"+filename);
     }
+    clock_t t2 = clock();
+
+    double duration_seconds = ((double) (t2-t1))/CLOCKS_PER_SEC;
     /*
     PenningTrap random_test(B0, V0_10, d_10);
     random_test.add_n_random_particles(5, charge, mass);
