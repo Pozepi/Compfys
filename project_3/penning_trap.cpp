@@ -16,6 +16,13 @@ void PenningTrap::add_particle(Particle particle_in)
 
 void PenningTrap::add_n_random_particles(int n, double charge, double mass)
 {
+    /*
+    Adds n particles to the box with random position and velocity following a distribution
+    Args:
+        n       (int)       : amount of particles to add
+        charge  (double)    : the charge of all the n particles
+        mass    (double)    : mass of all the n particles
+    */
     for(int i=0; i<n; i++)
     {
         arma::arma_rng::set_seed(i);
@@ -28,11 +35,23 @@ void PenningTrap::add_n_random_particles(int n, double charge, double mass)
 
 double PenningTrap::particle_count()
 {
+    /*
+    Find the current number of particles in the penning trap
+    Returns: 
+        particle.size()     (double)    : current number of particles in the penning trap
+    */
     return particles.size();
 }
 
 bool PenningTrap::particle_outside_trap_check(arma::vec r)
 {
+    /*
+    Checks if the particle is outside the trap
+    Args:
+        r               (arma::vec) : the position of the particle
+    Returns: 
+        outside_trap    (bool)      : true if particle is outside the trap
+    */
     bool outside_trap = false;
     if(std::abs(r(0)) > dimension_ || std::abs(r(1)) > dimension_ || std::abs(r(2)) > dimension_)
     {
@@ -44,6 +63,16 @@ bool PenningTrap::particle_outside_trap_check(arma::vec r)
 
 arma::vec PenningTrap::external_E_field(arma::vec r, double time, double f, double wv)
 {
+    /*
+    Calculates the external electric field
+    Args:
+        r       (arma::vec) : position of the particle
+        time    (double)    : the current time of the simulation
+        f       (double)    : amplitue of the time-dependent part of the time-dependent potential
+        wv      (double)    : frequency of the time-dependent potential
+    Returns: 
+        E       (arma::vec) : the electric field
+    */
     double pot = potential_+potential_*f*std::cos(wv*time);
 
     double x_der = 2*r[0]*pot/(2*dimension_*dimension_);
@@ -60,6 +89,13 @@ arma::vec PenningTrap::external_E_field(arma::vec r, double time, double f, doub
 
 arma::vec PenningTrap::external_B_field(arma::vec r)
 {
+    /*
+    Finds the external magnetic field. If the particle is outside the box gives {0, 0, 0}
+    Args:
+        r   (arma::vec) : the position of the particle
+    Returns: 
+        B   (arma::vec) : the external magnetic field
+    */
     arma::vec B = {0,0,magnetic_field_};
     if(PenningTrap::particle_outside_trap_check(r) == true)
         B = {0,0,0};
@@ -69,6 +105,14 @@ arma::vec PenningTrap::external_B_field(arma::vec r)
 // Force on particle i from particle j
 arma::vec PenningTrap::force_particle(int i, int j)
 {
+    /*
+    Calculates the force acting on particle i from particle j
+    Args:
+        i   (int)   : our particle index
+        j   (int)   : index of particle acting on our particle
+    Returns: 
+        F   (arma::vec) : the force acting on particle i from particle j
+    */
     double ke = 1.38935333e+05;
     Particle particle_i = particles[i];
     Particle particle_j = particles[j];
@@ -97,7 +141,17 @@ arma::vec PenningTrap::force_particle(int i, int j)
 }
 // Total force on particle i from external fields
 arma::vec PenningTrap::total_force_external(int i, double time, double f, double wv)
-{
+{  
+    /*
+    Sum of the force due to the external magnetic and electric fields
+    Args:
+        i       (int)       : particle index i to calculate force of
+        time    (double)    : time used to calculate time-dependent potential 
+        f       (double)    : amplitude of the time-dependent part of the potential
+        wv      (double)    : frequency of the time-dependent potential
+    Returns:
+        F       (arma::vec) : total force due to the magnetic and electric fields
+    */
     Particle particle_i = particles[i];
     arma::vec v = particle_i.velocity();
     arma::vec B = PenningTrap::external_B_field(particle_i.position());
@@ -109,9 +163,16 @@ arma::vec PenningTrap::total_force_external(int i, double time, double f, double
     arma::vec F = {Fx, Fy, Fz};
     return F;
 }
-// Total force on particle i from other particles
+
 arma::vec PenningTrap::total_force_particles(int i)
 {
+    /*
+    Calculates the force acting on particle i due to all other particles
+    Args:
+        i   (int)       : particle index to calcualte forces of
+    Returns:
+        F   (arma::vec) : Force acting on particle i 
+    */
     double Fx = 0;
     double Fy = 0;
     double Fz = 0;
@@ -127,9 +188,19 @@ arma::vec PenningTrap::total_force_particles(int i)
     arma::vec F = {Fx, Fy, Fz};
     return F;
 }
-// Total force on particle i from both external fields and other particles
 arma::vec PenningTrap::total_force(int i, bool interaction, double time, double f, double wv)
 {
+    /*
+    Total force on particle i from both external fields and other particles
+    Args:
+        i           (int)       : particle index
+        interaction (bool)      : true if particle interaction is enabled
+        time        (double)    : current time of the simulation
+        f           (double)    : amplitude of the time-dependent part of the potential
+        wv          (double)    : frequency of the time-dependent potential
+    Returns: 
+        F           (arma::vec) : the total force acting on particle i
+    */
     arma::vec F;
     if(interaction)
     {
@@ -147,6 +218,17 @@ arma::vec PenningTrap::total_force(int i, bool interaction, double time, double 
 
 void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, double f, double wv, bool makefile, std::string filename)
 {
+    /*
+    Integrates the position and velocity of the particle(s) using the Runge Kutta 4 method
+    Args:
+        dt          (double)        : timestep
+        time_stop   (double)        : tells the system when to stop simulating (microseconds)
+        interation  (bool)          : false turns off particle interactions
+        f           (double)        : amplitude of the time dependent part of the time dependent potential
+        wv          (double)        : frequency of the time dependent potential
+        makefile    (bool)          : if true writes results to a file with filename given by paramtere filename
+        filename    (std::string)   : name of the file to write results to
+    */
     int size = PenningTrap::particle_count()*3;
     int N = time_stop/dt;
     arma::mat v(N, size);
@@ -324,6 +406,17 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, doub
 
 void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool interaction, double f, double wv, bool makefile, std::string filename)
 {
+    /*
+    Integrates the position and velocity of the particle(s) using the Euler-Cromer method
+    Args:
+        dt          (double)        : timestep
+        time_stop   (double)        : tells the system when to stop simulating (microseconds)
+        interation  (bool)          : false turns off particle interactions
+        f           (double)        : amplitude of the time dependent part of the time dependent potential
+        wv          (double)        : frequency of the time dependent potential
+        makefile    (bool)          : if true writes results to a file with filename given by paramtere filename
+        filename    (std::string)   : name of the file to write results to
+    */
     int size = PenningTrap::particle_count()*3;
     int N = time_stop/dt;
     arma::mat v(N, size);
@@ -401,6 +494,11 @@ void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool interac
 
 double PenningTrap::particles_inside_trap_count()
 {
+    /*
+    Counts the number of particles within the trap 
+    Returns:
+        count   (int)    :  number of particles within the trap
+    */
     double N = PenningTrap::particle_count();
     int count = 0;
     for(int i=0; i<N; i++)
