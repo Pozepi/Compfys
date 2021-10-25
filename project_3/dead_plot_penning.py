@@ -245,6 +245,8 @@ def plot_compare_analytical(filename1):
     ax2.legend()
     plt.show()
 
+def plot_trapcont():
+
 #plot_xy('RK4_one_particle')
 
 #plot_compare('RK4_one_particle', 'euler_one_particle')

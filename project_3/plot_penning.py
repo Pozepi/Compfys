@@ -26,7 +26,7 @@ q = 1
 B0 = 9.65e1
 V0 = 9.65e8
 d  = 1e4
-m  = 38.97
+m  = 39.96
 
 omega0 = q*B0/m
 omegaz = np.sqrt(2*q*V0/(m*d**2))
@@ -102,14 +102,14 @@ def plot_compare_analytical(filename1, plot=False):
 
 
 """ Find the relative error """
-def relerror(plot=False):
+def relerror(plot=False, save=False):
     fig, ax = plt.subplots(figsize=(11, 6), ncols=2)
 
     for pathi in single_particle_paths:
         # numerical values        
         myname = pathi.split('/')[-1]
         t_n, r_n, v_n = find_values_single(pathi)
-        jumpo = 100
+        jumpo = 1
         t_n = t_n[::jumpo]
         r_n = r_n[::jumpo]
         v_n = v_n[::jumpo]
@@ -120,7 +120,7 @@ def relerror(plot=False):
 
         R_n = np.sqrt(r_n[:,0]**2 + r_n[:,1]**2 + r_n[:,2]**2)
         R_a = np.sqrt(x_a**2 + y_a**2 + z_a**2)
-        relerror = abs(R_a - R_n)
+        relerror = np.sqrt((r_n[:,0]-x_a)**2 + (r_n[:,1]-y_a)**2 + (r_n[:,2]-z_a)**2)/R_a
 
         if pathi[-6:-4] == 'EU':
             labelname = 'dt = $10^{-%.i}$'%int(pathi[-1:])
@@ -131,10 +131,74 @@ def relerror(plot=False):
 
     ax[0].set_title('Euler')
     ax[1].set_title('Runge Kutta 4')
-    [[axi.set_yscale('log'), axi.legend(), axi.grid()] for axi in ax]
-    plt.savefig(figure_path+'relerror.pdf')
+    if save:
+        [[axi.set_yscale('log'), axi.legend(), axi.grid(), axi.set_xlabel('Time [μs]'), axi.set_ylabel('Relative Error')] for axi in ax]
+        plt.savefig(figure_path+'relerror.pdf')
     if plot:
+        [[axi.set_yscale('log'), axi.legend(), axi.grid(), axi.set_xlabel('Time [μs]'), axi.set_ylabel('Relative Error')] for axi in ax]
         plt.show()
+
+#relerror(save=True)
+def relerror2():
+    D_eu = []
+    D_rk = []
+    euler = '1_an_EU_he'
+    rk = '1_an_RK4_he'
+
+    for method in [euler, rk]:
+        h = []
+        D = []
+        for i in range(1,5+1):
+            #print(i)
+            methodi = method + str(i)
+            t_n, r_n, v_n = find_values_single(path+methodi+'/'+methodi)
+            x_a = x(t_n, v_n[0,1], r_n[0,0])
+            y_a = y(t_n, v_n[0,1], r_n[0,0])
+            z_a = z(t_n, r_n[0,2])
+
+            delta = r_n - np.array([x_a, y_a, z_a]).T
+            delta_max = np.max(delta)
+            D.append(delta_max)
+            h.append(t_n[1]-t_n[0])
+            #print(delta)
+            #delta2 = []
+            #[delta2.append([r_nx-x_ai,r_ny-y_ai,r_nz-z_ai]) for r_nx,x_ai,r_ny,y_ai,r_nz,z_ai in zip(r_n[:,0],x_a,r_n[:,1],y_a,r_n[:,2],z_a)]
+            #print(delta -delta2)
+        
+        D1 = np.roll(D, -1)
+        #print(D,D1)
+        h1 = np.roll(h, -1)
+        r_tmp = (np.log(D/D1)/np.log(h/h1))[:-1]
+        #print(r_tmp)
+
+        r_err = 0.25*np.sum(r_tmp)
+        print(r_err)
+
+"""
+def relerror3():
+    fig, ax = plt.subplots(figsize=(11, 6),ncols=2)
+    euler = '1_an_EU_he'
+    rk = '1_an_RK4_he'
+    j = 0
+    for method in [euler, rk]:
+        h = np.logspace(-1,-5, 5)
+        t = np.linspace(0,int(100/1e-5),int(100/1e-5))
+        H, T = np.meshgrid(h,t)
+        D = []
+        for i in range(1,5+1):
+            #print(i)
+            methodi = method + str(i)
+            t_n, r_n, v_n = find_values_single(path+methodi+'/'+methodi)
+            x_a = x(t_n, v_n[0,1], r_n[0,0])
+            y_a = y(t_n, v_n[0,1], r_n[0,0])
+            z_a = z(t_n, r_n[0,2])
+            R_a = np.sqrt(x_a**2 + y_a**2 + z_a**2)
+            relerror = np.sqrt((r_n[:,0]-x_a)**2 + (r_n[:,1]-y_a)**2 + (r_n[:,2]-z_a)**2)/R_a
+            
+            D.append(relerror)
+        ax[j].imshow(np.array(D))
+"""
+   
 
 """ Plot the position """
 """
@@ -198,13 +262,14 @@ def plot_vel(filename,plot=False,save=False):
     ax1.plot(r[:,0], v[:,0])
     ax2.plot(r[:,1], v[:,1])
     ax3.plot(r[:,2], v[:,2])
+    
 
     ax1.set_xlabel('X position [μm]'); ax1.set_ylabel('X velocity [m/s]')
     ax2.set_xlabel('Y position [μm]'); ax2.set_ylabel('Y velocity [m/s]')
     ax3.set_xlabel('Z position [μm]'); ax3.set_ylabel('Z velocity [m/s]')
 
     name = filename.split('/')[-1]
-    [axi.grid() for axi in axes]
+    [[axi.grid(), axi.set_aspect('equal', adjustable="datalim")] for axi in axes]
     if name[5:7] == 'EU':
         ax2.set_title('Euler with dt = $10^{-%.i}$'%int(name[-1:]))
     elif name[5:7] == 'RK':
@@ -356,16 +421,55 @@ def plot_multiple_particles(filename, animate=False, anisave=False, plot3d=False
             FFwriter = animation.FFMpegWriter(fps=1000)
             ani.save('penning.mp4', writer=FFwriter)
         plt.show()
+
+def plot_particle_count(plot=False, save=False):
+    #filenames = ['0.100000', '0.400000', '0.700000']
+    filenames = ['0.100000_zoom', '0.400000_zoom', '0.700000_zoom']
+    #filenames = ['0.100000_ssh', '0.100000']
+    fig, ax = plt.subplots(figsize=(10 ,5))
+    ax.grid()
+    ax.set_ylabel('Particle Count')
+    ax.set_xlabel('Frequency [MHz]')
+
+    #j = 0
+    labels = ['t = 500 $\mu$s, dt = 10$^{-3}$', 't = 100 $\mu$s, dt = 10$^{-2}$']
+    for filename in filenames:
+        m = pa.mat()
+        m.load('output_files/particles_in_trap_count/'+filename)
+        m = np.array(m)
+        A = m[:,0]
+        f = m[:,1]
+        count = m[:,2]
+        print(f[np.where(count == np.min(count))[0][0]], 'MHz')
+        #print(m)
+    
+        ax.plot(f,count,label='f = '+filename) #=labels[j])
+        #j+=1
+    ax.legend()
+
+    if plot:
+        plt.show()
+    elif save:
+        #plt.savefig(figure_path+'particle_count_compare.pdf')
+        plt.savefig(figure_path+'particle_count_zoom_interacton.pdf')
+
+    # A, f, Particle_count
+    return 0
+
+#plot_particle_count(save=True)
     
 #[plot_compare_analytical(pathi) for pathi in single_particle_paths]
 #relerror()
-#[plot_vel(pathi, save=True) for pathi in single_particle_paths]
+[plot_vel(pathi, save=True) for pathi in single_particle_paths]
 
 #plot_xy('RK4_one_particle')
 
 #[plot_multiple_particles(pathi, saveplot3d=True) for pathi in two_particle_paths]
 
+#plot_particle_count(save=True)
 
+#relerror2()
+#relerror3()
 
 #plot_compare('RK4_one_particle', 'euler_one_particle')
 #plot_compare('RK4_two_particles_interaction', 'euler_two_particles_interaction')
