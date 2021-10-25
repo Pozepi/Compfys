@@ -174,85 +174,6 @@ def relerror2():
         r_err = 0.25*np.sum(r_tmp)
         print(r_err)
 
-"""
-def relerror3():
-    fig, ax = plt.subplots(figsize=(11, 6),ncols=2)
-    euler = '1_an_EU_he'
-    rk = '1_an_RK4_he'
-    j = 0
-    for method in [euler, rk]:
-        h = np.logspace(-1,-5, 5)
-        t = np.linspace(0,int(100/1e-5),int(100/1e-5))
-        H, T = np.meshgrid(h,t)
-        D = []
-        for i in range(1,5+1):
-            #print(i)
-            methodi = method + str(i)
-            t_n, r_n, v_n = find_values_single(path+methodi+'/'+methodi)
-            x_a = x(t_n, v_n[0,1], r_n[0,0])
-            y_a = y(t_n, v_n[0,1], r_n[0,0])
-            z_a = z(t_n, r_n[0,2])
-            R_a = np.sqrt(x_a**2 + y_a**2 + z_a**2)
-            relerror = np.sqrt((r_n[:,0]-x_a)**2 + (r_n[:,1]-y_a)**2 + (r_n[:,2]-z_a)**2)/R_a
-            
-            D.append(relerror)
-        ax[j].imshow(np.array(D))
-"""
-   
-
-""" Plot the position """
-"""
-def plot_xy_zt(filename1,plot=False):
-    t, r, v = find_values_single(filename1)
-    fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
-    ax1.set_xlabel('X position'); ax1.set_ylabel('Y position')
-    ax2.set_xlabel('Time [micro seconds]'); ax2.set_ylabel('Z position')
-    [axi.grid() for axi in [ax1, ax2]]
-
-    ax1.plot(r[0,0], r[0,1], 'rx', label='Start pos')
-    ax1.plot(r[-1,0], r[-1,1], 'kx', label='End pos')
-    ax1.plot(r[:,0], r[:,1])
-    ax1.legend()
-    ax2.plot(t, r[:,2])
-    plt.savefig(figure_path)
-    if plot:
-        plt.show()
-"""
-
-
-
-""" Input filenames here not path """
-def plot_compare(filename1, filename2, plot=False):
-
-    t, r, v = find_values_single(path+filename1+'/'+filename1)
-    fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
-
-    [[axi.set_xlabel('X position'), axi.set_ylabel('Y position'), axi.grid()] for axi in [ax1, ax2]]
-    ax1.plot(r[:,0], r[:,1])
-    ax1.plot(r[0,0], r[0,1], 'rx', label='Start pos')
-    ax1.plot(r[-1,0], r[-1,1], 'kx', label='End pos')
-    ax1.legend()
-    if filename1[5:7] == 'EU':
-        ax1.set_title('Euler with dt = $10^{-%.i}$'%int(filename1[-1:]))
-    elif filename1[5:7] == 'RK':
-        ax1.set_title('Runge Kutta with dt = $10^{-%.i}$'%int(filename1[-1:]))
-
-    t, r, v = find_values_single(path+filename2+'/'+filename2)
-    ax2.plot(r[:,0], r[:,0])
-    ax2.plot(r[0,0], r[0,1], 'rx', label='Start pos')
-    ax2.plot(r[-1,0], r[-1,1], 'kx', label='End pos')
-    ax2.legend()
-    if filename2[5:7] == 'EU':
-        ax2.set_title('Euler with dt = $10^{-%.i}$'%int(filename2[-1:]))
-    elif filename2[5:7] == 'RK':
-        ax2.set_title('Runge Kutta with dt = $10^{-%.i}$'%int(filename2[-1:]))
-    name = figure_path+'_'+filename1[5:7]+filename1[-1:]+'_vs_'+filename2[5:7]+filename2[-1:]+'.pdf'
-    plt.savefig(name)
-    if plot:
-        plt.show()
-
-
-
 def plot_vel(filename,plot=False,save=False):
     """ Plot the velocity over time """
     t, r, v = find_values_single(filename)
@@ -311,12 +232,6 @@ def plot_multiple_particles(filename, animate=False, anisave=False, plot3d=False
     ry_i = []
     rz_i = []
     for i in range(particle_N):
-        #rx_i = rx[i::particle_N]
-        #ry_i = ry[i::particle_N]
-        #rz_i = rz[i::particle_N]
-        #plot both particles
-        #ax.plot(rx_i[0], ry_i[-1], 'x')
-        #ax.plot3D(rx_i, ry_i, rz_i, label='Particle %.i'%i)
         rx_i.append(r[:,i*3])
         ry_i.append(r[:,i*3+1])
         rz_i.append(r[:,i*3+2])
@@ -324,21 +239,6 @@ def plot_multiple_particles(filename, animate=False, anisave=False, plot3d=False
     ry_i = np.array(ry_i)
     rz_i = np.array(rz_i)
 
-
-    #line = []
-    # set up first frame
-    """
-    if not animate:
-        fig, ax = plt.subplots(figsize=(10,5))
-        [ax.plot(rx_ii, ry_ii) for rx_ii, ry_ii in zip(rx_i, ry_i)]
-        ax.grid()
-        ax.set_xlabel('X position [μm]')
-        ax.set_ylabel('Y position [μm]')
-        d = 1e4
-        ax.set_xlim(-d, d)
-        ax.set_ylim(-d, d)
-        plt.show()
-    """
     if plot or saveplot:
         fig,ax = plt.subplots()
         ax.set_xlabel('X position [μm]')
@@ -382,17 +282,6 @@ def plot_multiple_particles(filename, animate=False, anisave=False, plot3d=False
 
         line = [ax.plot(rx_ij[0], ry_ij[0], rz_ij[0], 'o')[0] for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
         lines = [ax.plot(rx_ij[0:1], ry_ij[0:1], rz_ij[0:1])[0] for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
-        """
-        lines = []; [lines.append([]) for i in range(particle_N)] # particle_N lines
-        for j in range(particle_N):
-            lines[j].plot()
-        N = len(rx_i[0])
-
-        def update(i, line):
-            for j in range(particle_N):
-                for i in range(len(rx_i)):
-                    line[j].set_data(rx_i[:i], ry_i[:i], rz_i[:i])
-        """
 
         def update(i):
             tail_length = 1000
@@ -401,19 +290,9 @@ def plot_multiple_particles(filename, animate=False, anisave=False, plot3d=False
                 j = 0
             elif i - tail_length >= 0:
                 j = i - tail_length
-            #print(j)
-            #[[line[i].set_data([rx_ij[:i], ry_ij[:i], rz_ij[:i]]) for i in range(particle_N)] for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
-            #[ax.plot(rx_ij[j:i], ry_ij[j:i], rz_ij[j:i], 'r') for rx_ij, ry_ij, rz_ij in zip(rx_i, ry_i, rz_i)]
-            #[[linei.set_data(rx_ij[i], ry_ij[i]) for rx_ij, ry_ij in zip(rx_i, ry_i)] for linei in line]
-            
-            #lines[0].set_data(rx_i[0][i], ry_i[0][i])
-            #lines[0].set_3d_properties(rz_i[0][i])
-
-            #line[-1].set_data_3d(rx_i[-1][i], ry_i[-1][i], rz_i[-1][i])
 
             [linei.set_data_3d(rx_ij[i], ry_ij[i], rz_ij[i]) for linei, rx_ij, ry_ij, rz_ij in zip(line, rx_i, ry_i, rz_i)]
             [linesi.set_data_3d(rx_ij[j:i], ry_ij[j:i], rz_ij[j:i]) for linesi, rx_ij, ry_ij, rz_ij in zip(lines, rx_i, ry_i, rz_i)]
-            #[[linei.set_3d_properties(rz_ij[i]) for rz_ij in rz_i] for linei in line]
 
         ani = animation.FuncAnimation(fig, update, len(rx_i[0])//10, blit=False, interval=1)
 
@@ -456,11 +335,11 @@ def plot_particle_count(plot=False, save=False):
     # A, f, Particle_count
     return 0
 
-#plot_particle_count(save=True)
     
 #[plot_compare_analytical(pathi) for pathi in single_particle_paths]
-#relerror()
+relerror()
 relerror2()
+plot_particle_count(save=True)
 #[plot_vel(pathi, save=True) for pathi in single_particle_paths]
 
 #plot_xy('RK4_one_particle')
