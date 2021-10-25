@@ -35,20 +35,46 @@ omega_pluss = 0.5*(omega0 + np.sqrt(omega0**2 - 2*omegaz**2))
 omega_minus = 0.5*(omega0 - np.sqrt(omega0**2 - 2*omegaz**2))
 
 def x(t, v0, x0):
-    # v0 initial velocity in y
-    # x0 initial position in x
+    """
+    Finds the analytical x values at times t given initial y velocity v0 and
+    inital x0 x position. 
+    Args:
+        t   (array) : the analytical extent of time, can also be a float or integer
+        v0  (float) : initial y velocity
+        x0  (float) : initial x position
+    Returns: 
+        -A_minus*np.sin(omega_minus*t) - A_pluss*np.sin(omega_pluss*t) (array/float) : analytical
+        x position
+    """
     A_pluss = (v0+x0*omega_minus)/(omega_minus - omega_pluss)
     A_minus = -(v0+x0*omega_pluss)/(omega_minus - omega_pluss)
     return A_pluss*np.cos(omega_pluss*t) + A_minus*np.cos(omega_minus*t)
 
 def y(t, v0, x0):
-    # v0 initial velocity in y
-    # x0 initial position in x
+    """
+    Finds the analytical y values at times t given initial y velocity v0 and
+    inital x0 x position. 
+    Args:
+        t   (array) : the analytical extent of time, can also be a float or integer
+        v0  (float) : initial y velocity
+        x0  (float) : initial x position
+    Returns: 
+        -A_minus*np.sin(omega_minus*t) - A_pluss*np.sin(omega_pluss*t) (array/float) : analytical
+        y position
+    """
     A_pluss = (v0+x0*omega_minus)/(omega_minus - omega_pluss)
     A_minus = -(v0+x0*omega_pluss)/(omega_minus - omega_pluss)
     return -A_minus*np.sin(omega_minus*t) - A_pluss*np.sin(omega_pluss*t)
 
 def z(t, z0):
+    """
+    Finds the analytical z values at times t given initial z position
+    Args:
+        t   (array) : the analytical extent of time, can also be a float or integer
+        z0  (float) : the initial z position
+    Returns: 
+        z0*np.cos(omegaz*t) (float/array)   :   analytical z position
+    """
     return z0*np.cos(omegaz*t)
     
 
@@ -56,6 +82,14 @@ def z(t, z0):
 
 """ Extract one particle coords """
 def find_values_single(filename):
+    """
+    Loads the time, position and velocity for given files with inside a folder with name filename
+    Args:
+        filename    (string)    :   name of the files to be loaded
+    Returns: 
+        np.array(t)[:,0], np.array(r), np.array(v)  (touple)    :   touple of arrays 
+        first one is time, second position and last velocity
+    """
     t = pa.mat()
     r = pa.mat()
     v = pa.mat()
@@ -69,6 +103,13 @@ def find_values_single(filename):
 
 """ Compare numerical to analytical for a single particle"""
 def plot_compare_analytical(filename1, plot=False):
+    """
+    Loads the time, position and velocity of a folder with name filename1 and compares them analytically.
+    Saves the plot automatically
+    Args:
+        filename1   (string)    :   name of the files to be loaded
+        plot        (bool)      :   if true shows the plot
+    """
     t, r, v = find_values_single(filename1)
     fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
 
@@ -103,6 +144,13 @@ def plot_compare_analytical(filename1, plot=False):
 
 """ Find the relative error """
 def relerror(plot=False, save=False):
+    """
+    Finds the relative error of runge kutta and euler method and either saves them or plots them
+    (or none of them)
+    Args:
+        plot    (bool)  :   if true plots the relative error
+        save    (bool)  :   if ture saves the relative error
+    """
     fig, ax = plt.subplots(figsize=(11, 6), ncols=2)
 
     for pathi in single_particle_paths:
@@ -140,6 +188,9 @@ def relerror(plot=False, save=False):
 
 #relerror(save=True)
 def relerror2():
+    """
+    Calculates the error convergence of runge kutta and euler
+    """
     D_eu = []
     D_rk = []
     euler = '1_an_EU_he'
@@ -175,7 +226,12 @@ def relerror2():
         print(r_err)
 
 def plot_vel(filename,plot=False,save=False):
-    """ Plot the velocity over time """
+    """
+    Plots the phase space in x, y and z for a file with name filename
+    Args:
+        plot    (bool)  :   plots the phase space if true
+        save    (bool)  :   saves the phase space if true
+    """
     t, r, v = find_values_single(filename)
     fig, [ax1, ax2, ax3] = plt.subplots(figsize=(20,10), ncols=3)
     axes = [ax1, ax2, ax3]
@@ -206,6 +262,18 @@ def plot_vel(filename,plot=False,save=False):
 
 def plot_multiple_particles(filename, animate=False, anisave=False, plot3d=False, saveplot3d=False,
     plot=False, saveplot=False):
+    """
+    Plots the case for multiple particles. File with name filename. Can plot in 2d (plot) and save in 2d
+    (saveplot). Can also plot in 3d (plot3d) and save in 3d (saveplot3d). Can also animate in 3d (animate) 
+    and save in the (anisave)
+    Args:
+        filename    (string)    :   name of file to analyse
+        animate     (bool)      :   if true animates in 3d
+        anisave     (bool)      :   if true save 3d animation
+        saveplot3d  (bool)      :   if true save the 3d plot of trajectory
+        plot        (bool)      :   if true plots 2d
+        saveplot    (bool)      :   if true saves 2d plots
+    """
     t, r, v = find_values_single(filename)
     name = filename.split('/')[-1]
     method = name[5:7]
@@ -298,10 +366,16 @@ def plot_multiple_particles(filename, animate=False, anisave=False, plot3d=False
 
         if anisave:
             FFwriter = animation.FFMpegWriter(fps=1000)
-            ani.save('penning.mp4', writer=FFwriter)
+            ani.save('penning_'+name+'.mp4', writer=FFwriter)
         plt.show()
 
 def plot_particle_count(plot=False, save=False):
+    """
+    Plots the particle count as a function of the frequency of the time-dependent potnetial.
+    Args:
+        plot    (bool)  :   if true plots
+        save    (bool)  :   if true saves plot
+    """
     #filenames = ['0.100000', '0.400000', '0.700000']
     filenames = ['0.100000_zoom', '0.400000_zoom', '0.700000_zoom']
     #filenames = ['0.100000_ssh', '0.100000']
@@ -310,7 +384,6 @@ def plot_particle_count(plot=False, save=False):
     ax.set_ylabel('Particle Count')
     ax.set_xlabel('Frequency [MHz]')
 
-    #j = 0
     labels = ['t = 500 $\mu$s, dt = 10$^{-3}$', 't = 100 $\mu$s, dt = 10$^{-2}$']
     for filename in filenames:
         m = pa.mat()
@@ -320,39 +393,21 @@ def plot_particle_count(plot=False, save=False):
         f = m[:,1]
         count = m[:,2]
         print(f[np.where(count == np.min(count))[0][0]], 'MHz')
-        #print(m)
+
     
         ax.plot(f,count,label='f = '+filename) #=labels[j])
-        #j+=1
     ax.legend()
 
     if plot:
         plt.show()
     elif save:
-        #plt.savefig(figure_path+'particle_count_compare.pdf')
         plt.savefig(figure_path+'particle_count_zoom_interacton.pdf')
 
-    # A, f, Particle_count
-    return 0
-
     
-#[plot_compare_analytical(pathi) for pathi in single_particle_paths]
+[plot_compare_analytical(pathi) for pathi in single_particle_paths]
 relerror()
 relerror2()
 plot_particle_count(save=True)
-#[plot_vel(pathi, save=True) for pathi in single_particle_paths]
+[plot_vel(pathi, save=True) for pathi in single_particle_paths]
 
-#plot_xy('RK4_one_particle')
-
-#[plot_multiple_particles(pathi, saveplot3d=True) for pathi in two_particle_paths]
-
-#plot_particle_count(save=True)
-
-#relerror2()
-#relerror3()
-
-#plot_compare('RK4_one_particle', 'euler_one_particle')
-#plot_compare('RK4_two_particles_interaction', 'euler_two_particles_interaction')
-#plot_compare_analytical('RK4_against_analytical')
-#plot_multiple_particles('RK4_random_test' ,animate=True)
-#plot_multiple_particles('RK4_two_particles_interaction_z_start' ,animate=True)
+[plot_multiple_particles(pathi, animate=True, anisave=True) for pathi in two_particle_paths]
