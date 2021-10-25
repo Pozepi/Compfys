@@ -1,3 +1,11 @@
+# Compile and run
+
+To compile and run the c++ scripts write
+```
+make all
+```
+Given that the makefile is included in the directory. This creates and runs a script called test.out
+
 # particle.cpp
 
 particle.cpp is a c++ script containing the Particle class, which creates a Particle element. 
@@ -132,6 +140,25 @@ plot_penning.py is a python script to handle different result files from the Pen
 
 ## Installation 
 
+Install matplotlib.pyplot with 
+```
+pip install matplotlib
+```
+
+Install numpy with
+```
+pip install numpy
+```
+
+Install pyarma with
+```
+pip install pyarma
+```
+
+Install glob with
+```
+pip install glob2
+```
 
 ## Usage
 

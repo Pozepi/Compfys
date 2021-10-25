@@ -4,6 +4,15 @@
 
 PenningTrap::PenningTrap(double magnetic_field, double potential, double dimension)
 {
+    /*
+    CONSTRUCTOR 
+
+    Creates an instance of the PenningTrap class.
+    Args:
+        magnetic_field  (double)    :   The magnetic field B
+        potential       (double)    :   The electric potential V
+        dimension       (double)    :   The size of the PenningTrap 
+    */
     magnetic_field_ = magnetic_field;
     potential_ = potential;
     dimension_ = dimension;
@@ -11,6 +20,9 @@ PenningTrap::PenningTrap(double magnetic_field, double potential, double dimensi
 
 void PenningTrap::add_particle(Particle particle_in)
 {
+    /*
+    Adds a single particle at the end of the particle vector. 
+    */
     particles.push_back(particle_in);
 }
 
@@ -252,14 +264,6 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, doub
     
     for(int i=0; i<N-1; i++)
     {   
-        // solving for the position and velocity of the particles
-        //
-        // h = t[i+1] - t[i] -> dt
-        // k1 = f(y[i], t[i], *args)
-        // k2 = f(y[i] + k1 * h / 2., t[i] + h / 2., *args)
-        // k3 = f(y[i] + k2 * h / 2., t[i] + h / 2., *args)
-        // k4 = f(y[i] + k3 * h, t[i] + h, *args)
-        // y[i+1] = y[i] + (h / 6.) * (k1 + 2*k2 + 2*k3 + k4)
         arma::mat k1v(3, PenningTrap::particle_count());
         arma::mat k1p(3, PenningTrap::particle_count());
 
@@ -358,9 +362,6 @@ void PenningTrap::evolve_RK4(double dt, double time_stop, bool interaction, doub
             k4p(1,j) = tmp_vel(1);
             k4p(2,j) = tmp_vel(2);
         }
-        
-        // k4 = f(y[i] + k3 * h, t[i] + h, *args)
-        // same as above but with k3 and with dt not dt/2
 
         // FINALLY update velocity and position using RK4
         jump = 0;
@@ -482,13 +483,6 @@ void PenningTrap::evolve_forward_Euler(double dt, double time_stop, bool interac
         times.save("output_files//"+filename+"//"+filename+"_t.txt");
         v.save("output_files//"+filename+"//"+filename+"_v.txt");
         pos.save("output_files//"+filename+"//"+filename+"_pos.txt");
-        /*
-        std::fstream file;
-        file.open(filename+".txt", std::ios::out);
-        file << times << '\n';
-        file << v << '\n';
-        file << pos << '\n';
-        */
     }
 }
 
