@@ -460,7 +460,8 @@ def plot_particle_count(plot=False, save=False):
     
 #[plot_compare_analytical(pathi) for pathi in single_particle_paths]
 #relerror()
-[plot_vel(pathi, save=True) for pathi in single_particle_paths]
+relerror2()
+#[plot_vel(pathi, save=True) for pathi in single_particle_paths]
 
 #plot_xy('RK4_one_particle')
 
