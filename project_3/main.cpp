@@ -10,7 +10,7 @@ int main()
     double d = 1e+4;
     double ke = 1.38935333e+05;
     double charge = 1;
-    double mass = 38.97;
+    double mass = 39.96;
 
 
     // For comparison to analytical results
@@ -124,8 +124,8 @@ int main()
         {
             PenningTrap ten(B0, V0_10, d_10);
             std::cout << i << '\n';
-            ten.add_n_random_particles(50, charge, mass);
-            ten.evolve_RK4(1e-3, 100, false, f(0), wv(i));
+            ten.add_n_random_particles(100, charge, mass);
+            ten.evolve_RK4(1e-2, 250, false, f(f_), wv(i));
             output(i,0) = f(f_);
             output(i,1) = wv(i);
             output(i,2) = ten.particles_inside_trap_count();
@@ -133,7 +133,7 @@ int main()
         std::cout << "Done iteration" << '\n';
         mkdir("output_files",0777);
         mkdir("output_files//particles_in_trap_count",0777);
-        output.save("output_files//particles_in_trap_count//"+filename);
+        output.save("output_files//particles_in_trap_count//100_"+filename);
     }
     clock_t t2 = clock();
 
