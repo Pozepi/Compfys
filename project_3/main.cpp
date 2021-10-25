@@ -14,7 +14,7 @@ int main()
 
 
     // For comparison to analytical results
-    /*
+    
     arma::vec h = {1e-1, 1e-2, 1e-3, 1e-4, 1e-5};
     Particle one(charge, mass, {1,0,1}, {0,1,0});
 
@@ -51,8 +51,8 @@ int main()
     h_VIII.evolve_forward_Euler(h(2),100,false,0,0,true,"1_an_EU_he3");
     h_IX.evolve_forward_Euler(h(3),100,false,0,0,true,"1_an_EU_he4");
     h_X.evolve_forward_Euler(h(4),100,false,0,0,true,"1_an_EU_he5");
-    */
-    /*
+
+    // testing for one particle with and without interaction
     Particle nineone(charge, mass, {1,0,1}, {0,1,0});
 
     PenningTrap nouno(B0, V0, d);
@@ -69,9 +69,8 @@ int main()
     nodos.evolve_forward_Euler(1e-3, 100, false, 0, 0, true, "1_nineone_EU_te3");
     notres.evolve_RK4(1e-4, 100, false, 0, 0, true, "1_nineone_RK4_te4");
     noquatro.evolve_forward_Euler(1e-4,100,false, 0,0,true, "1_nineone_EU_te4");
-    */
     
-    /*
+    // Testing for two particles with and without interaction
     Particle ninetwo(charge,mass,{1,0,0},{0,1,0});
     Particle ninetwotwo(charge,mass,{-1,0,0},{1,0,0});
 
@@ -107,8 +106,8 @@ int main()
 
     nttuno.evolve_RK4(1e-3, 100, false, 0, 0, true, "2_no_RK4_z_te3");
     ntttres.evolve_RK4(1e-3,100,true,0,0,true,"2_in_RK4_z_te3");
-    */
     
+    // Checking how many particles are still left in penning trap for different amplitudes and frequencies.
     int N = 100;
     double d_10 = 0.05*cm;
     double V0_10 = 0.0025*volt;
@@ -138,12 +137,7 @@ int main()
     clock_t t2 = clock();
 
     double duration_seconds = ((double) (t2-t1))/CLOCKS_PER_SEC;
-    /*
-    PenningTrap random_test(B0, V0_10, d_10);
-    random_test.add_n_random_particles(5, charge, mass);
-    random_test.evolve_RK4(1e-3, 100, true, 0,0,true, "RK4_random_test_seed_1");
-    std::cout << "Particles left in the penningtrap: " << random_test.particles_inside_trap_count() << "\n";
-    */
+    std::cout << duration_seconds << '\n';
 
     return 0;
 }

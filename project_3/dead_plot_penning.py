@@ -8,6 +8,37 @@ from matplotlib import animation
 
 filename = 'RK4_one_particle' #'forward_euler'
 
+""" Input filenames here not path """
+def plot_compare(filename1, filename2, plot=False):
+
+    t, r, v = find_values_single(path+filename1+'/'+filename1)
+    fig, [ax1, ax2] = plt.subplots(figsize=(10,5), ncols=2)
+
+    [[axi.set_xlabel('X position'), axi.set_ylabel('Y position'), axi.grid()] for axi in [ax1, ax2]]
+    ax1.plot(r[:,0], r[:,1])
+    ax1.plot(r[0,0], r[0,1], 'rx', label='Start pos')
+    ax1.plot(r[-1,0], r[-1,1], 'kx', label='End pos')
+    ax1.legend()
+    if filename1[5:7] == 'EU':
+        ax1.set_title('Euler with dt = $10^{-%.i}$'%int(filename1[-1:]))
+    elif filename1[5:7] == 'RK':
+        ax1.set_title('Runge Kutta with dt = $10^{-%.i}$'%int(filename1[-1:]))
+
+    t, r, v = find_values_single(path+filename2+'/'+filename2)
+    ax2.plot(r[:,0], r[:,0])
+    ax2.plot(r[0,0], r[0,1], 'rx', label='Start pos')
+    ax2.plot(r[-1,0], r[-1,1], 'kx', label='End pos')
+    ax2.legend()
+    if filename2[5:7] == 'EU':
+        ax2.set_title('Euler with dt = $10^{-%.i}$'%int(filename2[-1:]))
+    elif filename2[5:7] == 'RK':
+        ax2.set_title('Runge Kutta with dt = $10^{-%.i}$'%int(filename2[-1:]))
+    name = figure_path+'_'+filename1[5:7]+filename1[-1:]+'_vs_'+filename2[5:7]+filename2[-1:]+'.pdf'
+    plt.savefig(name)
+    if plot:
+        plt.show()
+
+
 def find_values(filename, particle_jump=0):
     # Finds values for one value
     t = []
