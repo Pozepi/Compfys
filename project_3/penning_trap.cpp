@@ -64,7 +64,7 @@ bool PenningTrap::particle_outside_trap_check(arma::vec r)
 arma::vec PenningTrap::external_E_field(arma::vec r, double time, double f, double wv)
 {
     /*
-    Calculates the external electric field
+    Calculates the external electric field. If particle is outside of PenningTrap dimensions, E is set to zero. 
     Args:
         r       (arma::vec) : position of the particle
         time    (double)    : the current time of the simulation
