@@ -9,6 +9,7 @@
 #include <numeric>
 #include <random>
 #include <algorithm>
+#include <map>
 
 class Lattice
 {
