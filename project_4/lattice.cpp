@@ -133,15 +133,55 @@ arma::mat Lattice::Replace_pad(arma::mat lat)
     new_lat(L_+1,L_+1) = lat(1,1);
     return new_lat;
 }
-/*
+
 double Lattice::Boltzman(arma::mat lat)
 {
     double Z;
+
+    arma::mat dummy;
+    dummy.ones(L_, L_);
+
+    for (int k; k<N_*N_; k++)
+    {   // for all elements in lattice
+        // subtract 2 from the first element
+        dummy(0,0) -= 2;
+        // the thought is to roll this subtraction
+        // over one index if we go under -1
+
+        // basically numpy.where
+        for (int i; i<L_; i++)
+        { 
+            for (int j; j<L_; j++)
+            {
+                // where and elements is less than -1
+                if (dummy(i,j) < -1)
+                {
+                    // we subtract to the next element
+                    if (i<L_)
+                        dummy(i+1,j) -= 2;
+                    // if we are on the border we subtract the
+                    // first element in the next row
+                    if (i==L_)
+                        dummy(0,j+1) -= 2;
+                    // else if we are in the corner (i,j) = (L,L) we
+                    // simply do nothing
+                    else if (i==L_ | j==L_)
+                        double null = 0;
+                    // finally set current index to 1
+                    dummy(i,j) = 1;
+                }
+            }
+        }
+        // PRINT HERE SENPAI UWU
+    }
+
+    /*
     for (i<)
     double P = exp(-Total_energy()/T)/Z;
     return P;
+    */
 }
-*/
+
 void Lattice::one_cycle_MCMC(int n)
 {
     arma::mat S = lattice;
