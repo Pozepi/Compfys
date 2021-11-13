@@ -27,7 +27,7 @@ class Lattice
     arma::mat Pad_lattice(arma::mat lat);
     double Total_magnetization();
     double Total_energy(arma::mat lat);
-    double Boltzman(arma::mat lat);
+    double Boltzman();
     arma::mat Replace_pad(arma::mat lat);
     void one_cycle_MCMC(int n);
 };

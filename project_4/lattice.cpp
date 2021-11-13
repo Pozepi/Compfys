@@ -134,14 +134,19 @@ arma::mat Lattice::Replace_pad(arma::mat lat)
     return new_lat;
 }
 
-double Lattice::Boltzman(arma::mat lat)
+double Lattice::Boltzman()
 {
     double Z;
 
     arma::mat dummy;
     dummy.ones(L_, L_);
+    int count = 1;
+    // Z = ... manually set Z to just ones
+    //std::cout << count << '\n';
+    //std::cout << dummy << '\n';
 
-    for (int k; k<N_*N_; k++)
+    // for (int k = 0; k<N_*N_; k++)
+    while (true)
     {   // for all elements in lattice
         // subtract 2 from the first element
         dummy(0,0) -= 2;
@@ -149,37 +154,47 @@ double Lattice::Boltzman(arma::mat lat)
         // over one index if we go under -1
 
         // basically numpy.where
-        for (int i; i<L_; i++)
+        for (int j = 0; j<L_; j++)
         { 
-            for (int j; j<L_; j++)
+            for (int i = 0; i<L_; i++)
             {
                 // where and elements is less than -1
                 if (dummy(i,j) < -1)
                 {
                     // we subtract to the next element
-                    if (i<L_)
+                    if (i<L_-1)
                         dummy(i+1,j) -= 2;
                     // if we are on the border we subtract the
                     // first element in the next row
-                    if (i==L_)
+                    if (i==L_-1)
                         dummy(0,j+1) -= 2;
                     // else if we are in the corner (i,j) = (L,L) we
                     // simply do nothing
-                    else if (i==L_ | j==L_)
+                    else if (i==L_-1 | j==L_-1)
                         double null = 0;
                     // finally set current index to 1
                     dummy(i,j) = 1;
                 }
             }
         }
+        // Z += ...
+        count += 1;
+        
+        //std::cout << count << '\n';
+        //std::cout << dummy << '\n';
+
+        if (arma::accu(dummy) == -N_)
+            break;
         // PRINT HERE SENPAI UWU
     }
+    std::cout << count << '\n';
 
     /*
     for (i<)
     double P = exp(-Total_energy()/T)/Z;
     return P;
     */
+   return 10;
 }
 
 void Lattice::one_cycle_MCMC(int n)
