@@ -17,7 +17,7 @@ arma::mat Lattice::Create_lattice()
 }
 
 void Lattice::Fill_lattice()
-{   /*
+{   
     std::srand(time(NULL));
     for(int i = 0; i < L_; i++)
     {
@@ -27,8 +27,8 @@ void Lattice::Fill_lattice()
             lattice(i,j) = k;
         }
     }
-    */
-   lattice.ones(L_,L_);
+    
+   //lattice.ones(L_,L_);
 }
 
 arma::mat Lattice::Pad_lattice(arma::mat lat)
@@ -86,8 +86,8 @@ double Lattice::Total_energy(arma::mat lat, bool padded)
         }
     if(L_ == 2)
     {
-        sum += pad(0,0)*(pad(1,0)+pad(0,1));
-        sum += pad(1,1)*(pad(1,0)+pad(0,1));
+        sum += pad(1,1)*(pad(2,1)+pad(1,2));
+        sum += pad(2,2)*(pad(2,1)+pad(1,2));
     }
     else
     {
@@ -199,10 +199,13 @@ double Lattice::magnetization_per_spin(arma::mat lat, bool padded)
     return m;
 }
 
-double Lattice::specific_heat_capacity()
+double Lattice::specific_heat_capacity(arma::vec eps)
 {
-    double ten = 10;
-    return ten;
+    arma::vec E = eps*N_;
+    double first_moment = arma::accu(E)/E.n_elem;
+    double second_moment = arma::accu(arma::dot(E,E))/E.n_elem;
+    double Cv = (second_moment - first_moment*first_moment)/(N_*T_*T_);
+    return Cv;
 }
 
 double Lattice::susceptibility()
@@ -211,16 +214,16 @@ double Lattice::susceptibility()
     return ten;
 }
 
-void Lattice::one_cycle_MCMC(int n, double& eps, double& m, double& Cv, double& chi)
+void Lattice::one_cycle_MCMC(int n, double& eps, double& m)
 {
     arma::mat S = lattice;
     arma::mat pad_s = Pad_lattice(S);
 
-    double E0 = -8; double expE0 = exp(E0/T_);
-    double E1 = -6; double expE1 = exp(E1/T_);
-    double E2 = -4; double expE2 = exp(E2/T_);
-    double E3 = -2; double expE3 = exp(E3/T_);
-    double E4 = -0; double expE4 = exp(E4/T_);
+    double E0 = 8; double expE0 = exp(E0/T_);
+    double E1 = 4; double expE1 = exp(E1/T_);
+    double E2 = 0; double expE2 = exp(E2/T_);
+    double E3 = -4; double expE3 = exp(E3/T_);
+    double E4 = -8; double expE4 = exp(E4/T_);
 
     std::map<double, double> my_map = {
     { E0, expE0},
@@ -237,11 +240,12 @@ void Lattice::one_cycle_MCMC(int n, double& eps, double& m, double& Cv, double& 
         int j = (std::rand()%L_)+1;
         S_prime(i,j) = -S_prime(i,j);
         arma::mat S_ = Replace_pad(S_prime);
-        double dE = S_prime(i,j)*(S_prime(i-1,j) + S_prime(i+1,j) + S_prime(i,j-1) + S_prime(i,j+1));
+        double dE = S_(i,j)*(S_(i-1,j) + S_(i+1,j) + S_(i,j-1) + S_(i,j+1)) - pad_s(i,j)*(pad_s(i-1,j) + pad_s(i+1,j) + pad_s(i,j-1) + pad_s(i,j+1));
         double one = 1;
         double p = std::min(one, my_map[dE]);
 
         double r = ((double) rand() / (RAND_MAX));
+        //std::cout << r  << ' ' <<  p << '\n';
 
         if(r <= p)
         {
