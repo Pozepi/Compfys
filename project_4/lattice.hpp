@@ -10,6 +10,7 @@
 #include <random>
 #include <algorithm>
 #include <map>
+#include <time.h>
 
 class Lattice
 {
@@ -25,10 +26,13 @@ class Lattice
     arma::mat Create_lattice();
     void Fill_lattice();
     arma::mat Pad_lattice(arma::mat lat);
-    double Total_magnetization();
-    double Total_energy(arma::mat lat);
+    arma::mat unpad(arma::mat pad);
+    double Total_magnetization(arma::mat lat, bool padded);
+    double Total_energy(arma::mat lat, bool padded);
     double Boltzman(arma::mat lat);
     arma::mat Replace_pad(arma::mat lat);
+    double energy_per_spin(arma::mat lat, bool padded);
+    double magnetization_per_spin(arma::mat lat, bool padded);
     void one_cycle_MCMC(int n);
 };
 

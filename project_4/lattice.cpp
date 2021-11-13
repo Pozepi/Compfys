@@ -1,5 +1,4 @@
 #include "lattice.hpp"
-#include <map>
 
 Lattice::Lattice(int L, double T)
 {
@@ -90,18 +89,39 @@ arma::mat Lattice::Pad_lattice(arma::mat lat)
     padded(L_+1,L_+1) = padded(1,1);
     return padded;
 }
-
-double Lattice::Total_magnetization()
+arma::mat Lattice::unpad(arma::mat pad)
 {
-    double sum = arma::accu(lattice);
+    arma::mat unpadded(L_, L_);
+    for(int i = 1; i < L_+1; i++)
+    {
+        for(int j = 1; j < L_+1; j++)
+        {
+            unpadded(i-1,j-1) = pad(i, j);
+        }
+    }
+    return unpadded;
+}
+
+double Lattice::Total_magnetization(arma::mat lat, bool padded)
+{
+    arma::mat latt = lat;
+    if(padded == true)
+    {
+        latt = unpad(lat);
+    }
+    double sum = arma::accu(latt);
     return sum;
 }
 
-double Lattice::Total_energy(arma::mat lat)
+double Lattice::Total_energy(arma::mat lat, bool padded)
 {
     double sum = 0;
-    arma::mat pad = Pad_lattice(lat);
+    arma::mat pad = lat;
 
+    if(padded == false)
+        {
+        pad = Pad_lattice(lat);
+        }
     for(int i=1; i<L_+1; i++)
     {
         for(int j=1; j<L_+1; j++)
@@ -142,6 +162,18 @@ double Lattice::Boltzman(arma::mat lat)
     return P;
 }
 */
+double Lattice::energy_per_spin(arma::mat lat, bool padded)
+{
+    double eps = Total_energy(lat, padded)/N_;
+    return eps;
+}
+
+double Lattice::magnetization_per_spin(arma::mat lat, bool padded)
+{
+    double m = Total_magnetization(lat, padded)/N_;
+    return m;
+}
+
 void Lattice::one_cycle_MCMC(int n)
 {
     arma::mat S = lattice;
@@ -180,5 +212,6 @@ void Lattice::one_cycle_MCMC(int n)
             pad_s = S_prime;
         }
     }
+
     //calculate some values from the new S
 }
