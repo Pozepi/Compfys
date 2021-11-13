@@ -3,10 +3,10 @@
 
 int main()
 {
-    Lattice test(5, 1);
+    Lattice test(2, 1);
     test.Fill_lattice();
     clock_t t1 = clock();
-    int cycles = 10;
+    int cycles = 10000;
     double eps;
     double m;
     double Cv;
@@ -17,19 +17,22 @@ int main()
     arma::vec Cv_list(cycles);
     arma::vec chi_list(cycles);
 
+
     for(int i = 0; i < cycles; i++)
     {
-        test.one_cycle_MCMC(1000, eps, m, Cv, chi);
+        std::srand(time(0)+i);
+        test.one_cycle_MCMC(4, eps, m, Cv, chi);
         eps_list(i) = eps;
         m_list(i) = m;
         Cv_list(i) = Cv;
         chi_list(i) = chi;
     }
-    std::cout << eps_list << '\n';
-    
     clock_t t2 = clock();
+    eps_list.save("eps.txt");
+    m_list.save("m.txt");
     double duration_seconds = ((double) (t2-t1))/CLOCKS_PER_SEC;
     std::cout << duration_seconds << '\n';
+
 
     return 0;
 }

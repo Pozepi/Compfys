@@ -17,7 +17,7 @@ arma::mat Lattice::Create_lattice()
 }
 
 void Lattice::Fill_lattice()
-{
+{   /*
     std::srand(time(NULL));
     for(int i = 0; i < L_; i++)
     {
@@ -27,45 +27,9 @@ void Lattice::Fill_lattice()
             lattice(i,j) = k;
         }
     }
+    */
+   lattice.ones(L_,L_);
 }
-/*
-arma::mat Lattice::Pad_lattice(arma::mat lat)
-{
-    arma::mat padded(L_+2, L_+2);
-    for(int i=1; i < L_+1; i++)
-    {
-        for(int j=1; j < L_+1; j++)
-        {
-            padded(i,j) = lat(i-1,j-1);
-            double *p2 = new double;
-            *p2 = padded(L_, j);
-            padded(0,j) = *p2;
-            double *p3 = new double;
-            *p3 = padded(i,L_);
-            padded(i,0) = *p3;
-            double *p4 = new double;
-            *p4 = padded(1, j);
-            padded(L_+1,j) = *p4;
-            double *p5 = new double;
-            *p5 = padded(i,1);
-            padded(i,L_+1) = *p5;
-        }
-    }
-    double *p6 = new double;
-    *p6 = padded(L_,L_);
-    padded(0,0) = *p6;
-    double *p7 = new double;
-    *p7 = padded(1,L_);
-    padded(L_+1,0) = *p7;
-    double *p8 = new double;
-    *p8 = padded(L_,1);
-    padded(0,L_+1) = *p8;
-    double *p9 = new double;
-    *p9 = padded(1,1);
-    padded(L_+1,L_+1) = *p9;
-    return padded;
-}
-*/
 
 arma::mat Lattice::Pad_lattice(arma::mat lat)
 {
@@ -120,15 +84,23 @@ double Lattice::Total_energy(arma::mat lat, bool padded)
         {
         pad = Pad_lattice(lat);
         }
-    for(int i=1; i<L_+1; i++)
+    if(L_ == 2)
     {
-        for(int j=1; j<L_+1; j++)
+        sum += pad(0,0)*(pad(1,0)+pad(0,1));
+        sum += pad(1,1)*(pad(1,0)+pad(0,1));
+    }
+    else
+    {
+        for(int i=1; i<L_+1; i++)
         {
-            sum += pad(i,j)*(pad(i-1,j)+pad(i,j-1));
+            for(int j=1; j<L_+1; j++)
+            {
+                sum += pad(i,j)*(pad(i-1,j)+pad(i,j-1));
+            }
         }
     }
     //funker ikke for matriser L_<3
-    return sum;
+    return -sum;
 }
 
 arma::mat Lattice::Replace_pad(arma::mat lat)
@@ -227,11 +199,22 @@ double Lattice::magnetization_per_spin(arma::mat lat, bool padded)
     return m;
 }
 
+double Lattice::specific_heat_capacity()
+{
+    double ten = 10;
+    return ten;
+}
+
+double Lattice::susceptibility()
+{
+    double ten = 10;
+    return ten;
+}
+
 void Lattice::one_cycle_MCMC(int n, double& eps, double& m, double& Cv, double& chi)
 {
     arma::mat S = lattice;
     arma::mat pad_s = Pad_lattice(S);
-    std::srand(time(NULL));
 
     double E0 = -8; double expE0 = exp(E0/T_);
     double E1 = -6; double expE1 = exp(E1/T_);
@@ -266,8 +249,8 @@ void Lattice::one_cycle_MCMC(int n, double& eps, double& m, double& Cv, double& 
         }
     
     }
-    std::cout << Lattice::Total_energy(pad_s, true) << '\n';
     eps = Lattice::energy_per_spin(pad_s, true);
+    m = std::abs(Lattice::magnetization_per_spin(pad_s, true));
 
     //calculate some values from the new S
 }
