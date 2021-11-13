@@ -29,11 +29,11 @@ class Lattice
     arma::mat unpad(arma::mat pad);
     double Total_magnetization(arma::mat lat, bool padded);
     double Total_energy(arma::mat lat, bool padded);
-    double Boltzman(arma::mat lat);
+    double Boltzman();
     arma::mat Replace_pad(arma::mat lat);
     double energy_per_spin(arma::mat lat, bool padded);
     double magnetization_per_spin(arma::mat lat, bool padded);
-    void one_cycle_MCMC(int n);
+    void one_cycle_MCMC(int n, double& eps, double& m, double& Cv, double& chi);
 };
 
 

@@ -19,14 +19,12 @@ arma::mat Lattice::Create_lattice()
 void Lattice::Fill_lattice()
 {
     std::srand(time(NULL));
-    double g = 0;
     for(int i = 0; i < L_; i++)
     {
         for(int j=0; j<L_; j++)
         {
             double k = ((std::rand()%2)-0.5)*2;
-            lattice(i,j) = g;
-            g++;
+            lattice(i,j) = k;
         }
     }
 }
@@ -200,6 +198,8 @@ double Lattice::Boltzman()
     double P = exp(-Total_energy()/T)/Z;
     return P;
     */
+   double ten = 10;
+   return ten;
 }
 double Lattice::energy_per_spin(arma::mat lat, bool padded)
 {
@@ -213,7 +213,7 @@ double Lattice::magnetization_per_spin(arma::mat lat, bool padded)
     return m;
 }
 
-void Lattice::one_cycle_MCMC(int n)
+void Lattice::one_cycle_MCMC(int n, double& eps, double& m, double& Cv, double& chi)
 {
     arma::mat S = lattice;
     arma::mat pad_s = Pad_lattice(S);
@@ -248,9 +248,12 @@ void Lattice::one_cycle_MCMC(int n)
 
         if(r <= p)
         {
-            pad_s = S_prime;
+            pad_s = S_;
         }
+    
     }
+    std::cout << Lattice::Total_energy(pad_s, true) << '\n';
+    eps = Lattice::energy_per_spin(pad_s, true);
 
     //calculate some values from the new S
 }
