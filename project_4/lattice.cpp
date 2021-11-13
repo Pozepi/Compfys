@@ -203,15 +203,22 @@ double Lattice::specific_heat_capacity(arma::vec eps)
 {
     arma::vec E = eps*N_;
     double first_moment = arma::accu(E)/E.n_elem;
+    std::cout << first_moment << '\n';
     double second_moment = arma::accu(arma::dot(E,E))/E.n_elem;
+    std::cout << second_moment << '\n';
     double Cv = (second_moment - first_moment*first_moment)/(N_*T_*T_);
     return Cv;
 }
 
-double Lattice::susceptibility()
+double Lattice::susceptibility(arma::vec m)
 {
-    double ten = 10;
-    return ten;
+    arma::vec M = m*N_;
+    double first_moment = arma::accu(M)/M.n_elem;
+    std::cout << first_moment << '\n';
+    double second_moment = arma::accu(arma::dot(M,M))/M.n_elem;
+    std::cout << second_moment << '\n';
+    double chi = (second_moment-first_moment*first_moment)/(N_*T_);
+    return chi;
 }
 
 void Lattice::one_cycle_MCMC(int n, double& eps, double& m)
@@ -219,11 +226,11 @@ void Lattice::one_cycle_MCMC(int n, double& eps, double& m)
     arma::mat S = lattice;
     arma::mat pad_s = Pad_lattice(S);
 
-    double E0 = 8; double expE0 = exp(E0/T_);
-    double E1 = 4; double expE1 = exp(E1/T_);
-    double E2 = 0; double expE2 = exp(E2/T_);
-    double E3 = -4; double expE3 = exp(E3/T_);
-    double E4 = -8; double expE4 = exp(E4/T_);
+    double E0 = 8; double expE0 = exp(-E0/T_);
+    double E1 = 4; double expE1 = exp(-E1/T_);
+    double E2 = 0; double expE2 = exp(-E2/T_);
+    double E3 = -4; double expE3 = exp(-E3/T_);
+    double E4 = -8; double expE4 = exp(-E4/T_);
 
     std::map<double, double> my_map = {
     { E0, expE0},
@@ -245,7 +252,6 @@ void Lattice::one_cycle_MCMC(int n, double& eps, double& m)
         double p = std::min(one, my_map[dE]);
 
         double r = ((double) rand() / (RAND_MAX));
-        //std::cout << r  << ' ' <<  p << '\n';
 
         if(r <= p)
         {

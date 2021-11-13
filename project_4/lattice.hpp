@@ -35,7 +35,7 @@ class Lattice
     double energy_per_spin(arma::mat lat, bool padded);
     double magnetization_per_spin(arma::mat lat, bool padded);
     double specific_heat_capacity(arma::vec eps);
-    double susceptibility();
+    double susceptibility(arma::vec m);
     void one_cycle_MCMC(int n, double& eps, double& m);
 };
 
