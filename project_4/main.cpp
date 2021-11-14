@@ -8,29 +8,21 @@ int main()
     Lattice test(L, 1);
     test.Fill_lattice();
     int cycles = 10000;
-    double eps;
-    double m;
-    double Cv;
-    double chi;
-
-    arma::vec eps_list(cycles);
-    arma::vec m_list(cycles);
+    arma::vec average(6);
+    average(5) = 0;
 
     clock_t t1 = clock();
     for(int i = 0; i < cycles; i++)
     {
         std::srand(time(0)+i);
-        test.one_cycle_MCMC(14, eps, m);
-        eps_list(i) = eps;
-        m_list(i) = m;
+        test.one_cycle_MCMC(N, average);
     }
-    Cv = test.specific_heat_capacity(eps_list);
-    chi = test.susceptibility(m_list);
+
     clock_t t2 = clock();
-    std::cout << "CV: " << Cv << '\n';
-    std::cout << "Chi: " << chi << '\n';
-    eps_list.save("eps.txt");
-    m_list.save("m.txt");
+    double Cv = test.specific_heat_capacity(average);
+    double chi = test.susceptibility(average);
+    std::cout << "Cv: "<< Cv << '\n';
+    std::cout << "chi: "<< chi << '\n';
     double duration_seconds = ((double) (t2-t1))/CLOCKS_PER_SEC;
     std::cout << "Time: " << duration_seconds << '\n';
 

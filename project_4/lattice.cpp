@@ -99,7 +99,6 @@ double Lattice::Total_energy(arma::mat lat, bool padded)
             }
         }
     }
-    //funker ikke for matriser L_<3
     return -sum;
 }
 
@@ -199,29 +198,28 @@ double Lattice::magnetization_per_spin(arma::mat lat, bool padded)
     return m;
 }
 
-double Lattice::specific_heat_capacity(arma::vec eps)
+double Lattice::specific_heat_capacity(arma::vec average)
 {
-    arma::vec E = eps*N_;
-    double first_moment = arma::accu(E)/E.n_elem;
+    
+    double first_moment = average(0)/average(5);
     std::cout << first_moment << '\n';
-    double second_moment = arma::accu(arma::dot(E,E))/E.n_elem;
+    double second_moment = average(1)/average(5);
     std::cout << second_moment << '\n';
     double Cv = (second_moment - first_moment*first_moment)/(N_*T_*T_);
     return Cv;
 }
 
-double Lattice::susceptibility(arma::vec m)
+double Lattice::susceptibility(arma::vec average)
 {
-    arma::vec M = m*N_;
-    double first_moment = arma::accu(M)/M.n_elem;
+    double first_moment = average(4)/average(5);
     std::cout << first_moment << '\n';
-    double second_moment = arma::accu(arma::dot(M,M))/M.n_elem;
+    double second_moment = average(3)/average(5);
     std::cout << second_moment << '\n';
     double chi = (second_moment-first_moment*first_moment)/(N_*T_);
     return chi;
 }
 
-void Lattice::one_cycle_MCMC(int n, double& eps, double& m)
+void Lattice::one_cycle_MCMC(int n, arma::vec& average)
 {
     arma::mat S = lattice;
     arma::mat pad_s = Pad_lattice(S);
@@ -259,8 +257,16 @@ void Lattice::one_cycle_MCMC(int n, double& eps, double& m)
         }
     
     }
-    eps = Lattice::energy_per_spin(pad_s, true);
-    m = std::abs(Lattice::magnetization_per_spin(pad_s, true));
+    double E = Lattice::Total_energy(pad_s, true);
+    double M = Lattice::Total_magnetization(pad_s, true);
+
+    average(0) += E;
+    average(1) += E*E;
+    average(2) += M;
+    average(3) += M*M;
+    average(4) += std::abs(M);
+    average(5) += 1;
+    std::cout << average(0) << '\n';
 
     //calculate some values from the new S
 }
