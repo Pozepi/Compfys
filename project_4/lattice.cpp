@@ -226,7 +226,7 @@ void Lattice::one_cycle_MCMC(int n, arma::vec& average)
 
     double E0 = 8; double expE0 = exp(-E0/T_);
     double E1 = 4; double expE1 = exp(-E1/T_);
-    double E2 = 0; double expE2 = exp(-E2/T_);
+    double E2 = -0; double expE2 = exp(-E2/T_);
     double E3 = -4; double expE3 = exp(-E3/T_);
     double E4 = -8; double expE4 = exp(-E4/T_);
 
@@ -241,13 +241,15 @@ void Lattice::one_cycle_MCMC(int n, arma::vec& average)
     for(int k = 0; k < n; k++)
     {
         arma::mat S_prime = pad_s;
-        int i = (std::rand()%L_)+1;
-        int j = (std::rand()%L_)+1;
-        S_prime(i,j) = -S_prime(i,j);
-        arma::mat S_ = Replace_pad(S_prime);
+        int i = (std::rand()%L_)+1; // random index in lattice
+        int j = (std::rand()%L_)+1; // ...
+        S_prime(i,j) = -S_prime(i,j); // flip random spin within lattice (pad not affected)
+        arma::mat S_ = Replace_pad(S_prime); // update pad
+        // calculate the change in energy
         double dE = S_(i,j)*(S_(i-1,j) + S_(i+1,j) + S_(i,j-1) + S_(i,j+1)) - pad_s(i,j)*(pad_s(i-1,j) + pad_s(i+1,j) + pad_s(i,j-1) + pad_s(i,j+1));
         double one = 1;
         double p = std::min(one, my_map[dE]);
+        std::cout << my_map[dE] << " " << dE << '\n'; 
 
         double r = ((double) rand() / (RAND_MAX));
 

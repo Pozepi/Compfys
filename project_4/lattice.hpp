@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <map>
 #include <time.h>
-#include "omp.h"
+//#include "omp.h"
 
 class Lattice
 {
