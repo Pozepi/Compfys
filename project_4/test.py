@@ -1,30 +1,53 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pyarma as pa
 
+"""Calc analytical stuff"""
 N = 4
-T = np.linspace(1, 10, 100) # in units of J/k_B
+T = np.logspace(-2, 2, 1000) # in units of J/k_B
 beta = 1/T
 
 Z = 2*np.exp(-4*beta) + 2*np.exp(4*beta) + 12
 
 E1 = 8/Z*(np.exp(-4*beta) - np.exp(4*beta)) # first moment
 E2 = 32/Z*(np.exp(4*beta) + np.exp(-4*beta))
-
 Cv = (E2 - E1**2)/(N*T**2)
 
 M1 = (4*np.exp(4*beta) + 4*np.exp(-4*beta) + 16)/Z
 M2 = 16/Z*(np.exp(4*beta) + np.exp(-4*beta) + 2)
+chi = (M2 - M1**2)/(N*T)
 
-chi = (M2 - M1**2)/(4*T)
+"""Load numerical stuff"""
+chi_n = pa.mat()
+Cv_n = pa.mat()
+Temp_n = pa.mat()
+
+chi_n.load('chi.txt')
+Cv_n.load('Cv.txt')
+Temp_n.load('Temp.txt')
+
+chi_n = np.array(chi_n)
+Cv_n = np.array(Cv_n)
+Temp_n = np.array(Temp_n)
+
+#print(beta)
+#print(1/Temp_n)
 
 fig, (ax1, ax2) = plt.subplots(ncols=2)
-ax1.plot(T, Cv, label='Heat capacity')
-ax2.plot(T, chi, label='Magnetization thingie')
+ax1.plot(beta, Cv, label='Analytical heat capacity')
+ax1.plot(1/Temp_n, Cv_n, label='Numerical heat capacity')
+
+ax2.plot(beta, chi, label='Analytical suseptibility')
+ax2.plot(1/Temp_n, chi_n, label='Numerical suseptibility')
 
 ax1.legend()
 ax2.legend()
+
+ax1.set_xlim(0,7)
+ax1.set_ylim(0,1)
 plt.show()
 
+"""
 fig, (ax1, ax2) = plt.subplots(ncols=2)
 ax1.plot(T, (E2-E1**2))
 ax2.plot(T, (M2-M1**2))
@@ -32,7 +55,7 @@ ax2.plot(T, (M2-M1**2))
 ax1.legend()
 ax2.legend()
 plt.show()
-
+"""
 
 
 """ find value of single temp"""
