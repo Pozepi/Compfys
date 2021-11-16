@@ -40,10 +40,13 @@ ax1.plot(beta, Cv, label='Analytical heat capacity', ls='--')
 ax2.plot(1/Temp_n, chi_n, label='Numerical suseptibility')
 ax2.plot(beta, chi, label='Analytical suseptibility', ls='--')
 
-[[axi.legend(), axi.set_xlim(0,7)] for axi in (ax1, ax2)]
+[[axi.grid(), axi.legend(), axi.set_xlim(0,7), axi.set_xlabel(r'$\beta$ [$J/k_B$]')] for axi in (ax1, ax2)]
 ax1.set_ylim(0,0.5)
-ax2.set_ylim(0,0.18)
+ax1.set_ylabel(r'$C_v$ [$k_B/T$]')
 
+ax2.set_ylim(0,0.18)
+ax2.set_ylabel(r'\chi [J]')
+plt.savefig('T_L2')
 plt.show()
 
 """

@@ -315,7 +315,7 @@ arma::vec Lattice::full_cycle(int cycles)
     double E2 = -0; double expE2 = exp(-E2/T_);
     double E3 = -4; double expE3 = exp(-E3/T_);
     double E4 = -8; double expE4 = exp(-E4/T_);
-    std::cout << T_ << '\n'; 
+    // std::cout << T_ << '\n'; 
 
     std::map<double, double> my_map = {
     { E0, expE0},
