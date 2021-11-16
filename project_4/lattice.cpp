@@ -195,9 +195,9 @@ double Lattice::specific_heat_capacity(arma::vec average)
 {
     
     double first_moment = average(0)/average(5);
-    std::cout << first_moment << '\n';
+    //std::cout << first_moment << '\n';
     double second_moment = average(1)/average(5);
-    std::cout << second_moment << '\n';
+    //std::cout << second_moment << '\n';
     double Cv = (second_moment - first_moment*first_moment)/(N_*T_*T_);
     return Cv;
 }
@@ -205,9 +205,9 @@ double Lattice::specific_heat_capacity(arma::vec average)
 double Lattice::susceptibility(arma::vec average)
 {
     double first_moment = average(4)/average(5);
-    std::cout << first_moment << '\n';
+    //std::cout << first_moment << '\n';
     double second_moment = average(3)/average(5);
-    std::cout << second_moment << '\n';
+    //std::cout << second_moment << '\n';
     double chi = (second_moment-first_moment*first_moment)/(N_*T_);
     return chi;
 }
@@ -315,6 +315,7 @@ arma::vec Lattice::full_cycle(int cycles)
     double E2 = -0; double expE2 = exp(-E2/T_);
     double E3 = -4; double expE3 = exp(-E3/T_);
     double E4 = -8; double expE4 = exp(-E4/T_);
+    std::cout << T_ << '\n'; 
 
     std::map<double, double> my_map = {
     { E0, expE0},

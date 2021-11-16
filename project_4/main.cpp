@@ -9,7 +9,7 @@ int main()
     test.Fill_lattice();
 
     clock_t t1 = clock();
-    arma::vec average = test.full_cycle(1000000);
+    arma::vec average = test.full_cycle(100000);
     clock_t t2 = clock();
     double Cv = test.specific_heat_capacity(average);
     double chi = test.susceptibility(average);
@@ -20,7 +20,7 @@ int main()
 
     // loop over temperature
     // define my variables
-    /*
+    
     t1 = clock();
     double T0 = 0.001; double T1 = 100;
     int n = 100; L = 2; N = L*L;
@@ -35,7 +35,7 @@ int main()
     {
         double Tempi = Temp(i);
         Lattice myinstance(L, Tempi);
-        average = test.full_cycle(cycles);
+        average = myinstance.full_cycle(cycles);
         Cv = myinstance.specific_heat_capacity(average);
         chi = myinstance.susceptibility(average);
 
@@ -45,15 +45,15 @@ int main()
         std::cout << i << "/" << n << '\n';
     }
 
-    std::cout << vec_Cv << '\n';
-    std::cout << vec_chi << '\n';
+    //std::cout << vec_Cv << '\n';
+    //std::cout << vec_chi << '\n';
     t2 = clock();
     duration_seconds = ((double) (t2-t1))/CLOCKS_PER_SEC;
     std::cout << "Time: " << duration_seconds << '\n';
     Temp.save("Temp.txt");
     vec_Cv.save("Cv.txt");
     vec_chi.save("chi.txt");
-    */
+    
 
     return 0;
 }

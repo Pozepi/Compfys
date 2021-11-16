@@ -13,8 +13,8 @@ E1 = 16/Z*(np.exp(-8*beta) - np.exp(8*beta)) # first moment
 E2 = 128/Z*(np.exp(8*beta) + np.exp(-8*beta))
 Cv = (E2 - E1**2)/(N*T**2)
 
-M1 = (4*np.exp(8*beta) + 4*np.exp(-8*beta) + 16)/Z
-M2 = 16/Z*(np.exp(8*beta) + np.exp(-8*beta) + 2)
+M1 = (8*np.exp(8*beta) + 16)/Z # (4*np.exp(8*beta) + 4*np.exp(-8*beta) + 16)/Z
+M2 = 32/Z*(np.exp(8*beta) + 1) #16/Z*(np.exp(8*beta) + 1)
 chi = (M2 - M1**2)/(N*T)
 
 """Load numerical stuff"""
@@ -34,17 +34,16 @@ Temp_n = np.array(Temp_n)
 #print(1/Temp_n)
 
 fig, (ax1, ax2) = plt.subplots(ncols=2)
-ax1.plot(beta, Cv, label='Analytical heat capacity')
 ax1.plot(1/Temp_n, Cv_n, label='Numerical heat capacity')
+ax1.plot(beta, Cv, label='Analytical heat capacity', ls='--')
 
-ax2.plot(beta, chi, label='Analytical suseptibility')
 ax2.plot(1/Temp_n, chi_n, label='Numerical suseptibility')
+ax2.plot(beta, chi, label='Analytical suseptibility', ls='--')
 
-ax1.legend()
-ax2.legend()
+[[axi.legend(), axi.set_xlim(0,7)] for axi in (ax1, ax2)]
+ax1.set_ylim(0,0.5)
+ax2.set_ylim(0,0.18)
 
-ax1.set_xlim(0,7)
-ax1.set_ylim(0,1)
 plt.show()
 
 """
@@ -75,8 +74,8 @@ print('Std: ', (E2 - E1**2))
 Cv = (E2 - E1**2)/(4*T**2)
 print('Heat capacity: ', Cv)
 
-M1 = (4*np.exp(8*beta) + 4*np.exp(-8*beta) + 16)/Z
-M2 = 16/Z*(np.exp(8*beta) + np.exp(-8*beta) + 2)
+M1 = (8*np.exp(8*beta) + 16)/Z # (4*np.exp(8*beta) + 4*np.exp(-8*beta) + 16)/Z
+M2 = 32/Z*(np.exp(8*beta) + 1) #16/Z*(np.exp(8*beta) + 1)
 
 chi = (M2 - M1**2)/(4*T)
 
