@@ -195,9 +195,7 @@ double Lattice::specific_heat_capacity(arma::vec average)
 {
     
     double first_moment = average(0)/average(5);
-    std::cout << first_moment << '\n';
     double second_moment = average(1)/average(5);
-    std::cout << second_moment << '\n';
     double Cv = (second_moment - first_moment*first_moment)/(N_*T_*T_);
     return Cv;
 }
@@ -205,9 +203,8 @@ double Lattice::specific_heat_capacity(arma::vec average)
 double Lattice::susceptibility(arma::vec average)
 {
     double first_moment = average(4)/average(5);
-    std::cout << first_moment << '\n';
     double second_moment = average(3)/average(5);
-    std::cout << second_moment << '\n';
+
     double chi = (second_moment-first_moment*first_moment)/(N_*T_);
     return chi;
 }
@@ -236,10 +233,10 @@ void Lattice::one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map
         if(r <= p)
         {
             pad_s = S_;
-            lattice = pad_s;
         }
         // std::cout << pad_s << '\n';
     }
+    lattice = pad_s;
     double E = Lattice::Total_energy(pad_s, true);
     double M = Lattice::Total_magnetization(pad_s, true);
     //std::cout << '\n';

@@ -4,7 +4,7 @@ import pyarma as pa
 
 """Calc analytical stuff"""
 N = 4
-T = np.logspace(-2, 2, 1000) # in units of J/k_B
+T = np.logspace(-2, 2, 100) # in units of J/k_B
 beta = 1/T
 
 Z = 2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12
