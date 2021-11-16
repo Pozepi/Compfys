@@ -75,34 +75,63 @@ int main()
         }
         
         case 3:
-            int noll = 0;
+        {
+            loop_over_temp(20, "_L20.txt", 10000);
             break;
+        }
+
+        case 4: 
+        {
+            loop_over_temp(40, "_L40.txt", 10000);
+            break;
+        }
+
+        case 5:
+        {
+            loop_over_temp(60, "_L60.txt", 10000);
+            break;
+        }
+
+        case 6:
+        {
+            loop_over_temp(80, "_L80.txt", 10000);
+            break;
+        }
+
+        case 7:
+        {
+            loop_over_temp(100, "_L100.txt", 10000);
+            break;
+        }
+
+        case 8:
+        {   
+            int L;
+            int cycles;
+            std::cout << "Input lattice size: ";
+            std::cin >> L;
+            std::cout << "Input number of Monte Carlo cycles: ";
+            std::cin >> cycles;
+            loop_over_temp(L, "_Ln.txt", cycles);
+            break;
+        }
+        
     }
-    /*
-    int L = 2;
+
+
+    return 0;
+}
+
+void loop_over_temp(int L, std::string filename, int cycles)
+{
     int N = L*L;
-    Lattice test(L, 1);
-    test.Fill_lattice();
-
-    clock_t t1 = clock();
-    arma::vec average = test.full_cycle(1000);
-    clock_t t2 = clock();
-    double Cv = test.specific_heat_capacity(average);
-    double chi = test.susceptibility(average);
-    std::cout << "Cv: "<< Cv << '\n';
-    std::cout << "chi: "<< chi << '\n';
-    double duration_seconds = ((double) (t2-t1))/CLOCKS_PER_SEC;
-    std::cout << "Time: " << duration_seconds << '\n';
-
     // loop over temperature
     // define my variables
     
-    auto t3 = std::chrono::steady_clock::now();
+    auto t1 = std::chrono::steady_clock::now();
     double T0 = 0.001; double T1 = 100;
     int n = 100; L = 10; N = L*L;
-    double cycles = 10000;
     // define my vectors
-    //arma::vec Temp = arma::linspace(T0, T1, n);
     arma::vec Temp = arma::logspace(-2, 2, n);
     arma::vec vec_Cv(n);
     arma::vec vec_chi(n);
@@ -112,22 +141,18 @@ int main()
     {
         double Tempi = Temp(i);
         Lattice myinstance(L, Tempi);
-        average = myinstance.full_cycle(cycles);
-        Cv = myinstance.specific_heat_capacity(average);
-        chi = myinstance.susceptibility(average);
+        arma::vec average = myinstance.full_cycle(cycles);
+        double Cv = myinstance.specific_heat_capacity(average);
+        double chi = myinstance.susceptibility(average);
         vec_Cv(i) = Cv;
         vec_chi(i) = chi;
-    //std::cout << i << "/" << n << '\n';
     }
 
-    auto t4 = std::chrono::steady_clock::now();
-    std::cout<<std::chrono::duration_cast<std::chrono::milliseconds>(t4-t3).count()<<" milliseconds"<<"\n";
-    Temp.save("Temp.txt");
-    vec_Cv.save("Cv.txt");
-    vec_chi.save("chi.txt");
-    */
-    return 0;
+    auto t2 = std::chrono::steady_clock::now();
+    std::cout<<std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()<<" milliseconds"<<"\n";
+    Temp.save("Temp"+filename);
+    vec_Cv.save("Cv"+filename);
+    vec_chi.save("chi"+filename);
 }
-
 
 
