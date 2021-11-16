@@ -37,7 +37,7 @@ class Lattice
     double specific_heat_capacity(arma::vec average);
     double susceptibility(arma::vec average);
     void one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map);
-    //void one_cycle_MCMC_2(arma::vec& average, std::map<double, double> my_map);
+    // void one_cycle_MCMC_2(arma::vec& average, std::map<double, double> my_map);
 
     // double calc_dE_2(arma::mat S1, arma::mat S2, int i, int j);
     // double calc_dE_N(arma::mat S1, arma::mat S2, int i, int j);

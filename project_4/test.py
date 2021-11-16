@@ -7,14 +7,14 @@ N = 4
 T = np.logspace(-2, 2, 1000) # in units of J/k_B
 beta = 1/T
 
-Z = 2*np.exp(-4*beta) + 2*np.exp(4*beta) + 12
+Z = 2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12
 
-E1 = 8/Z*(np.exp(-4*beta) - np.exp(4*beta)) # first moment
-E2 = 32/Z*(np.exp(4*beta) + np.exp(-4*beta))
+E1 = 16/Z*(np.exp(-8*beta) - np.exp(8*beta)) # first moment
+E2 = 128/Z*(np.exp(8*beta) + np.exp(-8*beta))
 Cv = (E2 - E1**2)/(N*T**2)
 
-M1 = (4*np.exp(4*beta) + 4*np.exp(-4*beta) + 16)/Z
-M2 = 16/Z*(np.exp(4*beta) + np.exp(-4*beta) + 2)
+M1 = (4*np.exp(8*beta) + 4*np.exp(-8*beta) + 16)/Z
+M2 = 16/Z*(np.exp(8*beta) + np.exp(-8*beta) + 2)
 chi = (M2 - M1**2)/(N*T)
 
 """Load numerical stuff"""
@@ -62,10 +62,10 @@ plt.show()
 T = 1 # in units of J/k_B
 beta = 1/T
 
-Z = 2*np.exp(-4*beta) + 2*np.exp(4*beta) + 12
+Z = 2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12
 
-E1 = 8/Z*(np.exp(-4*beta) - np.exp(4*beta)) # first moment
-E2 = 32/Z*(np.exp(4*beta) + np.exp(-4*beta))
+E1 = 16/Z*(np.exp(-8*beta) - np.exp(8*beta)) # first moment
+E2 = 128/Z*(np.exp(8*beta) + np.exp(-8*beta))
 
 print('Heat capacity')
 print('First moment: ', E1)
@@ -75,8 +75,8 @@ print('Std: ', (E2 - E1**2))
 Cv = (E2 - E1**2)/(4*T**2)
 print('Heat capacity: ', Cv)
 
-M1 = (4*np.exp(4*beta) + 4*np.exp(-4*beta) + 16)/Z
-M2 = 16/Z*(np.exp(4*beta) + np.exp(-4*beta) + 2)
+M1 = (4*np.exp(8*beta) + 4*np.exp(-8*beta) + 16)/Z
+M2 = 16/Z*(np.exp(8*beta) + np.exp(-8*beta) + 2)
 
 chi = (M2 - M1**2)/(4*T)
 

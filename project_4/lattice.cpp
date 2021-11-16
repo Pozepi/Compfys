@@ -84,13 +84,6 @@ double Lattice::Total_energy(arma::mat lat, bool padded)
         {
         pad = Pad_lattice(lat);
         }
-    /*
-    if(L_ == 2)
-    {
-        sum += pad(1,1)*(pad(2,1)+pad(1,2));
-        sum += pad(2,2)*(pad(2,1)+pad(1,2));
-    }
-    */
     for(int i=1; i<L_+1; i++)
     {
         for(int j=1; j<L_+1; j++)
@@ -234,7 +227,6 @@ void Lattice::one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map
         // calculate the change in energy
         double dE = -S_(i,j)*(S_(i-1,j) + S_(i+1,j) + S_(i,j-1) + S_(i,j+1)) + pad_s(i,j)*(pad_s(i-1,j) + pad_s(i+1,j) + pad_s(i,j-1) + pad_s(i,j+1));
         // double dE1 = Lattice::Total_energy(S_, true) - Lattice::Total_energy(pad_s, true);
-        // std::cout << dE << ' ' << dE1 << '\n';
         double one = 1;
         double p = std::min(one, my_map[dE]);
         // std::cout << my_map[dE] << " " << dE << '\n'; 
@@ -265,7 +257,7 @@ void Lattice::one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map
     //calculate some values from the new S
 }
 /*
-void Lattice::one_cycle_MCMC_2(arma::vec& average, std::map<double, double> my_map)
+void Lattice::one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map)
 {
     arma::mat S = lattice;
     arma::mat pad_s = Pad_lattice(S);
@@ -312,11 +304,11 @@ void Lattice::one_cycle_MCMC_2(arma::vec& average, std::map<double, double> my_m
 }
 */
 
+
 arma::vec Lattice::full_cycle(int cycles)
 {
     arma::vec average(6);
     average.zeros();
-    //std::cout << average << '\n';
 
     double E0 =  8; double expE0 = exp(-E0/T_);
     double E1 =  4; double expE1 = exp(-E1/T_);
@@ -331,7 +323,6 @@ arma::vec Lattice::full_cycle(int cycles)
     { E3, expE3},
     { E4, expE4}
     }; 
-
 
     for(int i = 0; i < cycles; i++)
     {
