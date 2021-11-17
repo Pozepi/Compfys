@@ -8,8 +8,8 @@ void loop_over_temp(int L, std::string filename, int cycles)
     // define my variables
     
     auto t1 = std::chrono::steady_clock::now();
-    double T0 = 0.001; double T1 = 100;
-    int n = 100; L = 10; N = L*L;
+    double T0 = 2.1; double T1 = 2.4;
+    int n = 100;
     // define my vectors
     arma::vec Temp = arma::logspace(-2, 2, n);
     arma::vec vec_Cv(n);
@@ -32,7 +32,6 @@ void loop_over_temp(int L, std::string filename, int cycles)
         vec_eps(i) = eps;
         vec_m(i) = m;
     }
-
 
     auto t2 = std::chrono::steady_clock::now();
     std::cout<<std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()<<" milliseconds"<<"\n";
