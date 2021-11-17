@@ -34,7 +34,9 @@ class Lattice
     double Boltzman();
     arma::mat Replace_pad(arma::mat lat);
     double energy_per_spin(arma::mat lat, bool padded);
+    double energy_per_spin_expectation(arma::vec average);
     double magnetization_per_spin(arma::mat lat, bool padded);
+    double magnetization_per_spin_expectation(arma::vec average);
     double specific_heat_capacity(arma::vec average);
     double susceptibility(arma::vec average);
     void one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map);

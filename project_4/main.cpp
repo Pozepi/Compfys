@@ -1,12 +1,61 @@
 #include <iostream>
 #include "lattice.hpp"
 
+void loop_over_temp(int L, std::string filename, int cycles)
+{
+    int N = L*L;
+    // loop over temperature
+    // define my variables
+    
+    auto t1 = std::chrono::steady_clock::now();
+    double T0 = 0.001; double T1 = 100;
+    int n = 100; L = 10; N = L*L;
+    // define my vectors
+    arma::vec Temp = arma::logspace(-2, 2, n);
+    arma::vec vec_Cv(n);
+    arma::vec vec_chi(n);
+    arma::vec vec_eps(n);
+    arma::vec vec_m(n);
+    // loop and fill vectors
+    #pragma omp parallel for 
+    for (int i=0; i<n; i++)
+    {
+        double Tempi = Temp(i);
+        Lattice myinstance(L, Tempi);
+        arma::vec average = myinstance.full_cycle(cycles);
+        double Cv = myinstance.specific_heat_capacity(average);
+        double chi = myinstance.susceptibility(average);
+        double eps = myinstance.energy_per_spin_expectation(average);
+        double m = myinstance.magnetization_per_spin_expectation(average);
+        vec_Cv(i) = Cv;
+        vec_chi(i) = chi;
+        vec_eps(i) = eps;
+        vec_m(i) = m;
+    }
+
+
+    auto t2 = std::chrono::steady_clock::now();
+    std::cout<<std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()<<" milliseconds"<<"\n";
+    Temp.save("Temp"+filename);
+    vec_Cv.save("Cv"+filename);
+    vec_chi.save("chi"+filename);
+    vec_eps.save("expect_eps"+filename);
+    vec_m.save("expect_m"+filename);
+}
+
 int main()
 {
     // INITIALIZE PROGRAM
     std::cout << "Welcome to our program! Here are your options:" << '\n';
     std::cout << "  [1.] Simple lattice example (L=2, T=1)" << '\n';
     std::cout << "  [2.] Calculate Cv(T) and chi(T) for L=2" << '\n';
+    std::cout << "  [3.] Calculate Cv(T) and chi(T) for L=20" << '\n';
+    std::cout << "  [4.] Calculate Cv(T) and chi(T) for L=40" << '\n';
+    std::cout << "  [5.] Calculate Cv(T) and chi(T) for L=60" << '\n';
+    std::cout << "  [6.] Calculate Cv(T) and chi(T) for L=80" << '\n';
+    std::cout << "  [7.] Calculate Cv(T) and chi(T) for L=100" << '\n';
+    std::cout << "  [8.] Calculate Cv(T) and chi(T) for L=n and cycles=m" << '\n';
+
     
     std::cout << '\n' << "Please select an option" << "\n";
     int x;
@@ -41,7 +90,7 @@ int main()
             double t1 = clock();
             double T0 = 0.001; double T1 = 100;
             int n = 1000; L = 2; N = L*L;
-            double cycles = 200000;
+            double cycles = 50000;
             // define my vectors
             //arma::vec Temp = arma::linspace(T0, T1, n);
             arma::vec Temp = arma::logspace(-2, 2, n);
@@ -122,37 +171,5 @@ int main()
     return 0;
 }
 
-void loop_over_temp(int L, std::string filename, int cycles)
-{
-    int N = L*L;
-    // loop over temperature
-    // define my variables
-    
-    auto t1 = std::chrono::steady_clock::now();
-    double T0 = 0.001; double T1 = 100;
-    int n = 100; L = 10; N = L*L;
-    // define my vectors
-    arma::vec Temp = arma::logspace(-2, 2, n);
-    arma::vec vec_Cv(n);
-    arma::vec vec_chi(n);
-    // loop and fill vectors
-    #pragma omp parallel for 
-    for (int i=0; i<n; i++)
-    {
-        double Tempi = Temp(i);
-        Lattice myinstance(L, Tempi);
-        arma::vec average = myinstance.full_cycle(cycles);
-        double Cv = myinstance.specific_heat_capacity(average);
-        double chi = myinstance.susceptibility(average);
-        vec_Cv(i) = Cv;
-        vec_chi(i) = chi;
-    }
-
-    auto t2 = std::chrono::steady_clock::now();
-    std::cout<<std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()<<" milliseconds"<<"\n";
-    Temp.save("Temp"+filename);
-    vec_Cv.save("Cv"+filename);
-    vec_chi.save("chi"+filename);
-}
 
 

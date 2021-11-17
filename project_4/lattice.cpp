@@ -94,25 +94,25 @@ double Lattice::Total_energy(arma::mat lat, bool padded)
     return -sum;
 }
 
-arma::mat Lattice::Replace_pad(arma::mat lat)
+arma::mat Lattice::Replace_pad(arma::mat pad)
 {
-    arma::mat new_lat(L_+2, L_+2);
+    arma::mat new_pad(L_+2, L_+2);
     for(int i=1; i<L_+1; i++)
     {
         for(int j=1; j<L_+1; j++)
         {
-            new_lat(i,j) = lat(i,j);
-            new_lat(0,j) = lat(L_, j);
-            new_lat(i,0) = lat(i, L_);
-            new_lat(L_+1,j) = lat(1, j);
-            new_lat(i,L_+1) = lat(i, 1);
+            new_pad(i,j) = pad(i,j);
+            new_pad(0,j) = pad(L_, j);
+            new_pad(i,0) = pad(i, L_);
+            new_pad(L_+1,j) = pad(1, j);
+            new_pad(i,L_+1) = pad(i, 1);
         }
     }
-    new_lat(0,0) = lat(L_,L_);
-    new_lat(L_+1,0) = lat(1,L_);
-    new_lat(0,L_+1) = lat(L_,1);
-    new_lat(L_+1,L_+1) = lat(1,1);
-    return new_lat;
+    new_pad(0,0) = pad(L_,L_);
+    new_pad(L_+1,0) = pad(1,L_);
+    new_pad(0,L_+1) = pad(L_,1);
+    new_pad(L_+1,L_+1) = pad(1,1);
+    return new_pad;
 }
 
 double Lattice::Boltzman()
@@ -185,12 +185,23 @@ double Lattice::energy_per_spin(arma::mat lat, bool padded)
     return eps;
 }
 
+double Lattice::energy_per_spin_expectation(arma::vec average)
+{
+    double first_moment = average(6)/average(5);
+    return first_moment;
+}
+
 double Lattice::magnetization_per_spin(arma::mat lat, bool padded)
 {
     double m = Total_magnetization(lat, padded)/N_;
     return m;
 }
 
+double Lattice::magnetization_per_spin_expectation(arma::vec average)
+{
+    double first_moment = average(7)/average(5);
+    return first_moment;
+}
 double Lattice::specific_heat_capacity(arma::vec average)
 {
     
@@ -239,9 +250,8 @@ void Lattice::one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map
     lattice = pad_s;
     double E = Lattice::Total_energy(pad_s, true);
     double M = Lattice::Total_magnetization(pad_s, true);
-    //std::cout << '\n';
-    //std::cout << E << '\n'; 
-    //std::cout << M << '\n';
+    double eps = Lattice::energy_per_spin(pad_s, true);
+    double m = Lattice::magnetization_per_spin(pad_s, true);
 
     average(0) += E;
     average(1) += E*E;
@@ -249,6 +259,8 @@ void Lattice::one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map
     average(3) += M*M;
     average(4) += std::fabs(M);
     average(5) += 1;
+    average(6) += eps;
+    average(7) += std::fabs(m);
     // std::cout << average(0) << '\n';
 
     //calculate some values from the new S
@@ -304,7 +316,7 @@ void Lattice::one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map
 
 arma::vec Lattice::full_cycle(int cycles)
 {
-    arma::vec average(6);
+    arma::vec average(8);
     average.zeros();
 
     double E0 =  8; double expE0 = exp(-E0/T_);
