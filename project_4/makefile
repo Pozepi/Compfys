@@ -1,7 +1,7 @@
 all: compile execute
 
 compile: 
-	g++ *.cpp -std=c++11 -larmadillo -llapack -lblas -fopenmp -o test.out
+	g++ *.cpp -std=c++11 -larmadillo -llapack -lblas -fopenmp -o main.exe
 
 execute:
-	./test.out
+	./main.exe
