@@ -125,31 +125,31 @@ int main()
         
         case 3:
         {
-            loop_over_temp(20, "_L20.txt", 10000);
+            loop_over_temp(20, "_L20.txt", 100000);
             break;
         }
 
         case 4: 
         {
-            loop_over_temp(40, "_L40.txt", 10000);
+            loop_over_temp(40, "_L40.txt", 100000);
             break;
         }
 
         case 5:
         {
-            loop_over_temp(60, "_L60.txt", 10000);
+            loop_over_temp(60, "_L60.txt", 100000);
             break;
         }
 
         case 6:
         {
-            loop_over_temp(80, "_L80.txt", 10000);
+            loop_over_temp(80, "_L80.txt", 100000);
             break;
         }
 
         case 7:
         {
-            loop_over_temp(100, "_L100.txt", 10000);
+            loop_over_temp(100, "_L100.txt", 100000);
             break;
         }
 
