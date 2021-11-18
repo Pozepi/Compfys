@@ -6,12 +6,14 @@ void loop_over_temp(int L, std::string filename, int cycles)
     int N = L*L;
     // loop over temperature
     // define my variables
+    arma::vec eps_list(cycles);
+    arma::vec m_list(cycles);
     
     auto t1 = std::chrono::steady_clock::now();
     double T0 = 2.1; double T1 = 2.4;
-    int n = 100;
+    int n = 50;
     // define my vectors
-    arma::vec Temp = arma::logspace(-2, 2, n);
+    arma::vec Temp = arma::linspace(T0, T1, n);
     arma::vec vec_Cv(n);
     arma::vec vec_chi(n);
     arma::vec vec_eps(n);
@@ -21,8 +23,8 @@ void loop_over_temp(int L, std::string filename, int cycles)
     for (int i=0; i<n; i++)
     {
         double Tempi = Temp(i);
-        Lattice myinstance(L, Tempi);
-        arma::vec average = myinstance.full_cycle(cycles);
+        Lattice myinstance(L, Tempi, false);
+        arma::vec average = myinstance.full_cycle(cycles, eps_list, m_list);
         double Cv = myinstance.specific_heat_capacity(average);
         double chi = myinstance.susceptibility(average);
         double eps = myinstance.energy_per_spin_expectation(average);
@@ -54,6 +56,7 @@ int main()
     std::cout << "  [6.] Calculate Cv(T) and chi(T) for L=80" << '\n';
     std::cout << "  [7.] Calculate Cv(T) and chi(T) for L=100" << '\n';
     std::cout << "  [8.] Calculate Cv(T) and chi(T) for L=n and cycles=m" << '\n';
+    std::cout << "  [9.] Burn in test for L=20, unordered/ordered, T=1 & T=2.4" << '\n';
 
     
     std::cout << '\n' << "Please select an option" << "\n";
@@ -65,11 +68,12 @@ int main()
         {
             int L = 2;
             int N = L*L;
-            Lattice test(L, 1);
-            test.Fill_lattice();
+            Lattice test(L, 1, false);
+            arma::vec eps_list(100000);
+            arma::vec m_list(100000);
 
             clock_t t1 = clock();
-            arma::vec average = test.full_cycle(100000);
+            arma::vec average = test.full_cycle(100000, eps_list, m_list);
             clock_t t2 = clock();
             double Cv = test.specific_heat_capacity(average);
             double chi = test.susceptibility(average);
@@ -87,9 +91,11 @@ int main()
             int L = 2;
             int N = L*L;
             double t1 = clock();
-            double T0 = 0.001; double T1 = 100;
-            int n = 1000; L = 2; N = L*L;
+            double T0 = 0.001; double T1 = 10;
+            int n = 50; L = 2; N = L*L;
             double cycles = 50000;
+            arma::vec eps_list(cycles);
+            arma::vec m_list(cycles);
             // define my vectors
             //arma::vec Temp = arma::linspace(T0, T1, n);
             arma::vec Temp = arma::logspace(-2, 2, n);
@@ -99,8 +105,8 @@ int main()
             for (int i=0; i<n; i++)
             {
                 double Tempi = Temp(i);
-                Lattice myinstance(L, Tempi);
-                arma::vec average = myinstance.full_cycle(cycles);
+                Lattice myinstance(L, Tempi, false);
+                arma::vec average = myinstance.full_cycle(cycles, eps_list, m_list);
                 double Cv = myinstance.specific_heat_capacity(average);
                 double chi = myinstance.susceptibility(average);
 
@@ -162,6 +168,40 @@ int main()
             std::cin >> cycles;
             loop_over_temp(L, "_Ln.txt", cycles);
             break;
+        }
+
+        case 9:
+        {   
+            int cycles = 20000;
+            
+            arma::vec eps_list(cycles);
+            arma::vec m_list(cycles);
+            Lattice myinstance(20, 1, true);
+            myinstance.full_cycle(cycles, eps_list, m_list);
+            eps_list.save("eps_burn_in_test_ordered_T1.txt");
+            m_list.save("m_burn_in_test_ordered_T1.txt");
+            
+            arma::vec eps_list2(cycles);
+            arma::vec m_list2(cycles);
+            Lattice myinstance2(20, 1, false);
+            myinstance2.full_cycle(cycles, eps_list2, m_list2);
+            eps_list2.save("eps_burn_in_test_unordered_T1.txt");
+            m_list2.save("m_burn_in_test_unordered_T1.txt");
+            
+            arma::vec eps_list3(cycles);
+            arma::vec m_list3(cycles);
+            Lattice myinstance3(20, 2.4, true);
+            myinstance3.full_cycle(cycles, eps_list3, m_list3);
+            eps_list3.save("eps_burn_in_test_ordered_T24.txt");
+            m_list3.save("m_burn_in_test_ordered_T24.txt");
+
+            arma::vec eps_list4(cycles);
+            arma::vec m_list4(cycles);
+            Lattice myinstance4(20, 2.4, false);
+            myinstance4.full_cycle(cycles, eps_list4, m_list4);
+            eps_list4.save("eps_burn_in_test_unordered_T24.txt");
+            m_list4.save("m_burn_in_test_unordered_T24.txt");
+            
         }
         
     }

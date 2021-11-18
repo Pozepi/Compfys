@@ -22,11 +22,13 @@ class Lattice
     double T_;
     arma::mat lattice;
     arma::mat padded;
+    double E;
+    double M;
     
     public:
-    Lattice(int L, double T);
+    Lattice(int L, double T, bool ordered);
     arma::mat Create_lattice();
-    void Fill_lattice();
+    void Fill_lattice(bool ordered);
     arma::mat Pad_lattice(arma::mat lat);
     arma::mat unpad(arma::mat pad);
     double Total_magnetization(arma::mat lat, bool padded);
@@ -44,7 +46,7 @@ class Lattice
 
     // double calc_dE_2(arma::mat S1, arma::mat S2, int i, int j);
     // double calc_dE_N(arma::mat S1, arma::mat S2, int i, int j);
-    arma::vec full_cycle(int cycles);
+    arma::vec full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list);
 };
 
 

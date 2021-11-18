@@ -1,13 +1,15 @@
 #include "lattice.hpp"
 
-Lattice::Lattice(int L, double T)
+Lattice::Lattice(int L, double T, bool ordered)
 {
     L_ = L;
     N_ = L_*L_;
     T_ = T;
     lattice = Lattice::Create_lattice();
-    Lattice::Fill_lattice();
+    Lattice::Fill_lattice(ordered);
     padded = Lattice::Pad_lattice(lattice);
+    E = Lattice::Total_energy(padded, true);
+    M = Lattice::Total_magnetization(padded, true);
 }
 
 arma::mat Lattice::Create_lattice()
@@ -16,19 +18,24 @@ arma::mat Lattice::Create_lattice()
     return lat;
 }
 
-void Lattice::Fill_lattice()
+void Lattice::Fill_lattice(bool ordered)
 {   
     std::srand(time(NULL));
-    for(int i = 0; i < L_; i++)
+    if(ordered==false)
     {
-        for(int j=0; j<L_; j++)
+        for(int i = 0; i < L_; i++)
         {
-            double k = ((std::rand()%2)-0.5)*2;
-            lattice(i,j) = k;
+            for(int j=0; j<L_; j++)
+            {
+                double k = ((std::rand()%2)-0.5)*2;
+                lattice(i,j) = k;
+            }
         }
     }
-    
-   //lattice.ones(L_,L_);
+    else if(ordered==true)
+    {
+        lattice.ones(L_,L_);
+    }
 }
 
 arma::mat Lattice::Pad_lattice(arma::mat lat)
@@ -222,8 +229,7 @@ double Lattice::susceptibility(arma::vec average)
 
 void Lattice::one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map)
 {
-    arma::mat S = lattice;
-    arma::mat pad_s = Pad_lattice(S);
+    arma::mat pad_s = padded;
 
     for(int k = 0; k < N_; k++)
     {
@@ -234,24 +240,32 @@ void Lattice::one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map
         arma::mat S_ = Replace_pad(S_prime); // update pad
         // calculate the change in energy
         double dE = -S_(i,j)*(S_(i-1,j) + S_(i+1,j) + S_(i,j-1) + S_(i,j+1)) + pad_s(i,j)*(pad_s(i-1,j) + pad_s(i+1,j) + pad_s(i,j-1) + pad_s(i,j+1));
+        double dM = Total_magnetization(S_, true)-Total_magnetization(pad_s, true);
         // double dE1 = Lattice::Total_energy(S_, true) - Lattice::Total_energy(pad_s, true);
         double one = 1;
         double p = std::min(one, my_map[dE]);
         // std::cout << my_map[dE] << " " << dE << '\n'; 
 
         double r = ((double) rand() / (RAND_MAX));
-
-        if(r <= p)
+        if(dE < 0)
         {
             pad_s = S_;
+            E += dE;
+            M += dM;
+        }
+        else if(r <= p)
+        {
+            pad_s = S_;
+            E += dE;
+            M += dM;
         }
         // std::cout << pad_s << '\n';
     }
-    lattice = pad_s;
-    double E = Lattice::Total_energy(pad_s, true);
-    double M = Lattice::Total_magnetization(pad_s, true);
-    double eps = Lattice::energy_per_spin(pad_s, true);
-    double m = Lattice::magnetization_per_spin(pad_s, true);
+    padded = pad_s;
+    //double E = Lattice::Total_energy(pad_s, true);
+    //double M = Lattice::Total_magnetization(pad_s, true);
+    //double eps = Lattice::energy_per_spin(pad_s, true);
+    //double m = Lattice::magnetization_per_spin(pad_s, true);
 
     average(0) += E;
     average(1) += E*E;
@@ -259,62 +273,11 @@ void Lattice::one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map
     average(3) += M*M;
     average(4) += std::fabs(M);
     average(5) += 1;
-    average(6) += eps;
-    average(7) += std::fabs(m);
-    // std::cout << average(0) << '\n';
-
-    //calculate some values from the new S
+    //average(6) += eps;
+    //average(7) += std::fabs(m);
 }
-/*
-void Lattice::one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map)
-{
-    arma::mat S = lattice;
-    arma::mat pad_s = Pad_lattice(S);
 
-    for(int k = 0; k < N_; k++)
-    {
-        arma::mat S_prime = pad_s;
-        int i = (std::rand()%L_)+1;   // random index in lattice
-        int j = (std::rand()%L_)+1;   // ...
-        S_prime(i,j) = -S_prime(i,j); // flip random spin within lattice (pad not affected)
-        arma::mat S_ = Replace_pad(S_prime); // update pad
-        // calculate the change in energy
-        double dE = -S_(i,j)*(S_(i-1,j) + S_(i,j-1)) + pad_s(i,j)*(pad_s(i-1,j) + pad_s(i,j-1));
-        // std::cout << dE << '\n';
-        // double dE1 = Lattice::Total_energy(S_, true) - Lattice::Total_energy(pad_s, true);
-        // std::cout << dE1 << '\n';
-        double one = 1;
-        double p = std::min(one, my_map[dE]);
-        // std::cout << my_map[dE] << " " << dE << '\n'; 
-
-        double r = ((double) rand() / (double) RAND_MAX);
-
-        if(r <= p)
-        {
-            pad_s = S_;
-        }
-    }
-    double E = Lattice::Total_energy(pad_s, true);
-    double M = Lattice::Total_magnetization(pad_s, true);
-    //std::cout << '\n';
-    //std::cout << E << '\n'; 
-    //std::cout << pad_s << '\n';
-    //std::cout << M << '\n';
-
-    average(0) += E;
-    average(1) += E*E;
-    average(2) += M;
-    average(3) += M*M;
-    average(4) += std::fabs(M);
-    average(5) += 1;
-    // std::cout << average(0) << '\n';
-
-    //calculate some values from the new S
-}
-*/
-
-
-arma::vec Lattice::full_cycle(int cycles)
+arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list)
 {
     arma::vec average(8);
     average.zeros();
@@ -338,6 +301,9 @@ arma::vec Lattice::full_cycle(int cycles)
     {
         std::srand((unsigned)time(NULL)+i);
         one_cycle_MCMC(average, my_map);
+        //std::cout << "Cycle: " << i << "/" << cycles<< std::endl;
+        eps_list(i) = average(0)/(N_);
+        m_list(i) = average(4)/(N_);
     }
 
     return average;
