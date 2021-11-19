@@ -273,21 +273,21 @@ void Lattice::one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map
     average(3) += M*M;
     average(4) += std::fabs(M);
     average(5) += 1;
-    //average(6) += eps;
-    //average(7) += std::fabs(m);
+    average(6) += E/N_;
+    average(7) += std::fabs(M)/N_;
 }
 
 arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list)
 {
     arma::vec average(8);
     average.zeros();
+    int burn_in = 10000;
 
     double E0 =  8; double expE0 = exp(-E0/T_);
     double E1 =  4; double expE1 = exp(-E1/T_);
     double E2 = -0; double expE2 = exp(-E2/T_);
     double E3 = -4; double expE3 = exp(-E3/T_);
     double E4 = -8; double expE4 = exp(-E4/T_);
-    // std::cout << T_ << '\n'; 
 
     std::map<double, double> my_map = {
     { E0, expE0},
@@ -297,6 +297,12 @@ arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list
     { E4, expE4}
     }; 
 
+    for(int i = 0; i < burn_in; i++)
+    {
+        std::srand((unsigned)time(NULL)+i);
+        one_cycle_MCMC(average, my_map);
+    }
+    average.zeros();
     for(int i = 0; i < cycles; i++)
     {
         std::srand((unsigned)time(NULL)+i);

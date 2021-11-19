@@ -11,7 +11,7 @@ void loop_over_temp(int L, std::string filename, int cycles)
     
     auto t1 = std::chrono::steady_clock::now();
     double T0 = 2.1; double T1 = 2.4;
-    int n = 50;
+    int n = 20;
     // define my vectors
     arma::vec Temp = arma::linspace(T0, T1, n);
     arma::vec vec_Cv(n);
@@ -130,31 +130,32 @@ int main()
         
         case 3:
         {
-            loop_over_temp(20, "_L20.txt", 100000);
+            loop_over_temp(20, "_L20.txt", 1000000);
             break;
         }
 
         case 4: 
         {
-            loop_over_temp(40, "_L40.txt", 100000);
+            loop_over_temp(40, "_L40.txt", 1000000);
             break;
         }
 
         case 5:
         {
-            loop_over_temp(60, "_L60.txt", 100000);
+            loop_over_temp(60, "_L60.txt", 1000000);
+            //1 mill cycles ish
             break;
         }
 
         case 6:
         {
-            loop_over_temp(80, "_L80.txt", 100000);
+            loop_over_temp(80, "_L80.txt", 1000000);
             break;
         }
 
         case 7:
         {
-            loop_over_temp(100, "_L100.txt", 100000);
+            loop_over_temp(100, "_L100.txt", 1000000);
             break;
         }
 
@@ -172,8 +173,9 @@ int main()
 
         case 9:
         {   
-            int cycles = 20000;
+            int cycles = 100000;
             
+            auto t1 = std::chrono::steady_clock::now();
             arma::vec eps_list(cycles);
             arma::vec m_list(cycles);
             Lattice myinstance(20, 1, true);
@@ -181,13 +183,23 @@ int main()
             eps_list.save("eps_burn_in_test_ordered_T1.txt");
             m_list.save("m_burn_in_test_ordered_T1.txt");
             
+            auto t2 = std::chrono::steady_clock::now();
+            std::cout<<"Calculations done for ordered T=1, cycles=" << cycles << std::endl;
+            std::cout<<"Time: "<<std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()<<" milliseconds"<<"\n";
+
+            auto t3 = std::chrono::steady_clock::now();
             arma::vec eps_list2(cycles);
             arma::vec m_list2(cycles);
             Lattice myinstance2(20, 1, false);
             myinstance2.full_cycle(cycles, eps_list2, m_list2);
             eps_list2.save("eps_burn_in_test_unordered_T1.txt");
             m_list2.save("m_burn_in_test_unordered_T1.txt");
-            
+
+            auto t4 = std::chrono::steady_clock::now();
+            std::cout<<"Calculations done for unordered T=1, cycles=" << cycles << std::endl;
+            std::cout<<"Time: "<<std::chrono::duration_cast<std::chrono::milliseconds>(t4-t3).count()<<" milliseconds"<<"\n";
+
+            auto t5 = std::chrono::steady_clock::now();
             arma::vec eps_list3(cycles);
             arma::vec m_list3(cycles);
             Lattice myinstance3(20, 2.4, true);
@@ -195,12 +207,21 @@ int main()
             eps_list3.save("eps_burn_in_test_ordered_T24.txt");
             m_list3.save("m_burn_in_test_ordered_T24.txt");
 
+            auto t6 = std::chrono::steady_clock::now();
+            std::cout<<"Calculations done for ordered T=2.4, cycles=" << cycles << std::endl;
+            std::cout<<"Time: "<<std::chrono::duration_cast<std::chrono::milliseconds>(t6-t5).count()<<" milliseconds"<<"\n";
+
+            auto t7 = std::chrono::steady_clock::now();
             arma::vec eps_list4(cycles);
             arma::vec m_list4(cycles);
             Lattice myinstance4(20, 2.4, false);
             myinstance4.full_cycle(cycles, eps_list4, m_list4);
             eps_list4.save("eps_burn_in_test_unordered_T24.txt");
             m_list4.save("m_burn_in_test_unordered_T24.txt");
+
+            auto t8 = std::chrono::steady_clock::now();
+            std::cout<<"Calculations done for unordered T=2.4, cycles=" << cycles << std::endl;
+            std::cout<<"Time: "<<std::chrono::duration_cast<std::chrono::milliseconds>(t8-t7).count()<<" milliseconds"<<"\n";
             
         }
         
