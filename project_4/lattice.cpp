@@ -138,71 +138,7 @@ arma::mat Lattice::Replace_pad(arma::mat pad)
     new_pad(L_+1,L_+1) = pad(1,1);
     return new_pad;
 }
-//////////////////////////////////////////
-double Lattice::Boltzman()
-{
-    double Z;
 
-    arma::mat dummy;
-    dummy.ones(L_, L_);
-    int count = 1;
-    // Z = ... manually set Z to just ones
-    //std::cout << count << '\n';
-    //std::cout << dummy << '\n';
-
-    // for (int k = 0; k<N_*N_; k++)
-    while (true)
-    {   // for all elements in lattice
-        // subtract 2 from the first element
-        dummy(0,0) -= 2;
-        // the thought is to roll this subtraction
-        // over one index if we go under -1
-
-        // basically numpy.where
-        for (int j = 0; j<L_; j++)
-        { 
-            for (int i = 0; i<L_; i++)
-            {
-                // where and elements is less than -1
-                if (dummy(i,j) < -1)
-                {
-                    // we subtract to the next element
-                    if (i<L_-1)
-                        dummy(i+1,j) -= 2;
-                    // if we are on the border we subtract the
-                    // first element in the next row
-                    if (i==L_-1)
-                        dummy(0,j+1) -= 2;
-                    // else if we are in the corner (i,j) = (L,L) we
-                    // simply do nothing
-                    else if (i==L_-1 | j==L_-1)
-                        double null = 0;
-                    // finally set current index to 1
-                    dummy(i,j) = 1;
-                }
-            }
-        }
-        // Z += ...
-        count += 1;
-        
-        //std::cout << count << '\n';
-        //std::cout << dummy << '\n';
-
-        if (arma::accu(dummy) == -N_)
-            break;
-        // PRINT HERE SENPAI UWU
-    }
-    std::cout << count << '\n';
-
-    /*
-    for (i<)
-    double P = exp(-Total_energy()/T)/Z;
-    return P;
-    */
-   double ten = 10;
-   return ten;
-}
-//////////////////////////////////////////
 double Lattice::energy_per_spin()
 {
     double eps = Total_energy()/N_;
@@ -311,26 +247,38 @@ void Lattice::one_cycle_MCMC(arma::vec& average)
     average(7) += std::fabs(M)/N_;
 }
 
-arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list)
+arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list, bool sample_eps_lattice)
 {
     int burn_in = 5e4;
     arma::vec average(8);
     average.zeros();
+    
     
     for(int i=0; i<burn_in; i++)
     {
         std::srand((unsigned)time(NULL)+i);
         one_cycle_MCMC(average);
     }
-    
-    for(int i = 0; i < cycles; i++)
+    if(sample_eps_lattice==true)
     {
-        std::srand((unsigned)time(NULL)+i);
-        one_cycle_MCMC(average);
-        //std::cout << "Cycle: " << i << "/" << cycles<< std::endl;
-        eps_list(i) = average(0)/(N_);
-        m_list(i) = average(4)/(N_);
+        for(int i = 0; i < cycles; i++)
+        {
+            std::srand((unsigned)time(NULL)+i);
+            one_cycle_MCMC(average);
+            eps_list(i) = energy_per_spin();
+            m_list(i) = magnetization_per_spin();
+        }
     }
-
+    else if(sample_eps_lattice==false)
+    {
+        for(int i = 0; i < cycles; i++)
+        {
+            std::srand((unsigned)time(NULL)+i);
+            one_cycle_MCMC(average);
+            eps_list(i) = average(0)/(N_);
+            m_list(i) = average(4)/(N_);
+        }
+    }
     return average;
 }
+

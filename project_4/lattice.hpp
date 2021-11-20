@@ -61,7 +61,7 @@ class Lattice
 
     // double calc_dE_2(arma::mat S1, arma::mat S2, int i, int j);
     // double calc_dE_N(arma::mat S1, arma::mat S2, int i, int j);
-    arma::vec full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list);
+    arma::vec full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list, bool sample_eps_lattice=false);
 };
 
 

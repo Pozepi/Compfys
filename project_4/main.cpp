@@ -57,6 +57,7 @@ int main()
     std::cout << "  [7.] Calculate Cv(T) and chi(T) for L=100" << '\n';
     std::cout << "  [8.] Calculate Cv(T) and chi(T) for L=n and cycles=m" << '\n';
     std::cout << "  [9.] Burn in test for L=20, unordered/ordered, T=1 & T=2.4" << '\n';
+    std::cout << "  [10.] Approximate eps for L=20, T=1 and T=2.4 \n";
 
     
     std::cout << '\n' << "Please select an option" << "\n";
@@ -223,6 +224,21 @@ int main()
             std::cout<<"Calculations done for unordered T=2.4, cycles=" << cycles << std::endl;
             std::cout<<"Time: "<<std::chrono::duration_cast<std::chrono::milliseconds>(t8-t7).count()<<" milliseconds"<<"\n";
             
+        }
+
+        case 10:
+        {
+            int cycles = 500000;
+            Lattice myinstance(20, 1, false);
+            arma::vec eps_list(cycles);
+            arma::vec m_list(cycles);
+            myinstance.full_cycle(cycles, eps_list, m_list, true);
+            eps_list.save("approximate_eps_T1.txt");
+
+            Lattice myinstance2(20, 2.4, false);
+            arma::vec eps_list2(cycles);
+            myinstance.full_cycle(cycles, eps_list2, m_list, true);
+            eps_list2.save("approximate_eps_T24.txt");
         }
         
     }
