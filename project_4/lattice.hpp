@@ -20,28 +20,43 @@ class Lattice
     int L_;
     int N_;
     double T_;
-    arma::mat lattice;
-    arma::mat padded;
     double E;
     double M;
+    double dE;
+    double r;
+    double p;
+
+    arma::imat lattice;
+    arma::mat padded;
+    std::map<double, double> my_map;
+
     
     public:
     Lattice(int L, double T, bool ordered);
     arma::mat Create_lattice();
     void Fill_lattice(bool ordered);
+
     arma::mat Pad_lattice(arma::mat lat);
     arma::mat unpad(arma::mat pad);
-    double Total_magnetization(arma::mat lat, bool padded);
-    double Total_energy(arma::mat lat, bool padded);
+
+    double Total_magnetization();
+    double Total_energy();
     double Boltzman();
+
     arma::mat Replace_pad(arma::mat lat);
-    double energy_per_spin(arma::mat lat, bool padded);
+
+    double energy_per_spin();
     double energy_per_spin_expectation(arma::vec average);
-    double magnetization_per_spin(arma::mat lat, bool padded);
+
+    double magnetization_per_spin();
     double magnetization_per_spin_expectation(arma::vec average);
+
     double specific_heat_capacity(arma::vec average);
     double susceptibility(arma::vec average);
-    void one_cycle_MCMC(arma::vec& average, std::map<double, double> my_map);
+    void one_cycle_MCMC(arma::vec& average);
+    void burn_in(int cycles);
+    bool test_flip(int i,int j);
+    int periodic(int i, int limit, int add);
     // void one_cycle_MCMC_2(arma::vec& average, std::map<double, double> my_map);
 
     // double calc_dE_2(arma::mat S1, arma::mat S2, int i, int j);

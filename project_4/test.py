@@ -61,7 +61,7 @@ plt.show()
 
 
 """ find value of single temp"""
-T = 1 # in units of J/k_B
+T = 2.4 # in units of J/k_B
 beta = 1/T
 
 Z = 2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12
