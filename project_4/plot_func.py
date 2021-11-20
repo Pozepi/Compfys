@@ -74,6 +74,10 @@ if choice == "1":
     ax[1].set_title('Burn in time for |m| measured in MC cycles')
     ax[0].set_xlabel('Cycles')
     ax[1].set_xlabel('Cycles')
+    ax[0].grid()
+    ax[1].grid()
+    ax[0].set_ylabel('ϵ [J]')
+    ax[1].set_ylabel('|m|')
     plt.show()
 
 """

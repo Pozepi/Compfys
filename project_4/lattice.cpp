@@ -311,22 +311,18 @@ void Lattice::one_cycle_MCMC(arma::vec& average)
     average(7) += std::fabs(M)/N_;
 }
 
-void Lattice::burn_in(int cycles)
+arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list)
 {
+    int burn_in = 5e4;
     arma::vec average(8);
-    for (int i=0;i<cycles;i++)
+    average.zeros();
+    
+    for(int i=0; i<burn_in; i++)
     {
         std::srand((unsigned)time(NULL)+i);
         one_cycle_MCMC(average);
     }
-}
-
-
-arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list)
-{
-    arma::vec average(8);
-    average.zeros();
-
+    
     for(int i = 0; i < cycles; i++)
     {
         std::srand((unsigned)time(NULL)+i);

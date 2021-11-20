@@ -173,7 +173,7 @@ int main()
 
         case 9:
         {   
-            int cycles = 100000;
+            int cycles = 50000;
             
             auto t1 = std::chrono::steady_clock::now();
             arma::vec eps_list(cycles);
