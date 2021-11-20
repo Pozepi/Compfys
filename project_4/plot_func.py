@@ -87,10 +87,11 @@ elif choice == '2':
     eps = np.array(eps[:,0])
     eps2.load("approximate_eps_T24.txt")
     eps2 = np.array(eps2[:,0])
-
+    for i in eps:
+        print(i)
     fig, ax = plt.subplots(ncols=2)
-    ax[0].hist(eps, bins=10)
-    ax[1].hist(eps2, bins=10)
+    ax[0].hist(eps, bins=20)
+    ax[1].hist(eps2, bins=20)
     plt.show()
 
 

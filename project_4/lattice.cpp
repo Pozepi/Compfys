@@ -267,6 +267,8 @@ arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list
             one_cycle_MCMC(average);
             eps_list(i) = energy_per_spin();
             m_list(i) = magnetization_per_spin();
+            std::cout << lattice << std::endl;
+            std::cout << energy_per_spin()<< std::endl;
         }
     }
     else if(sample_eps_lattice==false)

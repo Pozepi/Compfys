@@ -228,7 +228,7 @@ int main()
 
         case 10:
         {
-            int cycles = 500000;
+            int cycles = 1000000;
             Lattice myinstance(20, 1, false);
             arma::vec eps_list(cycles);
             arma::vec m_list(cycles);
