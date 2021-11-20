@@ -22,8 +22,8 @@ if choice == "1":
         eps[i] /= i+1
         m[i] /= i+1
     fig, ax = plt.subplots(ncols=2)
-    ax[0].plot(x, eps)
-    ax[1].plot(x, m)
+    ax[0].plot(x, eps, label = 'ϵ for T=1, ordered')
+    ax[1].plot(x, m, label = '|m| for T=1, ordered')
 
     eps2 = pa.mat()
     eps2.load(path_to_file+"eps_burn_in_test_unordered_T1.txt")
@@ -36,8 +36,8 @@ if choice == "1":
     for i in range(len(eps)):
         eps2[i] /= i+1
         m2[i] /= i+1
-    ax[0].plot(x, eps2)
-    ax[1].plot(x, m2)
+    ax[0].plot(x, eps2, label = 'ϵ for T=1, unordered')
+    ax[1].plot(x, m2, label = '|m| for T=1, unordered')
 
     eps3 = pa.mat()
     eps3.load(path_to_file+"eps_burn_in_test_ordered_T24.txt")
@@ -50,8 +50,8 @@ if choice == "1":
     for i in range(len(eps)):
         eps3[i] /= i+1
         m3[i] /= i+1
-    ax[0].plot(x, eps3)
-    ax[1].plot(x, m3)
+    ax[0].plot(x, eps3, label = 'ϵ for T=2.4, ordered')
+    ax[1].plot(x, m3, label = '|m| for T=2.4, ordered')
 
     eps4 = pa.mat()
     eps4.load(path_to_file+"eps_burn_in_test_unordered_T24.txt")
@@ -64,10 +64,16 @@ if choice == "1":
     for i in range(len(eps)):
         eps4[i] /= i+1
         m4[i] /= i+1
-    ax[0].plot(x, eps4)
-    ax[1].plot(x, m4)
+    ax[0].plot(x, eps4, label = 'ϵ for T=2.4, unordered')
+    ax[1].plot(x, m4, label = '|m| for T=2.4, unordered')
     ax[0].set_xscale('log')
     ax[1].set_xscale('log')
+    ax[0].legend()
+    ax[1].legend()
+    ax[0].set_title('Burn in time for ϵ measured in MC cycles')
+    ax[1].set_title('Burn in time for |m| measured in MC cycles')
+    ax[0].set_xlabel('Cycles')
+    ax[1].set_xlabel('Cycles')
     plt.show()
 
 """
