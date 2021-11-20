@@ -11,7 +11,7 @@ void loop_over_temp(int L, std::string filename, int cycles)
     
     auto t1 = std::chrono::steady_clock::now();
     double T0 = 2.1; double T1 = 2.4;
-    int n = 20;
+    int n = 250;
     // define my vectors
     arma::vec Temp = arma::linspace(T0, T1, n);
     arma::vec vec_Cv(n);
@@ -131,32 +131,32 @@ int main()
         
         case 3:
         {
-            loop_over_temp(20, "_L20.txt", 1000000);
+            loop_over_temp(20, "_L20.txt", 500000);
             break;
         }
 
         case 4: 
         {
-            loop_over_temp(40, "_L40.txt", 1000000);
+            loop_over_temp(40, "_L40.txt", 500000);
             break;
         }
 
         case 5:
         {
-            loop_over_temp(60, "_L60.txt", 1000000);
+            loop_over_temp(60, "_L60.txt", 500000);
             //1 mill cycles ish
             break;
         }
 
         case 6:
         {
-            loop_over_temp(80, "_L80.txt", 1000000);
+            loop_over_temp(80, "_L80.txt", 500000);
             break;
         }
 
         case 7:
         {
-            loop_over_temp(100, "_L100.txt", 1000000);
+            loop_over_temp(100, "_L100.txt", 500000);
             break;
         }
 
