@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 
 print("Welcome to the plotting program for MCMC, please input a choice:")
 print("[1]: Burn in time plot")
-print("[2]: Oppgave 6 ")
-print("[3]: Numerical vs analytical")
+print("[2]")
 
 choice = input("Pick an option: ")
 if choice == "1":
@@ -89,8 +88,9 @@ elif choice == '2':
     eps = np.array(eps[:,0])
     eps2.load("approximate_eps_T24.txt")
     eps2 = np.array(eps2[:,0])
-    for i in eps:
-        print(i)
+    """for i in eps:
+        print(i)"""
+    print(eps)
     fig, ax = plt.subplots(ncols=2)
     ax[0].hist(eps, bins=20)
     ax[1].hist(eps2, bins=20)

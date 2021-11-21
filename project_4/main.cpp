@@ -117,13 +117,13 @@ int main()
         
         case 3:
         {
-            loop_over_temp(20, "_L20.txt", 500000);
+            loop_over_temp(20, "_L20.txt", 250000);
             break;
         }
 
         case 4: 
         {
-            loop_over_temp(40, "_L40.txt", 500000);
+            loop_over_temp(40, "_L40.txt", 250000);
             break;
         }
 
@@ -136,13 +136,13 @@ int main()
 
         case 6:
         {
-            loop_over_temp(80, "_L80.txt", 500000);
+            loop_over_temp(80, "_L80.txt", 250000);
             break;
         }
 
         case 7:
         {
-            loop_over_temp(100, "_L100.txt", 500000);
+            loop_over_temp(100, "_L100.txt", 250000);
             break;
         }
 
@@ -215,6 +215,7 @@ int main()
         case 10:
         {
             int cycles = 1000000;
+            //int cycles = 100000;
             Lattice myinstance(20, 1, false);
             arma::vec eps_list(cycles);
             arma::vec m_list(cycles);
