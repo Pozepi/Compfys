@@ -11,7 +11,7 @@ void loop_over_temp(int L, std::string filename, int cycles)
     
     auto t1 = std::chrono::steady_clock::now();
     double T0 = 2.1; double T1 = 2.4;
-    int n = 250;
+    int n = 100;
     // define my vectors
     arma::vec Temp = arma::linspace(T0, T1, n);
     arma::vec vec_Cv(n);
@@ -33,6 +33,7 @@ void loop_over_temp(int L, std::string filename, int cycles)
         vec_chi(i) = chi;
         vec_eps(i) = eps;
         vec_m(i) = m;
+        std::cout << i <<"/100"<< std::endl; 
     }
 
     auto t2 = std::chrono::steady_clock::now();
@@ -67,22 +68,7 @@ int main()
     {
         case 1:
         {
-            int L = 2;
-            int N = L*L;
-            Lattice test(L, 1, false);
-            arma::vec eps_list(100000);
-            arma::vec m_list(100000);
-
-            clock_t t1 = clock();
-            arma::vec average = test.full_cycle(100000, eps_list, m_list);
-            clock_t t2 = clock();
-            double Cv = test.specific_heat_capacity(average);
-            double chi = test.susceptibility(average);
-            std::cout << "Cv: "<< Cv << '\n';
-            std::cout << "chi: "<< chi << '\n';
-            double duration_seconds = ((double) (t2-t1))/CLOCKS_PER_SEC;
-            std::cout << "Time: " << duration_seconds << '\n';
-
+            loop_over_temp(2, "_L2.txt", 250000);
             break;
         }
         // loop over temperature
@@ -143,7 +129,7 @@ int main()
 
         case 5:
         {
-            loop_over_temp(60, "_L60.txt", 500000);
+            loop_over_temp(60, "_L60.txt", 250000);
             //1 mill cycles ish
             break;
         }

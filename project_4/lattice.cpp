@@ -253,12 +253,13 @@ arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list
     arma::vec average(8);
     average.zeros();
     
-    
+    /*
     for(int i=0; i<burn_in; i++)
     {
         std::srand((unsigned)time(NULL)+i);
         one_cycle_MCMC(average);
     }
+    */
     if(sample_eps_lattice==true)
     {
         for(int i = 0; i < cycles; i++)
