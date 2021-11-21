@@ -61,7 +61,7 @@ plt.show()
 
 
 """ find value of single temp"""
-T = 2.4 # in units of J/k_B
+T = 1 # in units of J/k_B
 beta = 1/T
 
 Z = 2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12
@@ -90,3 +90,14 @@ print('Std: ', (M2 - M1**2))
 
 print('Magnetisation: ', chi)
 
+
+#E = N*4/(2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12)*(np.exp(-8*beta) - np.exp(8*beta))
+#EE = N*N*8/(2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12)*(np.exp(-8*beta) + np.exp(8*beta))
+
+Cv = 8*N/T**2/(2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12)*(np.exp(-8*beta) + np.exp(8*beta) 
+- 2*(np.exp(-16*beta) + np.exp(16*beta) - 2)/(2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12))
+
+chi = 2*N/T/(2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12)*(np.exp(8*beta) + 1 - 
+2*(np.exp(16*beta) + 4*np.exp(8*beta) + 4)/(2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12))
+
+print(chi)

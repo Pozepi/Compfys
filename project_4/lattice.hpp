@@ -56,7 +56,7 @@ class Lattice
     void one_cycle_MCMC(arma::vec& average);
     void burn_in(int cycles);
     bool test_flip(int i,int j);
-    int periodic(int i, int limit, int add);
+    int periodic(int i, int add);
     // void one_cycle_MCMC_2(arma::vec& average, std::map<double, double> my_map);
 
     // double calc_dE_2(arma::mat S1, arma::mat S2, int i, int j);

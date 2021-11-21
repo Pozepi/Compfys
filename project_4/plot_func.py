@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 
 print("Welcome to the plotting program for MCMC, please input a choice:")
 print("[1]: Burn in time plot")
-print("[2]: Oppgave 6 ")
-print("[3]: Numerical vs analytical")
+print("[2]")
 
 choice = input("Pick an option: ")
 if choice == "1":
@@ -89,60 +88,13 @@ elif choice == '2':
     eps = np.array(eps[:,0])
     eps2.load("approximate_eps_T24.txt")
     eps2 = np.array(eps2[:,0])
-    for i in eps:
-        print(i)
+    """for i in eps:
+        print(i)"""
+    print(eps)
     fig, ax = plt.subplots(ncols=2)
     ax[0].hist(eps, bins=20)
     ax[1].hist(eps2, bins=20)
     plt.show()
-
-elif choice == '3':
-    eps = pa.mat()
-    m = pa.mat()
-    chi = pa.mat()
-    Cv = pa.mat()
-    temp = pa.mat()
-
-    eps.load("expect_eps_L2.txt")
-    m.load("expect_m_L2.txt")
-    chi.load("chi_L2.txt")
-    Cv.load("Cv_L2.txt")
-    temp.load("Temp_L2.txt")
-
-    eps = np.array(eps[:,0])
-    m = np.array(m[:,0])
-    chi = np.array(chi[:,0])
-    Cv = np.array(Cv[:,0])
-    temp = np.array(temp[:,0])
-
-    N = 4
-    T = np.linspace(2.1, 2.4, 100) # in units of J/k_B
-    beta = 1/T
-
-    Z = 2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12
-
-    E1 = 16/Z*(np.exp(-8*beta) - np.exp(8*beta)) # first moment
-    E2 = 128/Z*(np.exp(8*beta) + np.exp(-8*beta))
-    Cv_a = (E2 - E1**2)/(N*T**2)
-
-    M1 = (8*np.exp(8*beta) + 16)/Z # (4*np.exp(8*beta) + 4*np.exp(-8*beta) + 16)/Z
-    M2 = 32/Z*(np.exp(8*beta) + 1) #16/Z*(np.exp(8*beta) + 1)
-    chi_a = (M2 - M1**2)/(N*T)
-
-    eps_a = E1/N
-    m_a = M1/N
-
-    fig, ax = plt.subplots(2,2)
-    ax[0,0].plot(1/temp, eps)
-    ax[0,0].plot(beta, eps_a)
-    ax[0,1].plot(1/temp, m)
-    ax[0,1].plot(beta, m_a)
-    ax[1,0].plot(1/temp, chi)
-    ax[1,0].plot(beta, chi_a)
-    ax[1,1].plot(1/temp, Cv)
-    ax[1,1].plot(beta, Cv_a)
-    plt.show()
-
 
 
 

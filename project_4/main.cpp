@@ -11,7 +11,7 @@ void loop_over_temp(int L, std::string filename, int cycles)
     
     auto t1 = std::chrono::steady_clock::now();
     double T0 = 2.1; double T1 = 2.4;
-    int n = 250;
+    int n = 100;
     // define my vectors
     arma::vec Temp = arma::linspace(T0, T1, n);
     arma::vec vec_Cv(n);
@@ -33,6 +33,7 @@ void loop_over_temp(int L, std::string filename, int cycles)
         vec_chi(i) = chi;
         vec_eps(i) = eps;
         vec_m(i) = m;
+        std::cout << i << "/100" << std::endl;
     }
 
     auto t2 = std::chrono::steady_clock::now();
@@ -131,32 +132,32 @@ int main()
         
         case 3:
         {
-            loop_over_temp(20, "_L20.txt", 500000);
+            loop_over_temp(20, "_L20.txt", 250000);
             break;
         }
 
         case 4: 
         {
-            loop_over_temp(40, "_L40.txt", 500000);
+            loop_over_temp(40, "_L40.txt", 250000);
             break;
         }
 
         case 5:
         {
-            loop_over_temp(60, "_L60.txt", 500000);
+            loop_over_temp(60, "_L60.txt", 250000);
             //1 mill cycles ish
             break;
         }
 
         case 6:
         {
-            loop_over_temp(80, "_L80.txt", 500000);
+            loop_over_temp(80, "_L80.txt", 250000);
             break;
         }
 
         case 7:
         {
-            loop_over_temp(100, "_L100.txt", 500000);
+            loop_over_temp(100, "_L100.txt", 250000);
             break;
         }
 
@@ -229,6 +230,7 @@ int main()
         case 10:
         {
             int cycles = 1000000;
+            //int cycles = 100000;
             Lattice myinstance(20, 1, false);
             arma::vec eps_list(cycles);
             arma::vec m_list(cycles);

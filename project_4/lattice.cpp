@@ -110,7 +110,7 @@ double Lattice::Total_energy()
     {
         for(int j=0; j<L_; j++)
         {
-            sum += lattice(i,j)*(lattice(periodic(i,L_,-1),j) + lattice(i,periodic(j,L_,-1)));
+            sum += lattice(i,j)*(lattice(periodic(i,-1),j) + lattice(i,periodic(j,-1)));
         }
     }
     // std::cout << lattice << '\n';
@@ -182,19 +182,19 @@ double Lattice::susceptibility(arma::vec average)
     return chi;
 }
 
-int Lattice::periodic(int i, int limit, int add) 
+int Lattice::periodic(int i, int add) 
 {
-    return (i+limit+add) % (limit);
+    return (i+L_+add) % (L_);
 }
 
 bool Lattice::test_flip(int i,int j)
 {
     dE = 2*lattice(i,j)*
     (
-     lattice(i,periodic(j,L_,-1))+
-     lattice(i,periodic(j,L_,+1))+ 
-     lattice(periodic(i,L_,-1),j)+
-     lattice(periodic(i,L_,+1),j)
+     lattice(i,periodic(j,-1))+
+     lattice(i,periodic(j,+1))+ 
+     lattice(periodic(i,-1),j)+
+     lattice(periodic(i,+1),j)
     );
 
     r = ((double) rand() / (RAND_MAX));
@@ -253,12 +253,13 @@ arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list
     arma::vec average(8);
     average.zeros();
     
-    
+    /*
     for(int i=0; i<burn_in; i++)
     {
         std::srand((unsigned)time(NULL)+i);
         one_cycle_MCMC(average);
     }
+    */
     if(sample_eps_lattice==true)
     {
         for(int i = 0; i < cycles; i++)
@@ -267,8 +268,8 @@ arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list
             one_cycle_MCMC(average);
             eps_list(i) = energy_per_spin();
             m_list(i) = magnetization_per_spin();
-            std::cout << lattice << std::endl;
-            std::cout << energy_per_spin()<< std::endl;
+            // std::cout << lattice << std::endl;
+            // std::cout << energy_per_spin()<< std::endl;
         }
     }
     else if(sample_eps_lattice==false)
