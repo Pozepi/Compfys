@@ -133,14 +133,20 @@ elif choice == '3':
     m_a = M1/N
 
     fig, ax = plt.subplots(2,2)
-    ax[0,0].plot(1/temp, eps)
-    ax[0,0].plot(beta, eps_a)
-    ax[0,1].plot(1/temp, m)
-    ax[0,1].plot(beta, m_a)
-    ax[1,0].plot(1/temp, chi)
-    ax[1,0].plot(beta, chi_a)
+    ax[0,0].plot(1/temp, eps, label = 'Numerical <ϵ>')
+    ax[0,0].plot(beta, eps_a, label = 'Analytical <ϵ>')
+    ax[0,0].grid()
+    ax[0,0].legend()
+    ax[0,1].plot(1/temp, m, label = 'Numerical <|m|>')
+    ax[0,1].plot(beta, m_a, label = 'Analytical <|m|>')
+    ax[0,1].grid()
+    ax[0,0].legend()
+    ax[1,0].plot(1/temp, chi, label = 'Numerical χ')
+    ax[1,0].plot(beta, chi_a, label = '')
+    ax[1,0].grid()
     ax[1,1].plot(1/temp, Cv)
     ax[1,1].plot(beta, Cv_a)
+    ax[1,1].grid()
     plt.show()
 
 
