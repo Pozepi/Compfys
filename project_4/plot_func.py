@@ -97,11 +97,18 @@ elif choice == '2':
     fig, ax = plt.subplots(figsize=(11,6), ncols=2)
     #ax[0].plot(eps)
     #ax[1].plot(eps2)
-    ax[0].hist(eps, bins='auto')
+    x0, bins0, tmp1 = ax[0].hist(eps, bins='auto', density = True)
     ax[0].set_title(r'$T = 1 \; J/k_B$')
-    ax[1].hist(eps2, bins='auto')
+    for item in tmp1:
+        item.set_height(item.get_height()/sum(x0))
+    ax[0].set_ylim(0,1)
+
+    x1, bins1, tmp2 = ax[1].hist(eps2, bins='auto', density = True)
     ax[1].set_title(r'$T = 2.4 \; J/k_B$')
-    [[axi.set_ylabel('Count'), axi.set_xlabel(r"$\epsilon$ [J]"), axi.grid()] for axi in ax]
+    for item in tmp2:
+        item.set_height(item.get_height()/sum(x1))
+    ax[1].set_ylim(0,0.05)
+    [[axi.set_ylabel('Probability'), axi.set_xlabel(r"$\epsilon$ [J]"), axi.grid()] for axi in ax]
     plt.tight_layout()
     plt.savefig('eps_dist.pdf')
     plt.show()
@@ -196,6 +203,7 @@ elif choice == '3':
     ax[1,1].set_title('Cv analytical vs numerical')
 
     #[[[axi.set_xscale('symlog')] for axi in axij] for axij in ax]
+    plt.tight_layout()
     plt.savefig('anavsnum.pdf')
     plt.show()
 
@@ -205,42 +213,93 @@ elif choice == '4':
     files = ['_L20.txt', '_L40.txt', '_L60.txt', '_L80.txt', '_L100.txt']
     color = ['r', 'g', 'b', 'k', 'y']
 
-    fig, ax = plt.subplots(figsize=(11,6))
+
+    fig, ax = plt.subplots(ncols = 2, nrows = 2, figsize=(11,6))
     for file, c in zip(files, color):
+        # heat capacity
         cvn = pa.mat()
         cvn.load('Cv'+file)
         t = pa.mat()
         t.load('Temp'+file)
         cvn = np.array(cvn)
         smooth =  gaussian_filter1d(cvn, 5, axis=0)
-        ax.plot(t, cvn, c+'x', label='Numerical data L = '+file[2:-4])
-        ax.plot(t, smooth, c, label='Gaussian filter L = '+file[2:-4])
+        ax[0,0].plot(t, cvn, c+'x', label='Numerical data L = '+file[2:-4])
+        ax[0,0].plot(t, smooth, c, label='Gaussian filter L = '+file[2:-4])
 
-    ax.legend()
+        # chi
+        chi = pa.mat()
+        chi.load('chi'+file)
+        chi = np.array(chi)
+        smooth =  gaussian_filter1d(chi, 5, axis=0)
+        ax[0,1].plot(t, chi, c+'x')
+        ax[0,1].plot(t, smooth, c)
+
+        # eps 
+        eps = pa.mat()
+        eps.load('expect_eps'+file)
+        eps = np.array(eps)
+        ax[1,0].plot(t, eps, c+'x')
+
+        # m 
+        m = pa.mat()
+        m.load('expect_m'+file)
+        m = np.array(m)
+        ax[1,1].plot(t, m, c+'x')
+
+
+    fig.legend(loc='center left', bbox_to_anchor=(0.07, 0.29))
+    ax[0,0].set_ylabel('Heat Capacity [$k_B$]')
+    ax[0,1].set_ylabel('Susceptibility')
+    ax[1,0].set_ylabel('Energy per spin [J]')
+    ax[1,1].set_ylabel('Magnetizarion per spin')
+    [[[axi.set_xlabel('Temperature [$J$]'), axi.grid()] for axi in axij] for axij in ax]
+    plt.tight_layout()
     plt.savefig('data.pdf')
     plt.show()
 
-
+    # remove L=20 case
+    files = files[1:]
     L = np.array([float(file[2:-4]) for file in files])
-    T_c = []
+    T_c_1 = []
+    T_c_2 = []
     for file in files:
         cv = pa.mat()
         cv.load('Cv'+file)
         cv = np.array(cv)[:,0]
-        smooth =  gaussian_filter1d(cv, 5)
-        i = np.where(smooth==np.max(smooth))[0][0]
-        T_c.append(cv[i])
+
+        t = pa.mat()
+        t.load('Temp'+file)
+        t = np.array(t)[:,0]
+        #smooth =  gaussian_filter1d(cv, 5)
+        i = np.where(cv==np.max(cv))[0][0]
+        T_c_1.append(t[i])
+
+        chi = pa.mat()
+        chi.load('chi'+file)
+        chi = np.array(chi)[:,0]
+
+        i = np.where(chi==np.max(chi))[0][0]
+        T_c_2.append(t[i])
         #t = pa.mat()
         #t.load('Temp'+file)
         #t = np.array(t)[:,0]
         #T_c.append(np.trapz(cv*t, t))
 
+    for i in range(len(L)):
+        print('For length L = %.f we have critical temperature' % L[i])
+        print('%.3f measured from chi and %.3f measured from Cv' % (T_c_2[i], T_c_1[i]))
+
+
     from scipy import stats
-    slope, intercept, r, p, se = stats.linregress(L, T_c*L)
-    print(slope, intercept)
+    slope, intercept, r, p, se = stats.linregress(L, T_c_1*L)
+    print('Using Cv: ', slope, intercept)
     fig, ax = plt.subplots(figsize=(5,5))
-    ax.plot(L, T_c*L, label='$L\cdot T_c$')
-    ax.plot(L, L*slope + intercept, label='Linear fit')
+    ax.plot(L, T_c_1*L, label='$L\cdot T_c$ using $C_v$')
+    ax.plot(L, L*slope + intercept, label='Linear fit for $C_v$ method')
+    slope, intercept, r, p, se = stats.linregress(L, T_c_2*L)
+    print('Using chi: ', slope, intercept)
+    ax.plot(L, T_c_2*L, label='$L\cdot T_c$ using $\chi$')
+    ax.plot(L, L*slope + intercept, label='Linear fit for $\chi$ method')
     ax.legend()
     ax.grid()
     ax.set_ylabel(r'$LT_c(L)$')
