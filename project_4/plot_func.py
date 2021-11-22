@@ -8,7 +8,7 @@ print("[1]: Burn in time plot")
 print("[2]: Oppgave 6")
 print("[3]: Analytical vc numerical")
 
-choice = input("Pick an option: ")
+choice = input("Pick an option: ")  
 if choice == "1":
     path_to_file = "Burn_in_files/"
     eps = pa.mat()
@@ -94,7 +94,7 @@ elif choice == '2':
     """for i in eps:
         print(i)"""
     #print(eps)
-    fig, ax = plt.subplots(ncols=2)
+    fig, ax = plt.subplots(figsize=(11,6), ncols=2)
     #ax[0].plot(eps)
     #ax[1].plot(eps2)
     ax[0].hist(eps, bins='auto')
