@@ -223,7 +223,7 @@ int main()
 
             Lattice myinstance2(20, 2.4, false);
             arma::vec eps_list2(cycles);
-            myinstance.full_cycle(cycles, eps_list2, m_list, true);
+            myinstance2.full_cycle(cycles, eps_list2, m_list, true);
             eps_list2.save("approximate_eps_T24.txt");
         }
         
