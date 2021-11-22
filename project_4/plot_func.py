@@ -7,6 +7,7 @@ print("Welcome to the plotting program for MCMC, please input a choice:")
 print("[1]: Burn in time plot")
 print("[2]: Oppgave 6")
 print("[3]: Analytical vc numerical")
+print("[4]: Numerical results for L=20, 40, 60, 80 and 100, with a gaussian fit")
 
 choice = input("Pick an option: ")  
 if choice == "1":
