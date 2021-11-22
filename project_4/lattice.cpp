@@ -237,7 +237,6 @@ void Lattice::one_cycle_MCMC(arma::vec& average)
     //double m = Lattice::magnetization_per_spin(pad_s, true);
 
     average(0) += E;
-    // std::cout << average(0) << '\n';
     average(1) += E*E;
     average(2) += M;
     average(3) += M*M;
@@ -253,13 +252,12 @@ arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list
     arma::vec average(8);
     average.zeros();
     
-    /*
     for(int i=0; i<burn_in; i++)
     {
         std::srand((unsigned)time(NULL)+i);
         one_cycle_MCMC(average);
     }
-    */
+    average.zeros();
     if(sample_eps_lattice==true)
     {
         for(int i = 0; i < cycles; i++)
@@ -268,8 +266,6 @@ arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list
             one_cycle_MCMC(average);
             eps_list(i) = energy_per_spin();
             m_list(i) = magnetization_per_spin();
-            // std::cout << lattice << std::endl;
-            // std::cout << energy_per_spin()<< std::endl;
         }
     }
     else if(sample_eps_lattice==false)
