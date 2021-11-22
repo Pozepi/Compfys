@@ -23,7 +23,7 @@ if choice == "1":
     for i in range(len(eps)):
         eps[i] /= i+1
         m[i] /= i+1
-    fig, ax = plt.subplots(ncols=2)
+    fig, ax = plt.subplots(ncols=2, figsize=(11,6))
     ax[0].plot(x, eps, label = '<ϵ> for T=1, ordered')
     ax[1].plot(x, m, label = '<|m|> for T=1, ordered')
 
@@ -157,7 +157,7 @@ elif choice == '3':
     eps_a = E1/N
     m_a = M1/N
 
-    fig, ax = plt.subplots(figsize=(11,6), 2,2)
+    fig, ax = plt.subplots(2,2, figsize=(11,6))
     plt.suptitle('Analytical vs numerical, 10 000 and 250 000 MC cycles')
     ax[0,0].plot(beta, eps_a, label = 'Analytical <ϵ>')
     ax[0,0].plot(1/temp, eps, ls = '--',label = 'Numerical <ϵ> 250 000 cycles')
@@ -205,6 +205,7 @@ elif choice == '4':
     files = ['_L20.txt', '_L40.txt', '_L60.txt', '_L80.txt', '_L100.txt']
     color = ['r', 'g', 'b', 'k', 'y']
 
+    fig, ax = plt.subplots(figsize=(11,6))
     for file, c in zip(files, color):
         cvn = pa.mat()
         cvn.load('Cv'+file)
@@ -212,10 +213,10 @@ elif choice == '4':
         t.load('Temp'+file)
         cvn = np.array(cvn)
         smooth =  gaussian_filter1d(cvn, 5, axis=0)
-        plt.plot(t, cvn, c+'x', label='Numerical data L = '+file[2:-4])
-        plt.plot(t, smooth, c, label='Gaussian filter L = '+file[2:-4])
+        ax.plot(t, cvn, c+'x', label='Numerical data L = '+file[2:-4])
+        ax.plot(t, smooth, c, label='Gaussian filter L = '+file[2:-4])
 
-    plt.legend()
+    ax.legend()
     plt.savefig('data.pdf')
     plt.show()
 
@@ -242,4 +243,7 @@ elif choice == '4':
     ax.plot(L, L*slope + intercept, label='Linear fit')
     ax.legend()
     ax.grid()
+    ax.set_ylabel(r'$LT_c(L)$')
+    ax.set_xlabel('Matrix length L')
     plt.savefig('linear_fit.pdf')
+    plt.show()
