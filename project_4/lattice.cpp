@@ -2,15 +2,21 @@
 
 Lattice::Lattice(int L, double T, bool ordered)
 {
+    /*
+    CONSTRUCTOR
+
+    Creates an instance of the Lattice class.
+    Args:
+        L       (double)    :   The size of the lattice (LxL).
+        T       (double)    :   Temperature of the system.
+        ordered (bool)      :   If lattice elements should be ordered or random.
+    */
     L_ = L;
     N_ = L_*L_;
     T_ = T;
     
     arma::arma_rng::set_seed_random();
-    lattice = arma::randi(L_, L_, arma::distr_param(0,1))*2 - 1; //Lattice::Create_lattice();
-    // std::cout << lattice << '\n';
-    
-    //Lattice::Fill_lattice(ordered);
+    lattice = arma::randi(L_, L_, arma::distr_param(0,1))*2 - 1; 
 
     E = Lattice::Total_energy();
     M = Lattice::Total_magnetization();
@@ -20,7 +26,6 @@ Lattice::Lattice(int L, double T, bool ordered)
     double E2 = -0; double expE2 = exp(-E2/T_);
     double E3 = -4; double expE3 = exp(-E3/T_);
     double E4 = -8; double expE4 = exp(-E4/T_);
-    // std::cout << T_ << '\n'; 
 
     my_map = {
     { E0, expE0},
@@ -29,20 +34,26 @@ Lattice::Lattice(int L, double T, bool ordered)
     { E3, expE3},
     { E4, expE4}
     }; 
-    // std::cout << my_map[8] << '\n';
 }
 
 arma::mat Lattice::Create_lattice()
 {
+    /*
+    Creates an empty matrix of size (L_ x L_).
+    Return:
+        lat (arma::mat) :   empty matrix representing lattice.
+    */
     arma::mat lat(L_,L_);
     return lat;
 }
 
 void Lattice::Fill_lattice(bool ordered)
 {   
-    // arma::mat tmp = arma::randi(L_, L_, arma::distr_param(0,1));
-
-    
+    /*
+    Fills the lattice with values.
+    Args:
+        ordered (bool)  :   If true, sets all elements in lattice to 1. If false, sets all elements randomly to -1 or 1.
+    */
     std::srand(time(NULL));
     if(ordered==false)
     {
@@ -64,6 +75,13 @@ void Lattice::Fill_lattice(bool ordered)
 //////////////////////////////////////////
 arma::mat Lattice::Pad_lattice(arma::mat lat)
 {
+    /*
+    Expands the lattice with an edge representing the periodic boundary conditions.
+    Args:
+        lat     (arma::mat) :   lattice of size (L x L) which will be expanded.
+    Returns:
+        padded  (arma::mat) :   expanded lattice of size (L+2 x L+2).
+    */
     arma::mat padded(L_+2, L_+2);
     for(int i=1; i < L_+1; i++)
     {
@@ -85,6 +103,13 @@ arma::mat Lattice::Pad_lattice(arma::mat lat)
 //////////////////////////////////////////
 arma::mat Lattice::unpad(arma::mat pad)
 {
+    /*
+    Removes the edge of the extended matrix.
+    Args:
+        pad         (arma::mat) :   matrix (L+2 x L+2) which will have its edge removed.
+    Returns:
+        unpadded    (arma::mat) :   matrix of size (L x L) where the edge has been removed.
+    */
     arma::mat unpadded(L_, L_);
     for(int i = 1; i < L_+1; i++)
     {
@@ -98,12 +123,22 @@ arma::mat Lattice::unpad(arma::mat pad)
 //////////////////////////////////////////
 double Lattice::Total_magnetization()
 {
+    /*
+    Calculates the total magnetization of the lattice.
+    Returns:
+        sum     (double)    :   total magnetization of the lattice.
+    */
     double sum = arma::accu(lattice);
     return sum;
 }
 
 double Lattice::Total_energy()
 {
+    /*
+    Calculates the total energy of the lattice.
+    Returns:
+        -sum    (double)    :   total energy of the lattice.
+    */
     double sum = 0;
 
     for(int i=0; i<L_; i++)
@@ -113,13 +148,18 @@ double Lattice::Total_energy()
             sum += lattice(i,j)*(lattice(periodic(i,-1),j) + lattice(i,periodic(j,-1)));
         }
     }
-    // std::cout << lattice << '\n';
-    // std::cout << "E = " << -sum << '\n';
     return -sum;
 }
 //////////////////////////////////////////
 arma::mat Lattice::Replace_pad(arma::mat pad)
 {
+    /*
+    Replaces the elements at the edge of an extended matrix with inner values.
+    Args:
+        pad     (arma::mat)     :   The matrix whose edge shall be replaced.
+    Returns:
+        new_pad (arma::mat)     :   A matrix whose edges are correct relative to the inner elements.
+    */
     arma::mat new_pad(L_+2, L_+2);
     for(int i=1; i<L_+1; i++)
     {
@@ -141,40 +181,76 @@ arma::mat Lattice::Replace_pad(arma::mat pad)
 
 double Lattice::energy_per_spin()
 {
+    /*
+    Calculates the energy per spin using the total_energy() function.
+    Returns:
+        eps     (double)    :   Energy per spin
+    */
     double eps = Total_energy()/N_;
     return eps;
 }
 
 double Lattice::energy_per_spin_expectation(arma::vec average)
 {
+    /*
+    Calculates the expectation value for the energy per spin.
+    Args:
+        average         (arma::vec)     :   A vector containing the energy per spin at (6) and number of cycles at (5).
+    Returns:
+        first_moment    (double)        :   The expectation value for the energy per spin. 
+    */  
     double first_moment = average(6)/average(5);
     return first_moment;
 }
 
 double Lattice::magnetization_per_spin()
 {
+    /*
+    Calculates magnetization per spin using the total_magnetization() function.
+    Returns:
+        m   (double)    :   magnetization per spin.
+    */
     double m = Total_magnetization()/N_;
     return m;
 }
 
 double Lattice::magnetization_per_spin_expectation(arma::vec average)
 {
+    /*
+    Calculates the expectation value for the magnetization per spin.
+    Args:
+        average         (arma::vec) :   A vector containing the magnetization per spin at (7) and number of cycles at (5).
+    Returns:
+        first_moment    (double)    :   The expecation value for magnetization per spin. 
+    */
     double first_moment = average(7)/average(5);
     return first_moment;
 }
 
 double Lattice::specific_heat_capacity(arma::vec average)
 {
+    /*
+    Calculates the specific heat capacity.
+    Args:
+        average (arma::vec) :   A vector containing the energy at (0), energy^2 at (1) and number of cycles at (5).
+    Returns:
+        Cv      (double)    :   Specific heat capacity.
+    */
     double first_moment = average(0)/average(5);
     double second_moment = average(1)/average(5);
-    // std::cout << first_moment << '\n';
-    // std::cout << second_moment << '\n';
     double Cv = (second_moment - first_moment*first_moment)/(N_*T_*T_);
     return Cv;
 }
 
 double Lattice::susceptibility(arma::vec average)
 {
+    /*
+    Calculates the susceptibility.
+    Args:
+        average (arma::vec) :   A vector containing the absolute value of the total magnetization at (4), total magnetization^2 at (3) and number of cycles at (5).
+    Returns:
+        chi     (double)    :   Susceptibility.
+    */
     double first_moment = average(4)/average(5);
     double second_moment = average(3)/average(5);
 
@@ -184,11 +260,28 @@ double Lattice::susceptibility(arma::vec average)
 
 int Lattice::periodic(int i, int add) 
 {
+    /*
+    Finds the index of the next neighbour of element i in direction add.
+    Args:
+        i                   (int)   :   index number
+        add                 (int)   :   direction
+    Returns:
+        (i+L_+add) % (L_)   (int)   :   Index of the neighbour.
+    */
     return (i+L_+add) % (L_);
 }
 
 bool Lattice::test_flip(int i,int j)
 {
+    /*
+    Tests if we should accept the spin flip on index i,j.
+    Args:
+        i       (int)   :   first index of lattice.
+        j       (int)   :   second index of lattice.
+    Returns:
+        true    (bool)  :   if the new state was accepted.
+        false   (bool)  :   if the new state was rejected.
+    */
     dE = 2*lattice(i,j)*
     (
      lattice(i,periodic(j,-1))+
@@ -198,7 +291,6 @@ bool Lattice::test_flip(int i,int j)
     );
 
     r = ((double) rand() / (RAND_MAX));
-    // std::cout << my_map[8] << '\n';
     p = std::min(1.0, my_map[dE]);
 
     if (r <= p)
@@ -211,30 +303,22 @@ bool Lattice::test_flip(int i,int j)
 
 void Lattice::one_cycle_MCMC(arma::vec& average)
 {
+    /*
+    Runs the metropolis algorithm once.
+    Args:
+        average (arma::vec&)    :   A vector of results to be filled out.
+    */
     for(int k = 0; k < N_; k++)
     {
-        // arma::mat S_prime = padded;
-        // std::srand(time(NULL)+k); //Randomize seed initialization
-        
-        //int i = (std::rand()%L_); // random index in lattice
-        //int j = (std::rand()%L_); // ...
         int i = arma::randi<int>( arma::distr_param(0,L_-1) );
         int j = arma::randi<int>( arma::distr_param(0,L_-1) );
-        //std::cout << i << ' ' << j << '\n';  
-
-        // std::cout << i << " " << j << '\n';
         if (test_flip(i,j)) // then it passed and we update
         {
             lattice(i,j) *= -1; // flip spin
-            // std::cout << lattice << '\n';
             E += dE;
             M += 2*lattice(i,j);
         }
     }
-    //double E = Lattice::Total_energy(pad_s, true);
-    //double M = Lattice::Total_magnetization(pad_s, true);
-    //double eps = Lattice::energy_per_spin(pad_s, true);
-    //double m = Lattice::magnetization_per_spin(pad_s, true);
 
     average(0) += E;
     average(1) += E*E;
@@ -248,6 +332,18 @@ void Lattice::one_cycle_MCMC(arma::vec& average)
 
 arma::vec Lattice::full_cycle(int cycles, arma::vec& eps_list, arma::vec& m_list, bool sample_eps_lattice)
 {
+    /*
+    Runs the one_cycle_MCMC() function 50 000 times first to stabilize the system without sampling. 
+    Then runs the function again, but sampling second time. 
+    Args:
+        cycles              (int)           :   Number of times the one_cycle_MCMC() function shall be ran.
+        eps_list            (arma::vec&)    :   A vector to be filled out with energy per spin values.
+        m_list              (arma::vec&)    :   A vector to be filled out with magnetization per spin values.
+        sample_eps_lattice  (bool)          :   If true, fills eps_list and m_list with values directly calculated from the lattice at each cycle.
+                                                If false, fills eps_list and m_list with values calculated using the total sum of energy and magnetization per cycle.
+    Returns:
+        average             (arma::vec)     :   A vector containing results of the samples.  
+    */
     int burn_in = 5e4;
     arma::vec average(8);
     average.zeros();
