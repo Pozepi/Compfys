@@ -201,6 +201,7 @@ Markup :
 * [1]: Plots the burn in time figures
 * [2]: Plots the approximated probability function
 * [3]: Plots analytical and numerical solution
+* [4]: Plots values for L = 20, 40, 60, 80 and 100 and fits a gaussian fit. 
 
 
 
