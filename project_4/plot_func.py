@@ -8,7 +8,7 @@ print("[1]: Burn in time plot")
 print("[2]: Oppgave 6")
 print("[3]: Analytical vc numerical")
 
-choice = input("Pick an option: ")
+choice = input("Pick an option: ")  
 if choice == "1":
     path_to_file = "Burn_in_files/"
     eps = pa.mat()
@@ -23,7 +23,7 @@ if choice == "1":
     for i in range(len(eps)):
         eps[i] /= i+1
         m[i] /= i+1
-    fig, ax = plt.subplots(ncols=2)
+    fig, ax = plt.subplots(ncols=2, figsize=(11,6))
     ax[0].plot(x, eps, label = '<ϵ> for T=1, ordered')
     ax[1].plot(x, m, label = '<|m|> for T=1, ordered')
 
@@ -91,11 +91,19 @@ elif choice == '2':
     eps = np.array(eps[:,0])
     eps2.load("approximate_eps_T24.txt")
     eps2 = np.array(eps2[:,0])
-    fig, ax = plt.subplots(ncols=2)
-    ax[0].hist(eps, bins=5, density=True)
-    ax[1].hist(eps2, bins=5, density=True)
-    ax[0].set_ylim(0,100)
-    ax[1].set_ylim(0,100)
+    """for i in eps:
+        print(i)"""
+    #print(eps)
+    fig, ax = plt.subplots(figsize=(11,6), ncols=2)
+    #ax[0].plot(eps)
+    #ax[1].plot(eps2)
+    ax[0].hist(eps, bins='auto')
+    ax[0].set_title(r'$T = 1 \; J/k_B$')
+    ax[1].hist(eps2, bins='auto')
+    ax[1].set_title(r'$T = 2.4 \; J/k_B$')
+    [[axi.set_ylabel('Count'), axi.set_xlabel(r"$\epsilon$ [J]"), axi.grid()] for axi in ax]
+    plt.tight_layout()
+    plt.savefig('eps_dist.pdf')
     plt.show()
 
 elif choice == '3':
@@ -133,7 +141,7 @@ elif choice == '3':
 
 
     N = 4
-    T = temp#np.logspace(-1, 1, 100) # in units of J/k_B
+    T = temp #np.logspace(-1, 1, 100) # in units of J/k_B
     beta = 1/T
 
     Z = 2*np.exp(-8*beta) + 2*np.exp(8*beta) + 12
@@ -149,7 +157,7 @@ elif choice == '3':
     eps_a = E1/N
     m_a = M1/N
 
-    fig, ax = plt.subplots(2,2)
+    fig, ax = plt.subplots(2,2, figsize=(11,6))
     plt.suptitle('Analytical vs numerical, 10 000 and 250 000 MC cycles')
     ax[0,0].plot(beta, eps_a, label = 'Analytical <ϵ>')
     ax[0,0].plot(1/temp, eps, ls = '--',label = 'Numerical <ϵ> 250 000 cycles')
@@ -191,23 +199,51 @@ elif choice == '3':
     plt.savefig('anavsnum.pdf')
     plt.show()
 
+elif choice == '4':
+    from scipy.ndimage import gaussian_filter1d
+
+    files = ['_L20.txt', '_L40.txt', '_L60.txt', '_L80.txt', '_L100.txt']
+    color = ['r', 'g', 'b', 'k', 'y']
+
+    fig, ax = plt.subplots(figsize=(11,6))
+    for file, c in zip(files, color):
+        cvn = pa.mat()
+        cvn.load('Cv'+file)
+        t = pa.mat()
+        t.load('Temp'+file)
+        cvn = np.array(cvn)
+        smooth =  gaussian_filter1d(cvn, 5, axis=0)
+        ax.plot(t, cvn, c+'x', label='Numerical data L = '+file[2:-4])
+        ax.plot(t, smooth, c, label='Gaussian filter L = '+file[2:-4])
+
+    ax.legend()
+    plt.savefig('data.pdf')
+    plt.show()
 
 
+    L = np.array([float(file[2:-4]) for file in files])
+    T_c = []
+    for file in files:
+        cv = pa.mat()
+        cv.load('Cv'+file)
+        cv = np.array(cv)[:,0]
+        smooth =  gaussian_filter1d(cv, 5)
+        i = np.where(smooth==np.max(smooth))[0][0]
+        T_c.append(cv[i])
+        #t = pa.mat()
+        #t.load('Temp'+file)
+        #t = np.array(t)[:,0]
+        #T_c.append(np.trapz(cv*t, t))
 
-"""
-chi = pa.mat()
-chi.load("chi_L20.txt")
-chi = np.array(chi[:,0])
-cv = pa.mat()
-cv.load("Cv_L20.txt")
-cv = np.array(cv[:,0])
-eps = pa.mat()
-eps.load("expect_eps_L20.txt")
-eps = np.array(eps[:,0])
-T = np.linspace(2.1, 2.4, len(eps))
-
-plt.plot(T, chi)
-plt.plot(T, cv)
-plt.plot(T, eps)
-plt.show()
-"""
+    from scipy import stats
+    slope, intercept, r, p, se = stats.linregress(L, T_c*L)
+    print(slope, intercept)
+    fig, ax = plt.subplots(figsize=(5,5))
+    ax.plot(L, T_c*L, label='$L\cdot T_c$')
+    ax.plot(L, L*slope + intercept, label='Linear fit')
+    ax.legend()
+    ax.grid()
+    ax.set_ylabel(r'$LT_c(L)$')
+    ax.set_xlabel('Matrix length L')
+    plt.savefig('linear_fit.pdf')
+    plt.show()
