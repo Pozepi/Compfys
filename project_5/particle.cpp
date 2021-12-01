@@ -103,7 +103,7 @@ std::tuple<arma::cx_mat, arma::cx_mat> Particle::construct_AB()
     arma::cx_vec b(N);
 
     std::complex<double> z1, z2;
-
+    std::cout << "HERE"<< std::endl;
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
@@ -116,7 +116,7 @@ std::tuple<arma::cx_mat, arma::cx_mat> Particle::construct_AB()
 
         }
     }
-
+    std::cout << "HERE"<< std::endl;
     arma::cx_mat A(N,N);
     arma::cx_mat B(N,N);
 
