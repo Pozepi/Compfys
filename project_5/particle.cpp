@@ -1,8 +1,7 @@
 #include "particle.hpp"
 
 Particle::Particle(int M_, double h_, double dt_, double T_, 
-    double xc_, double yc_, double sigmax_, double sigmay_, double px_, double py_, 
-    arma::cx_vec v0_)
+    double xc_, double yc_, double sigmax_, double sigmay_, double px_, double py_)
 {
     /*
     CONSTRUCTOR
@@ -18,7 +17,6 @@ Particle::Particle(int M_, double h_, double dt_, double T_,
         - sigmy_    (double)        :   width of perturbation in y
         - px_       (double)        :   momenta of wave packet in x
         - py_       (double)        :   momenta of wave packet in y
-        - v0_       (arma::cx_vec)  :   potential
     */
     //
     M = M_;
@@ -31,11 +29,12 @@ Particle::Particle(int M_, double h_, double dt_, double T_,
     sigmay = sigmay_;
     px = px_;
     py = py_;
-    v0 = v0_;
+
+    // construct potential based on input (SLIT/TUNNELING)
+    // v0 = v0_;
 
     std::tie(A, B) = (*this).construct_AB();
     u = arma::cx_vec((M-2)*(M-2));
-    u.ones();
 
     V = arma::cx_mat(M-2, M-2);
     V.ones();
@@ -53,13 +52,14 @@ void Particle::initial_state()
     double base_x = 2.0*sigmax*sigmax;
     double base_y = 2.0*sigmay*sigmay;
     const std::complex<double> i_imag(0, 1);
-    for (int i; i<M; i++)
+    for (int i=1; i<M-1; i++)
     {
-        for (int j; i<M; j++)
+        for (int j=1; i<M-1; j++)
         {
             double xxc = x(i) - xc;
             double yyc = y(j) - yc;
-            u(i,j) = std::exp(-std::pow(xxc, 2)/base_x - std::pow(yyc,2)/base_y + i_imag*px*(xxc) + i_imag*py*(yyc));
+            // std::cout << std::exp(-std::pow(xxc, 2)/base_x - std::pow(yyc,2)/base_y + i_imag*px*(xxc) + i_imag*py*(yyc)) << '\n';
+            u(transform_index(i,j)) = std::exp(-std::pow(xxc, 2)/base_x - std::pow(yyc,2)/base_y + i_imag*px*(xxc) + i_imag*py*(yyc));
         }
     }
 }
@@ -76,7 +76,7 @@ int Particle::transform_index(int i, int j)
     Returns: 
         i + (M - 2)*j (int) : index in linear space given i and j.
     */
-   return i + (M - 2)*j;
+   return (i-1) + (M - 2)*(j-1);
 }
 
 std::tuple<arma::cx_mat, arma::cx_mat> Particle::construct_AB()
@@ -104,9 +104,9 @@ std::tuple<arma::cx_mat, arma::cx_mat> Particle::construct_AB()
 
     std::complex<double> z1, z2;
 
-    for (int i = 0; i < n; i++)
+    for (int i = 1; i < n-1; i++)
     {
-        for (int j = 0; j < n; j++)
+        for (int j = 1; j < n-1; j++)
         {
             z1 = constant1 + constant3*V(i,j);
             z2 = constant2 - constant3*V(i,j);
@@ -116,7 +116,6 @@ std::tuple<arma::cx_mat, arma::cx_mat> Particle::construct_AB()
 
         }
     }
-
     arma::cx_mat A(N,N);
     arma::cx_mat B(N,N);
 
@@ -156,7 +155,6 @@ std::tuple<arma::cx_mat, arma::cx_mat> Particle::construct_AB()
         B(i,i+n) =  r;
     }
 
-    
     return std::make_tuple(A, B);
 }
 

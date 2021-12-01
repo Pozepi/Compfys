@@ -29,7 +29,7 @@ class Particle
     double sigmay;
     double px;
     double py;
-    arma::cx_mat v0; // idunno 
+    arma::cx_mat v0; // potential 
     arma::cx_vec u; // internal matrix
     arma::cx_mat V;
     arma::cx_mat A;
@@ -40,8 +40,7 @@ class Particle
     
     public:
     // Constructor
-    Particle(int, double, double, double, double, double, double, double, double, double, 
-    arma::cx_vec);
+    Particle(int, double, double, double, double, double, double, double, double, double);
     // Index transformer
     int transform_index(int, int); 
     // Make A and B vectors
