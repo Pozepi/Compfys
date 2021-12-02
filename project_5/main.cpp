@@ -3,7 +3,7 @@
 
 int main()
 {
-    int M = 100; // Remember inner size = (M-2, M-2)
+    int M = 10; // Remember inner size = (M-2, M-2)
 
     arma::vec a((M-2)*(M-2));
     a.ones();

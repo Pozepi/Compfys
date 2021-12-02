@@ -19,9 +19,8 @@ Particle::Particle(int M_, double h_, double dt_, double T_,
         - py_       (double)        :   momenta of wave packet in y
     */
     //
-    // M = M_;
+    //M = M_;
     M = 1/h_;
-    std::cout << M;
     h = h_;
     dt = dt_;
     T = T_; 
@@ -35,12 +34,11 @@ Particle::Particle(int M_, double h_, double dt_, double T_,
 
     // construct potential based on input (SLIT/TUNNELING)
     // v0 = v0_;
-    V = arma::cx_mat(M-2, M-2);
+    V = arma::cx_mat(M, M);
 
     std::tie(A, B) = (*this).construct_AB();
     u = arma::cx_vec((M-2)*(M-2));
     (*this).initial_state();
-    std::cout << u << '\n';
 }
 
 void Particle::initial_state()
@@ -191,6 +189,19 @@ void Particle::update_system()
 
 void Particle::potential(int slits)
 {  
+    double thickx = 0.02;
+    double posxy = 0.5;
+    double v0 = 10e+5;
+    double index_start = std::ceil(posxy/h-thickx/(h*2));
+    double cols = std::ceil(thickx*(M));
+
+    for(int i = 0; i < cols; i++)
+    {
+        for(int j = 0; j < M; j++)
+        {
+            V(j, index_start-std::floor(cols/2)+i) = v0;
+        }
+    }   
     switch(slits)
     {
         case 0:
@@ -203,21 +214,30 @@ void Particle::potential(int slits)
         }
         case 2:
         {
-            double thickx = 0.02;
-            double posxy = 0.5;
-            double wally = 0.05;
-            double openy = 0.05;
-            double v0 = 10e+5;
-            double cols_thick = std::ceil(thickx*(M-2));
-            for(int k = 0; k < M-2; k++)
-                {
-                    for(int h = 0; h < cols_thick; h++);
-                        V(k, (M-2)*posxy-h) = v0;
-                        V(k, (M-2)*posxy+h) = v0;
-                }
-            
 
-            std::cout << V << std::endl;
+            double sep = 0.05;
+            double index_starty = std::ceil(posxy/h-sep/(h*2));
+            double rows = std::ceil(sep*M);
+
+            for(int i = index_start-std::floor(cols/2); i <= index_start+std::floor(cols/2); i++)
+            {
+                for(int j = 0; j < rows; j++)
+                {
+                    V(index_start-rows-std::floor(rows/2)+j, i) = 0;
+                    V(index_start+std::ceil(rows/2)+j, i) = 0;
+                }
+            }
+            /*
+            for(int i = index_start-std::floor(cols/2); i <= index_start+std::floor(cols/2); i++)
+            {
+                for(int j = 0; j < M; j++)
+                {
+                    std::cout << V(j, i) << '\n';
+                }
+                std::cout << "------------------"<< '\n';
+            }
+            */
+
             break;
         }
         case 3:
