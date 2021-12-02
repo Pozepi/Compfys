@@ -123,12 +123,12 @@ std::tuple<arma::sp_cx_mat, arma::sp_cx_mat> Particle::construct_AB()
 
     std::complex<double> z1, z2;
 
-    for (int i = 1; i < n+1; i++)
+    for (int i = 1; i < n-1; i++)
     {
-        for (int j = 1; j < n+1; j++)
+        for (int j = 1; j < n-1; j++)
         {
-            z1 = constant1 + constant3*V(i-1,j-1);
-            z2 = constant2 - constant3*V(i-1,j-1);
+            z1 = constant1 + constant3*V(i,j);
+            z2 = constant2 - constant3*V(i,j);
 
             a(transform_index(i, j)) = z1;
             b(transform_index(i, j)) = z2;
