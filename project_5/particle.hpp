@@ -29,22 +29,23 @@ class Particle
     double sigmay;
     double px;
     double py;
-    arma::cx_mat v0; // potential 
+    double v0;
+
     arma::cx_vec u; // internal matrix
     arma::cx_mat V;
-    arma::cx_mat A;
-    arma::cx_mat B;
+    arma::sp_cx_mat A;
+    arma::sp_cx_mat B;
     //int L_;
     //int N_;
 
     
     public:
     // Constructor
-    Particle(int, double, double, double, double, double, double, double, double, double);
+    Particle(int, double, double, double, double, double, double, double, double, double, double);
     // Index transformer
     int transform_index(int, int); 
     // Make A and B vectors
-    std::tuple<arma::cx_mat, arma::cx_mat> construct_AB();
+    std::tuple<arma::sp_cx_mat, arma::sp_cx_mat> construct_AB();
     // update the system by one timestep
     void update_system();
     // set up initial state of u

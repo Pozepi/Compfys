@@ -1,7 +1,7 @@
 #include "particle.hpp"
 
 Particle::Particle(int M_, double h_, double dt_, double T_, 
-    double xc_, double yc_, double sigmax_, double sigmay_, double px_, double py_)
+    double xc_, double yc_, double sigmax_, double sigmay_, double px_, double py_, double v0_)
 {
     /*
     CONSTRUCTOR
@@ -19,7 +19,9 @@ Particle::Particle(int M_, double h_, double dt_, double T_,
         - py_       (double)        :   momenta of wave packet in y
     */
     //
-    M = M_;
+    // M = M_;
+    M = 1/h_;
+    std::cout << M;
     h = h_;
     dt = dt_;
     T = T_; 
@@ -29,15 +31,14 @@ Particle::Particle(int M_, double h_, double dt_, double T_,
     sigmay = sigmay_;
     px = px_;
     py = py_;
+    v0 = v0_;
 
     // construct potential based on input (SLIT/TUNNELING)
     // v0 = v0_;
     V = arma::cx_mat(M-2, M-2);
-    V.ones();
 
     std::tie(A, B) = (*this).construct_AB();
     u = arma::cx_vec((M-2)*(M-2));
-    std::cout << u << '\n';
     (*this).initial_state();
     std::cout << u << '\n';
 }
@@ -66,23 +67,22 @@ void Particle::initial_state()
         {
             double xxc = x(i-1) - xc;
             double yyc = y(j-1) - yc;
-            element =  std::exp(-std::pow(xxc, 2)/base_x - std::pow(yyc,2)/base_y + i_imag*px*(xxc) + i_imag*py*(yyc));
+            element = std::exp(-std::pow(xxc, 2)/base_x - std::pow(yyc,2)/base_y + i_imag*px*(xxc) + i_imag*py*(yyc));
             sum += std::conj(element)*element;
             u(transform_index(i,j)) = element;
             // std::cout << i << ' ' << j << '\n'; 
         }
     }
     // Normalize u
-    std::cout << sum << '\n';
-    std::cout << u << '\n';
     for (int k = 0; k<(M-2)*(M-2); k++)
         u(k) = u(k)/std::sqrt(sum);
-
+    /*
     sum = 0;
     for (int k = 0; k<(M-2)*(M-2); k++)
         sum += std::conj(u(k))*u(k);
 
     std::cout << sum << '\n';
+    */
 }
 
 
@@ -100,7 +100,7 @@ int Particle::transform_index(int i, int j)
    return (i-1) + (M - 2)*(j-1);
 }
 
-std::tuple<arma::cx_mat, arma::cx_mat> Particle::construct_AB()
+std::tuple<arma::sp_cx_mat, arma::sp_cx_mat> Particle::construct_AB()
 {
     /*
     Constructs A and B complex matrices used in updating the matrix.
@@ -138,8 +138,8 @@ std::tuple<arma::cx_mat, arma::cx_mat> Particle::construct_AB()
         }
     }
 
-    arma::cx_mat A(N,N);
-    arma::cx_mat B(N,N);
+    arma::sp_cx_mat A(N,N);
+    arma::sp_cx_mat B(N,N);
 
 
     // Handle the diagonal
@@ -186,7 +186,7 @@ void Particle::update_system()
     Updates the wavefunction matrix by one step.
     */
     arma::cx_vec b = B * u;
-    u = arma::solve(A, b);
+    u = arma::spsolve(A, b);
 }
 
 void Particle::potential(int slits)
