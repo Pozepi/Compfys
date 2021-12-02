@@ -3,7 +3,7 @@
 
 int main()
 {
-    int M = 5; // Remember inner size = (M-2, M-2)
+    int M = 100; // Remember inner size = (M-2, M-2)
 
     arma::vec a((M-2)*(M-2));
     a.ones();
@@ -16,6 +16,7 @@ int main()
     // arma::cx_vec v0_
     Particle myinstance(M, h, dt, 1., 0.5, 0.5, 0.5, 0.5, 0.1, 0.1);
     myinstance.update_system();
+    myinstance.potential(2);
 
     return 0;
 }

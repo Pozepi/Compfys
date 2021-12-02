@@ -49,6 +49,7 @@ class Particle
     void update_system();
     // set up initial state of u
     void initial_state();
+    void potential(int slits);
 
     //arma::mat Create_lattice();
 };

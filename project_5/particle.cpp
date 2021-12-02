@@ -75,9 +75,8 @@ void Particle::initial_state()
     // Normalize u
     std::cout << sum << '\n';
     std::cout << u << '\n';
-
     for (int k = 0; k<(M-2)*(M-2); k++)
-        u(k) = u(k)/sum;
+        u(k) = u(k)/std::sqrt(sum);
 
     sum = 0;
     for (int k = 0; k<(M-2)*(M-2); k++)
@@ -188,5 +187,43 @@ void Particle::update_system()
     */
     arma::cx_vec b = B * u;
     u = arma::solve(A, b);
+}
+
+void Particle::potential(int slits)
+{  
+    switch(slits)
+    {
+        case 0:
+        {
+            break;
+        }
+        case 1:
+        {
+            break;
+        }
+        case 2:
+        {
+            double thickx = 0.02;
+            double posxy = 0.5;
+            double wally = 0.05;
+            double openy = 0.05;
+            double v0 = 10e+5;
+            double cols_thick = std::ceil(thickx*(M-2));
+            for(int k = 0; k < M-2; k++)
+                {
+                    for(int h = 0; h < cols_thick; h++);
+                        V(k, (M-2)*posxy-h) = v0;
+                        V(k, (M-2)*posxy+h) = v0;
+                }
+            
+
+            std::cout << V << std::endl;
+            break;
+        }
+        case 3:
+        {
+            break;
+        }
+    }
 }
 
