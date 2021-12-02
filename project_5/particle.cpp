@@ -32,12 +32,14 @@ Particle::Particle(int M_, double h_, double dt_, double T_,
 
     // construct potential based on input (SLIT/TUNNELING)
     // v0 = v0_;
+    V = arma::cx_mat(M-2, M-2);
+    V.ones();
 
     std::tie(A, B) = (*this).construct_AB();
     u = arma::cx_vec((M-2)*(M-2));
-
-    V = arma::cx_mat(M-2, M-2);
-    V.ones();
+    std::cout << u << '\n';
+    (*this).initial_state();
+    std::cout << u << '\n';
 }
 
 void Particle::initial_state()
@@ -47,21 +49,40 @@ void Particle::initial_state()
     perutbation with y center yc and y width defined by sigmay and x center
     at xc and x width defined by sigmax. px and py is the wave packet momenta.
     */
-    arma::vec x = arma::linspace(0,1,M);
-    arma::vec y = arma::linspace(0,1,M);
+    
+    arma::vec x = arma::linspace(0,1,M-2);
+    arma::vec y = arma::linspace(0,1,M-2);
     double base_x = 2.0*sigmax*sigmax;
     double base_y = 2.0*sigmay*sigmay;
     const std::complex<double> i_imag(0, 1);
+
+    std::complex<double> element;
+    std::complex<double> sum = 0;
+
+
     for (int i=1; i<M-1; i++)
     {
-        for (int j=1; i<M-1; j++)
+        for (int j=1; j<M-1; j++)
         {
-            double xxc = x(i) - xc;
-            double yyc = y(j) - yc;
-            // std::cout << std::exp(-std::pow(xxc, 2)/base_x - std::pow(yyc,2)/base_y + i_imag*px*(xxc) + i_imag*py*(yyc)) << '\n';
-            u(transform_index(i,j)) = std::exp(-std::pow(xxc, 2)/base_x - std::pow(yyc,2)/base_y + i_imag*px*(xxc) + i_imag*py*(yyc));
+            double xxc = x(i-1) - xc;
+            double yyc = y(j-1) - yc;
+            element =  std::exp(-std::pow(xxc, 2)/base_x - std::pow(yyc,2)/base_y + i_imag*px*(xxc) + i_imag*py*(yyc));
+            sum += element*std::conj(element);
+            u(transform_index(i,j)) = element;
+            // std::cout << i << ' ' << j << '\n'; 
         }
     }
+    // Normalize u
+    std::cout << sum << '\n';
+    std::cout << u << '\n';
+    for (int k = 0; k<(M-2)*(M-2); k++)
+        u(k) = u(k)/sum;
+
+    sum = 0;
+    for (int k = 0; k<(M-2)*(M-2); k++)
+        sum += u(k)*std::conj(u(k));
+
+    std::cout << sum << '\n';
 }
 
 
@@ -108,14 +129,15 @@ std::tuple<arma::cx_mat, arma::cx_mat> Particle::construct_AB()
     {
         for (int j = 1; j < n+1; j++)
         {
-            z1 = constant1 + constant3*V(i,j);
-            z2 = constant2 - constant3*V(i,j);
+            z1 = constant1 + constant3*V(i-1,j-1);
+            z2 = constant2 - constant3*V(i-1,j-1);
 
             a(transform_index(i, j)) = z1;
             b(transform_index(i, j)) = z2;
 
         }
     }
+
     arma::cx_mat A(N,N);
     arma::cx_mat B(N,N);
 
