@@ -191,9 +191,11 @@ void Particle::potential(int slits)
 {  
     double thickx = 0.02;
     double posxy = 0.5;
-    double v0 = 10e+5;
     double index_start = std::ceil(posxy/h-thickx/(h*2));
     double cols = std::ceil(thickx*(M));
+    double sep = 0.05;
+    double rows = std::ceil(sep*M);
+    double index_starty = std::ceil(posxy/h-sep/(h*2));
 
     for(int i = 0; i < cols; i++)
     {
@@ -210,38 +212,46 @@ void Particle::potential(int slits)
         }
         case 1:
         {
+            for(int i = index_start - std::floor(cols/2); i <= index_start+std::floor(cols/2); i++)
+            {
+                for(int j = 0; j < rows; j++)
+                {
+                    V(index_starty-std::floor(rows/2)+j, i) = 0;
+                }
+            }
             break;
         }
         case 2:
         {
 
-            double sep = 0.05;
-            double index_starty = std::ceil(posxy/h-sep/(h*2));
-            double rows = std::ceil(sep*M);
-
             for(int i = index_start-std::floor(cols/2); i <= index_start+std::floor(cols/2); i++)
             {
                 for(int j = 0; j < rows; j++)
                 {
-                    V(index_start-rows-std::floor(rows/2)+j, i) = 0;
-                    V(index_start+std::ceil(rows/2)+j, i) = 0;
+                    V(index_starty-rows-std::floor(rows/2)+j, i) = 0;
+                    V(index_starty+std::ceil(rows/2)+j, i) = 0;
                 }
             }
-            /*
-            for(int i = index_start-std::floor(cols/2); i <= index_start+std::floor(cols/2); i++)
-            {
-                for(int j = 0; j < M; j++)
-                {
-                    std::cout << V(j, i) << '\n';
-                }
-                std::cout << "------------------"<< '\n';
-            }
-            */
-
             break;
         }
         case 3:
         {
+            for(int i = index_start - std::floor(cols/2); i <= index_start+std::floor(cols/2); i++)
+            {
+                for(int j = 0; j < rows; j++)
+                {
+                    V(index_starty-std::floor(rows/2)+j, i) = 0;
+                }
+            }
+
+            for(int i = index_start - std::floor(cols/2); i <= index_start+std::floor(cols/2); i++)
+            {
+                for(int j = 0; j < rows; j++)
+                {
+                    V(index_starty-std::floor(rows/2)-rows-j, i) = 0;
+                    V(index_starty+std::ceil(rows/2)+rows+j, i) = 0;
+                }
+            }
             break;
         }
     }

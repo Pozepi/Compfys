@@ -16,7 +16,7 @@ int main()
     // arma::cx_vec v0_
     Particle myinstance(M, h, dt, 1., 0.5, 0.5, 0.5, 0.5, 0.1, 0.1, 1e5);
     myinstance.update_system();
-    myinstance.potential(2);
+    myinstance.potential(3);
 
     return 0;
 }
