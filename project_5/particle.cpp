@@ -67,7 +67,7 @@ void Particle::initial_state()
             double xxc = x(i-1) - xc;
             double yyc = y(j-1) - yc;
             element =  std::exp(-std::pow(xxc, 2)/base_x - std::pow(yyc,2)/base_y + i_imag*px*(xxc) + i_imag*py*(yyc));
-            sum += element*std::conj(element);
+            sum += std::conj(element)*element;
             u(transform_index(i,j)) = element;
             // std::cout << i << ' ' << j << '\n'; 
         }
@@ -75,12 +75,13 @@ void Particle::initial_state()
     // Normalize u
     std::cout << sum << '\n';
     std::cout << u << '\n';
+
     for (int k = 0; k<(M-2)*(M-2); k++)
         u(k) = u(k)/sum;
 
     sum = 0;
     for (int k = 0; k<(M-2)*(M-2); k++)
-        sum += u(k)*std::conj(u(k));
+        sum += std::conj(u(k))*u(k);
 
     std::cout << sum << '\n';
 }
