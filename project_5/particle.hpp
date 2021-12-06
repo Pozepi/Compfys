@@ -41,13 +41,15 @@ class Particle
     
     public:
     // Constructor
-    Particle(int, double, double, double, double, double, double, double, double, double, double);
+    Particle(double, double, double, double, double, double, double, double, double, double);
     // Index transformer
     int transform_index(int, int); 
     // Make A and B vectors
     std::tuple<arma::sp_cx_mat, arma::sp_cx_mat> construct_AB();
     // update the system by one timestep
     void update_system();
+    // perform simluation by running update_system() multiple times.
+    void simulate_system();
     // set up initial state of u
     void initial_state();
     void potential(int slits);

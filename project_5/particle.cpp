@@ -1,14 +1,13 @@
 #include "particle.hpp"
 
-Particle::Particle(int M_, double h_, double dt_, double T_, 
+Particle::Particle(double h_, double dt_, double T_, 
     double xc_, double yc_, double sigmax_, double sigmay_, double px_, double py_, double v0_)
 {
     /*
     CONSTRUCTOR
     Creates an instance of the particle class.
     Args: 
-        - M_        (int)           :   size of the full system
-        - h_        (double)        :
+        - h_        (double)        :   spacial resolution 
         - dt_       (double)        :   size of the timestep
         - T_        (double)        :   value of the final time
         - xc_       (double)        :   center x coordinate of perturbation
@@ -35,6 +34,7 @@ Particle::Particle(int M_, double h_, double dt_, double T_,
     // construct potential based on input (SLIT/TUNNELING)
     // v0 = v0_;
     V = arma::cx_mat(M, M);
+    (*this).potential(2);
 
     std::tie(A, B) = (*this).construct_AB();
     u = arma::cx_vec((M-2)*(M-2));
@@ -185,6 +185,23 @@ void Particle::update_system()
     */
     arma::cx_vec b = B * u;
     u = arma::spsolve(A, b);
+}
+
+void Particle::simulate_system()
+{
+    double ti = 0;
+
+    // make u cube to save
+    // make probability vector
+
+    // save initial u here
+    // save initial probability
+    while (ti < T)
+    {
+        (*this).update_system();
+        // save new u here 
+        // save new probability
+    }
 }
 
 void Particle::potential(int slits)
