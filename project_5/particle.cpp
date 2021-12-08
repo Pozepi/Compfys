@@ -228,8 +228,8 @@ void Particle::potential(int slits)
             {
                 for(int j = 0; j < rows; j++)
                 {
-                    V(index_starty-rows-std::floor(rows/2)+j, i) = 0;
-                    V(index_starty+std::ceil(rows/2)+j, i) = 0;
+                    V(index_starty-rows+j, i) = 0;
+                    V(index_starty+rows+j, i) = 0;
                 }
             }
             break;
