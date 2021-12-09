@@ -21,6 +21,7 @@ int main()
     // Particle myinstance(h, dt, 0.008, 0.25, 0.5, 0.05, 0.05, 200, 0.0, 0, 1e4);
     myinstance.simulate_system();
     myinstance2.simulate_system();
+    myinstance3.simulate_system();
 
     return 0;
 }
