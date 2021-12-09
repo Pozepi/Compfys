@@ -45,6 +45,7 @@ Particle::Particle(double h_, double dt_, double T_,
     V = V.t();
 
     std::tie(A, B) = (*this).construct_AB();
+
     u = arma::cx_vec((M-2)*(M-2));
     (*this).initial_state();
 }
@@ -133,9 +134,9 @@ std::tuple<arma::sp_cx_mat, arma::sp_cx_mat> Particle::construct_AB()
 
     std::complex<double> z1, z2;
 
-    for (int i = 1; i < n-1; i++)
+    for (int i = 1; i < n+1; i++)
     {
-        for (int j = 1; j < n-1; j++)
+        for (int j = 1; j < n+1; j++)
         {
             z1 = constant1 + constant3*V(i,j);
             z2 = constant2 - constant3*V(i,j);
@@ -163,7 +164,7 @@ std::tuple<arma::sp_cx_mat, arma::sp_cx_mat> Particle::construct_AB()
 
     B(1,0) =  r;
     B(0,1) =  r;
-    for (int i = 0; i < N-1; i++)
+    for (int i = 0; i < N; i++)
     {
         if ((i+1)%n != 0)
         {
@@ -262,6 +263,16 @@ void Particle::potential(int slits)
             V(j, index_start-std::floor(cols/2)+i) = v0;
         }
     }   
+    /*
+    for (int i = 0; i < M; i++)
+    {
+        V(0,i) = v0;
+        V(i,0) = v0;
+        V(M-1,i) = v0;
+        V(i,M-1) = v0;
+    }
+    */
+
     switch(slits)
     {
         case 0:

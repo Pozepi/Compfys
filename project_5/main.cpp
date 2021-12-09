@@ -12,15 +12,15 @@ int main()
     // h, dt, T, xc, yc, sigmax, sigmay, px, py, pot_type, v0, name
 
     // double slit with no potential
-    // Particle myinstance(h, dt, 0.008, 0.25, 0.5, 0.05, 0.05, 200, 0.0, 2, 0, "7");
-    Particle myinstance(h, dt, 0.002, 0.25, 0.5, 0.05, 0.1, 200, 0.0, 2, 1e10, "7_2");
+    Particle myinstance1(h, dt, 0.008, 0.25, 0.5, 0.05, 0.05, 200, 0.0, 2, 0, "7");
+    Particle myinstance2(h, dt, 0.002, 0.25, 0.5, 0.05, 0.1, 200, 0.0, 2, 1e10, "7_2");
 
     // double slit with potential
-    //Particle myinstance(h, dt, 0.002, 0.25, 0.5, 0.05, 0.2, 200, 0.0, 2, 1e10, "8");
-
+    Particle myinstance3(h, dt, 0.002, 0.25, 0.5, 0.05, 0.2, 200, 0.0, 2, 1e10, "8");
     // no slit
-    // Particle myinstance(h, dt, 0.008, 0.25, 0.5, 0.05, 0.05, 200, 0.0, 0, 1e4);
-    myinstance.simulate_system();
+    myinstance1.simulate_system();
+    myinstance2.simulate_system();
+    myinstance3.simulate_system();
 
     return 0;
 }

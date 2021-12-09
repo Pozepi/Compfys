@@ -12,8 +12,8 @@ import pyarma as pa
 
 # Some settings
 
-filename = "double_slit_7" 
-#filename = "double_slit_7_2"
+#filename = "double_slit_7" 
+filename = "double_slit_7_2"
 #filename = "double_slit_8"
 #filename = "no_slit"
 data = pa.cx_cube()
@@ -24,7 +24,10 @@ t = np.linspace(0, 0.002, int(0.002/2.5e-5) +1)
 
 
 data = np.swapaxes(data,0,1)
+
+print(t.shape, data.shape)
 z_data_list = (data*np.conjugate(data)).real
+
 p = 1 - np.sum(z_data_list, axis=(1,2))
 fig, ax = plt.subplots()
 ax.set_yscale('log')
