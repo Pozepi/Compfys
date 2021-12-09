@@ -68,7 +68,7 @@ if choice == 1:
     filenames = ['double_slit_7', 'double_slit_7_2']
     label_names = ['No potential', 'Two slits']
     t = np.linspace(0,0.008, int(0.008/(2.5e-5))+1)
-    fig, ax = plt.subplots(size = [15,15])
+    fig, ax = plt.subplots()
     
     for i, j in zip(filenames, label_names):
         d = pa.cx_cube()
@@ -81,7 +81,7 @@ if choice == 1:
     ax.set_ylabel('Absolute value of probability deviation')
     ax.set_xlabel('Dimensionless time [1]')
     ax.set_yscale('log')
-    ax.legend(), ax.grid(), plt.show()
+    ax.legend(), ax.grid(), plt.savefig('Time.pdf'), plt.clf()
 
     for filename in filenames: 
         d = pa.cx_cube()
