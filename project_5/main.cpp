@@ -16,8 +16,7 @@ int main()
     Particle myinstance2(h, dt, 0.008, 0.25, 0.5, 0.05, 0.1, 200, 0.0, 2, 1e10, "7_2");
 
     // double slit with potential
-    //Particle myinstance(h, dt, 0.002, 0.25, 0.5, 0.05, 0.2, 200, 0.0, 2, 1e10, "8");
-
+    Particle myinstance3(h, dt, 0.002, 0.25, 0.5, 0.05, 0.2, 200, 0.0, 2, 1e10, "8");
     // no slit
     // Particle myinstance(h, dt, 0.008, 0.25, 0.5, 0.05, 0.05, 200, 0.0, 0, 1e4);
     myinstance.simulate_system();
