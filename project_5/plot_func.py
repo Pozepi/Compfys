@@ -16,7 +16,8 @@ if choice == 1:
     filenames = ['double_slit_7', 'double_slit_7_2']
     label_names = ['No potential', 'Two slits']
     t = np.linspace(0,0.008, int(0.008/(2.5e-5))+1)
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(size = [15,15])
+    
     for i, j in zip(filenames, label_names):
         d = pa.cx_cube()
         d.load(i)
