@@ -97,7 +97,7 @@ elif choice == 2:
     data.load(filename)
     data = np.array(data)
     # M, N, M
-    t = np.linspace(0, 0.008, int(0.008/2.5e-5) +1)
+    t = np.linspace(0, 0.002, int(0.002/2.5e-5) +1)
 
     data = np.swapaxes(data,0,1)
     z_data_list = (data*np.conjugate(data)).real
@@ -116,8 +116,10 @@ elif choice == 2:
     y_min, y_max = 0, 1
     dt = 2.5e-5
 
-
-    i_list = [0, 50, -1]
+    i0 = 0
+    i1 = np.where(t==0.001)[0][0]
+    i2 = np.where(t==0.002)[0][0]
+    i_list = [i0, i1, i2]
     fig, ax = plt.subplots(ncols=len(i_list), figsize=(10,5))
     k = 0
 
@@ -136,3 +138,45 @@ elif choice == 2:
         k += 1
     plt.tight_layout()
     plt.savefig("snapshots_"+filename)
+
+
+    # real part
+    fig, ax = plt.subplots(ncols=len(i_list), figsize=(10,5))
+    k=0
+    for i in i_list:
+        norm = matplotlib.cm.colors.Normalize(vmin=0.0, vmax=np.max(data[i].real))
+        img = ax[k].imshow(data[i].real, extent=[x_min,x_max,y_min,y_max], cmap=plt.get_cmap("viridis"), norm=norm)
+        ax[k].set_xlabel("x", fontsize=fontsize)
+        ax[k].set_ylabel("y", fontsize=fontsize)
+        #ax[k].set_xticks(fontsize=fontsize)
+        #ax[k].set_yticks(fontsize=fontsize)
+        cbar = fig.colorbar(img, ax=ax[k],fraction=0.046, pad=0.04)
+        cbar.set_label("z(x,y,t)", fontsize=fontsize)
+        cbar.ax.tick_params(labelsize=fontsize)
+        time_txt = ax[k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
+                        horizontalalignment="right", verticalalignment="top", fontsize=fontsize)
+        k += 1
+    plt.tight_layout()
+    plt.savefig("real_snapshots_"+filename)
+
+
+    # imaginary part
+    fig, ax = plt.subplots(ncols=len(i_list), figsize=(10,5))
+    k=0
+    for i in i_list:
+        norm = matplotlib.cm.colors.Normalize(vmin=0.0, vmax=np.max(data[i].imag))
+        img = ax[k].imshow(data[i].imag, extent=[x_min,x_max,y_min,y_max], cmap=plt.get_cmap("viridis"), norm=norm)
+        ax[k].set_xlabel("x", fontsize=fontsize)
+        ax[k].set_ylabel("y", fontsize=fontsize)
+        #ax[k].set_xticks(fontsize=fontsize)
+        #ax[k].set_yticks(fontsize=fontsize)
+        cbar = fig.colorbar(img, ax=ax[k],fraction=0.046, pad=0.04)
+        cbar.set_label("z(x,y,t)", fontsize=fontsize)
+        cbar.ax.tick_params(labelsize=fontsize)
+        time_txt = ax[k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
+                        horizontalalignment="right", verticalalignment="top", fontsize=fontsize)
+        k += 1
+    plt.tight_layout()
+    plt.savefig("imag_snapshots_"+filename)
+    
+
