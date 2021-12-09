@@ -29,10 +29,13 @@ class Particle
     double sigmay;
     double px;
     double py;
+    int pot_type;
     double v0;
+    std::string name;
 
     arma::cx_vec u; // internal matrix
     arma::cx_mat V;
+    arma::cx_mat U;
     arma::sp_cx_mat A;
     arma::sp_cx_mat B;
     //int L_;
@@ -41,7 +44,7 @@ class Particle
     
     public:
     // Constructor
-    Particle(double, double, double, double, double, double, double, double, double, double);
+    Particle(double, double, double, double, double, double, double, double, double, int, double, std::string name_ = "");
     // Index transformer
     int transform_index(int, int); 
     // Make A and B vectors

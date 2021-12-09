@@ -1,7 +1,8 @@
 #include "particle.hpp"
 
 Particle::Particle(double h_, double dt_, double T_, 
-    double xc_, double yc_, double sigmax_, double sigmay_, double px_, double py_, double v0_)
+    double xc_, double yc_, double sigmax_, double sigmay_, double px_, double py_, int pot_type_,
+    double v0_, std::string name_)
 {
     /*
     CONSTRUCTOR
@@ -16,9 +17,14 @@ Particle::Particle(double h_, double dt_, double T_,
         - sigmy_    (double)        :   width of perturbation in y
         - px_       (double)        :   momenta of wave packet in x
         - py_       (double)        :   momenta of wave packet in y
+        - pot_type_ (int)           :   type of potential (0=no slit, 1=one slit, ...)
+        - v0_       (double)        :   strength of the potential
+        - name_     (std::string)   :   additional name to distinguish saved files
     */
     //
     //M = M_;
+    name = name_;
+    pot_type = pot_type_;
     M = 1/h_;
     h = h_;
     dt = dt_;
@@ -34,7 +40,9 @@ Particle::Particle(double h_, double dt_, double T_,
     // construct potential based on input (SLIT/TUNNELING)
     // v0 = v0_;
     V = arma::cx_mat(M, M);
-    (*this).potential(2);
+    U = arma::cx_mat(M, M);
+    (*this).potential(pot_type);
+    V = V.t();
 
     std::tie(A, B) = (*this).construct_AB();
     u = arma::cx_vec((M-2)*(M-2));
@@ -74,6 +82,8 @@ void Particle::initial_state()
     // Normalize u
     for (int k = 0; k<(M-2)*(M-2); k++)
         u(k) = u(k)/std::sqrt(sum);
+
+    // std::cout << u << '\n';
     /*
     sum = 0;
     for (int k = 0; k<(M-2)*(M-2); k++)
@@ -190,17 +200,48 @@ void Particle::update_system()
 void Particle::simulate_system()
 {
     double ti = 0;
+    int n = T/dt;
+
+    arma::cx_cube C(n+1, M, M);
+    C.zeros();
+
+    for (int i=1; i<M-1; i++)
+    {
+        for (int j=1; j<M-1; j++)
+            {
+                C(0,i,j) = u(transform_index(i,j));
+            }
+    }
 
     // make u cube to save
     // make probability vector
 
     // save initial u here
     // save initial probability
-    while (ti < T)
+    for (int ii=1; ii<n+1; ii++)
     {
-        (*this).update_system();
+        update_system();
+
+        for (int i=1; i<M-1; i++)
+        {
+            for (int j=1; j<M-1; j++)
+                {
+                    C(ii,i,j) = u(transform_index(i,j));
+                }
+        }
         // save new u here 
         // save new probability
+    }
+    switch(pot_type)
+    {
+        case 0:
+            C.save("no_slit_"+name); break;
+        case 1:
+            C.save("one_slit_"+name); break;
+        case 2: 
+            C.save("double_slit_"+name); break;
+        case 3:
+            C.save("triple_slit_"+name); break;
     }
 }
 
