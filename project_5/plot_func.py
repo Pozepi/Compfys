@@ -138,7 +138,7 @@ elif choice == 2:
         ax[k].set_xlabel("x", fontsize=fontsize)
         #ax[k].set_xticks(fontsize=fontsize)
         #ax[k].set_yticks(fontsize=fontsize)
-        cbar = fig.colorbar(img, ax=ax[k], location='top', fraction=0.046, shrink = 0.65, pad=0.0)
+        cbar = fig.colorbar(img, ax=ax[k], location='top', fraction=0.3, aspect = 10, shrink = 0.65, pad=0.0)
         #cbar.set_label("z(x,y,t)", fontsize=fontsize)
         #cbar.ax.tick_params(labelsize=fontsize)
         time_txt = ax[k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
@@ -159,7 +159,7 @@ elif choice == 2:
         ax[k].set_xlabel("x", fontsize=fontsize)
         #ax[k].set_xticks(fontsize=fontsize)
         #ax[k].set_yticks(fontsize=fontsize)
-        cbar = fig.colorbar(img, ax=ax[k],location='top',fraction=0.046,shrink=0.60, pad=0.00)
+        cbar = fig.colorbar(img, ax=ax[k],location='top',fraction=0.3,aspect = 10, shrink=0.60, pad=0.00)
         cbar.set_label("z(x,y,t)", fontsize=fontsize)
         #cbar.ax.tick_params(labelsize=fontsize)
         time_txt = ax[k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
@@ -179,7 +179,7 @@ elif choice == 2:
         ax[k].set_xlabel("x", fontsize=fontsize)
         #ax[k].set_xticks(fontsize=fontsize)
         #ax[k].set_yticks(fontsize=fontsize)
-        cbar = fig.colorbar(img, ax=ax[k],fraction=0.046,location='top',shrink=0.60, pad=0.00)
+        cbar = fig.colorbar(img, ax=ax[k],fraction=0.3,location='top',aspect = 10,shrink=0.60, pad=0.00)
         cbar.set_label("z(x,y,t)", fontsize=fontsize)
         #cbar.ax.tick_params(labelsize=fontsize)
         time_txt = ax[k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 

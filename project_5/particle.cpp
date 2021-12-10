@@ -285,7 +285,7 @@ void Particle::potential(int slits)
             {
                 for(int j = 0; j < rows; j++)
                 {
-                    V(index_starty-std::floor(rows/2)+j, i) = 0;
+                    V(index_starty+j, i) = 0;
                 }
             }
             break;
@@ -309,16 +309,16 @@ void Particle::potential(int slits)
             {
                 for(int j = 0; j < rows; j++)
                 {
-                    V(index_starty-std::floor(rows/2)+j, i) = 0;
+                    V(index_starty+j, i) = 0;
                 }
             }
-
+            
             for(int i = index_start - std::floor(cols/2); i <= index_start+std::floor(cols/2); i++)
             {
                 for(int j = 0; j < rows; j++)
                 {
-                    V(index_starty-std::floor(rows/2)-rows-j, i) = 0;
-                    V(index_starty+std::ceil(rows/2)+rows+j, i) = 0;
+                    V(index_starty-rows-j-1, i) = 0;
+                    V(index_starty+2*rows+j, i) = 0;
                 }
             }
             break;
