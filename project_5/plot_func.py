@@ -9,7 +9,11 @@ import pyarma as pa
 # where each frame can be plotted as a 2D image using imshow. Let's
 # animate it!
 #
-
+fontsize = 12
+t_min = 0
+x_min, x_max = 0, 1
+y_min, y_max = 0, 1
+dt = 2.5e-5
 def animate(z_data_list, name):
     # Create figure
     fig = plt.figure()
@@ -58,12 +62,13 @@ def animate(z_data_list, name):
     plt.show()
 
     # # Save the animation
-    anim.save('./animation_'+name+'.mp4', writer="ffmpeg", bitrate=-1, fps=30)
+    anim.save('./animation_'+name+'.gif', writer="ffmpeg", bitrate=-1, fps=30)
 
 # Some settings
 print("1. Compare probability deviation")
 print("2. Create double slit animation and figure")
 choice = int(input("Input your choice: "))
+
 if choice == 1:
     filenames = ['double_slit_7', 'double_slit_7_2']
     label_names = ['No potential', 'Two slits']
@@ -109,12 +114,6 @@ elif choice == 2:
     ax.set_xlabel('Dimensionless time [1]')
     ax.grid(); plt.show()
     #print(np.shape(z_data_list))
-
-    fontsize = 12
-    t_min = 0
-    x_min, x_max = 0, 1
-    y_min, y_max = 0, 1
-    dt = 2.5e-5
 
 
     i_list = [0, 50, -1]
