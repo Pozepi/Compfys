@@ -9,6 +9,11 @@ import pyarma as pa
 # where each frame can be plotted as a 2D image using imshow. Let's
 # animate it!
 #
+fontsize = 12
+t_min = 0
+x_min, x_max = 0, 1
+y_min, y_max = 0, 1
+dt = 2.5e-5
 
 def animate(z_data_list, name):
     # Create figure
@@ -63,6 +68,7 @@ def animate(z_data_list, name):
 # Some settings
 print("1. Compare probability deviation")
 print("2. Create double slit animation and figure")
+print("3. Create interference pattern")
 choice = int(input("Input your choice: "))
 if choice == 1:
     filenames = ['double_slit_7', 'double_slit_7_2']
@@ -74,14 +80,17 @@ if choice == 1:
         d = pa.cx_cube()
         d.load(i)
         d = np.array(d)
+        print(d.shape)
         d = np.swapaxes(d,0,1)
+        print(d.shape)
         z_d_l = (d*np.conjugate(d)).real
-        p = 1-np.sum(z_d_l, axis=(1,2))
+        #p = 1-np.sum(z_d_l, axis=(1,2))
+        p = np.sum(z_d_l, axis=(1,2))
         ax.plot(t,abs(p), label = j)
     ax.set_ylabel('Absolute value of probability deviation')
     ax.set_xlabel('Dimensionless time [1]')
-    ax.set_yscale('log')
-    ax.legend(), ax.grid(), plt.savefig('Time.pdf'), plt.clf()
+    #ax.set_yscale('log')
+    ax.legend(), ax.grid(), plt.show()
 
     for filename in filenames: 
         d = pa.cx_cube()
@@ -97,18 +106,18 @@ elif choice == 2:
     data.load(filename)
     data = np.array(data)
     # M, N, M
-    t = np.linspace(0, 0.002, int(0.002/2.5e-5) +1)
-
+    t = np.linspace(0, 0.002, int(0.002/2.5e-5)+1)
     data = np.swapaxes(data,0,1)
     z_data_list = (data*np.conjugate(data)).real
-    p = 1 - np.sum(z_data_list, axis=(1,2))
+
+    """ p = 1 - np.sum(z_data_list, axis=(1,2))
     fig, ax = plt.subplots()
     ax.set_yscale('log')
     ax.plot(t, abs(p))
     ax.set_ylabel('Absolute value of probability deviation')
     ax.set_xlabel('Dimensionless time [1]')
     ax.grid(); plt.show()
-    #print(np.shape(z_data_list))
+    #print(np.shape(z_data_list))"""
 
     fontsize = 12
     t_min = 0
@@ -120,24 +129,24 @@ elif choice == 2:
     i1 = np.where(t==0.001)[0][0]
     i2 = np.where(t==0.002)[0][0]
     i_list = [i0, i1, i2]
-    fig, ax = plt.subplots(ncols=len(i_list), figsize=(10,5))
+    fig, ax = plt.subplots(ncols=len(i_list), constrained_layout=True, sharey=True)#, figsize=(10,5))
     k = 0
-
+    ax[0].set_ylabel("y", fontsize=fontsize)
     for i in i_list:
         norm = matplotlib.cm.colors.Normalize(vmin=0.0, vmax=np.max(z_data_list[i]))
         img = ax[k].imshow(z_data_list[i], extent=[x_min,x_max,y_min,y_max], cmap=plt.get_cmap("viridis"), norm=norm)
         ax[k].set_xlabel("x", fontsize=fontsize)
-        ax[k].set_ylabel("y", fontsize=fontsize)
         #ax[k].set_xticks(fontsize=fontsize)
         #ax[k].set_yticks(fontsize=fontsize)
-        cbar = fig.colorbar(img, ax=ax[k],fraction=0.046, pad=0.04)
-        cbar.set_label("z(x,y,t)", fontsize=fontsize)
-        cbar.ax.tick_params(labelsize=fontsize)
+        cbar = fig.colorbar(img, ax=ax[k], location='top', fraction=0.046, pad=0.0)
+        #cbar.set_label("z(x,y,t)", fontsize=fontsize)
+        #cbar.ax.tick_params(labelsize=fontsize)
         time_txt = ax[k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
                         horizontalalignment="right", verticalalignment="top", fontsize=fontsize)
         k += 1
-    plt.tight_layout()
-    plt.savefig("snapshots_"+filename)
+    #plt.tight_layout()
+    fig.set_constrained_layout_pads(w_pad=-1 / 72, h_pad=-1 / 72, hspace=0.0, wspace=-0.01)
+    plt.savefig("snapshots_"+filename+".pdf")
 
 
     # real part
@@ -157,7 +166,7 @@ elif choice == 2:
                         horizontalalignment="right", verticalalignment="top", fontsize=fontsize)
         k += 1
     plt.tight_layout()
-    plt.savefig("real_snapshots_"+filename)
+    plt.savefig("real_snapshots_"+filename+".pdf")
 
 
     # imaginary part
@@ -177,6 +186,31 @@ elif choice == 2:
                         horizontalalignment="right", verticalalignment="top", fontsize=fontsize)
         k += 1
     plt.tight_layout()
-    plt.savefig("imag_snapshots_"+filename)
-    
+    plt.savefig("imag_snapshots_"+filename+".pdf")
 
+elif choice==3:
+    filename = "double_slit_8" 
+    data = pa.cx_cube()
+    data.load(filename)
+    data = np.array(data)
+    # M, N, M
+    t = np.linspace(0, 0.002, int(0.002/2.5e-5)+1)
+
+    data = np.swapaxes(data,0,1)
+    z_data_list = (data*np.conjugate(data)).real
+
+
+    i0 = np.where(t==0.002)[0][0]
+    frame = z_data_list[i0]
+    x = np.linspace(0,1,len(frame)+1)[:-1]
+    i0 = np.where(x == 0.8)[0][0]
+    slit = frame[:,i0]
+    slit /= np.sum(slit)
+
+    fig, ax = plt.subplots()
+    ax.plot(x, slit)
+    ax.grid()
+    ax.set_xlabel('y')
+    ax.set_ylabel('Detection probability')
+    plt.savefig("detection_probability.pdf")
+    plt.show()
