@@ -221,7 +221,7 @@ elif choice==4:
     # M, N, M
     t = np.linspace(0, 0.008, int(0.008/2.5e-5)+1)
     data = np.swapaxes(data,0,1)
-    z_data_list = np.sqrt((data*np.conjugate(data)).real)
+    z_data_list = (data*np.conjugate(data)).real
 
     p = 1 - np.sum(z_data_list, axis=(1,2))
     fig, ax = plt.subplots()
@@ -230,8 +230,10 @@ elif choice==4:
     ax.set_ylabel('Absolute value of probability deviation')
     ax.set_xlabel('Dimensionless time [1]')
     ax.grid(); plt.show()
-    #print(np.shape(z_data_list))
 
+    z_data_list = np.sqrt(z_data_list)
+    #print(np.shape(z_data_list))
+    
     fontsize = 12
     t_min = 0
     x_min, x_max = 0, 1
