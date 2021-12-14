@@ -131,63 +131,54 @@ elif choice == 2:
     i1 = np.where(t==0.001)[0][0]
     i2 = np.where(t==0.002)[0][0]
     i_list = [i0, i1, i2]
-    fig, ax = plt.subplots(ncols=len(i_list), constrained_layout=True, sharey=True, figsize = (10,3))#, figsize=(10,5))
+    fig, ax = plt.subplots(ncols=len(i_list), constrained_layout=True, sharey=False, figsize = (10,3))#, figsize=(10,5))
     k = 0
     ax[0].set_ylabel("y", fontsize=fontsize)
     for i in i_list:
         norm = matplotlib.cm.colors.Normalize(vmin=0.0, vmax=np.max(z_data_list[i]))
         img = ax[k].imshow(z_data_list[i], extent=[x_min,x_max,y_min,y_max], alpha = 1, interpolation='nearest', cmap=plt.get_cmap("viridis"), norm=norm)
         ax[k].set_xlabel("x", fontsize=fontsize)
-        #ax[k].set_xticks(fontsize=fontsize)
-        #ax[k].set_yticks(fontsize=fontsize)
-        cbar = fig.colorbar(img, ax=ax[k], location='top', fraction=0.3, aspect = 10, shrink = 0.65, pad=0.0)
-        #cbar.set_label("z(x,y,t)", fontsize=fontsize)
-        #cbar.ax.tick_params(labelsize=fontsize)
+        cbar = fig.colorbar(img, ax=ax[k], location='top', fraction=0.3, aspect = 10, shrink = 0.47, pad=0.0)
+        cbar.set_label("z(x,y,t)", fontsize=fontsize)
         time_txt = ax[k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
                         horizontalalignment="right", verticalalignment="top", fontsize=fontsize)
         k += 1
     #plt.tight_layout()
-    #fig.set_constrained_layout_pads(w_pad=-1 / 72, h_pad=-1 / 72, hspace=0.0, wspace=-0.01)
+    fig.set_constrained_layout_pads(w_pad=-1 / 72, h_pad=-1 / 72, hspace=-10, wspace=-0.5)
     plt.savefig("snapshots_"+filename+".pdf")
 
 
     # real part
-    fig, ax = plt.subplots(ncols=len(i_list), constrained_layout=True, sharey=True, figsize=(10,3))
+    fig, ax = plt.subplots(ncols=len(i_list), constrained_layout=True, sharey=False, figsize=(10,3))
     k=0
     ax[0].set_ylabel("y", fontsize=fontsize)
     for i in i_list:
         norm = matplotlib.cm.colors.Normalize(vmin=0.0, vmax=np.max(data[i].real))
         img = ax[k].imshow(data[i].real, extent=[x_min,x_max,y_min,y_max],alpha = 1, interpolation='nearest', cmap=plt.get_cmap("viridis"), norm=norm)
         ax[k].set_xlabel("x", fontsize=fontsize)
-        #ax[k].set_xticks(fontsize=fontsize)
-        #ax[k].set_yticks(fontsize=fontsize)
-        cbar = fig.colorbar(img, ax=ax[k],location='top',fraction=0.3,aspect = 10, shrink=0.60, pad=0.00)
+        cbar = fig.colorbar(img, ax=ax[k],location='top',fraction=0.3,aspect = 10, shrink=0.47, pad=0.00)
         cbar.set_label("z(x,y,t)", fontsize=fontsize)
-        #cbar.ax.tick_params(labelsize=fontsize)
         time_txt = ax[k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
                         horizontalalignment="right", verticalalignment="top", fontsize=fontsize)
         k += 1
-    #plt.tight_layout()
+    fig.set_constrained_layout_pads(w_pad=-1 / 72, h_pad=-1 / 72, hspace=-10, wspace=-0.5)
     plt.savefig("real_snapshots_"+filename+".pdf")
 
 
     # imaginary part
-    fig, ax = plt.subplots(ncols=len(i_list), constrained_layout=True, sharey=True, figsize=(10,3))
+    fig, ax = plt.subplots(ncols=len(i_list), constrained_layout=True, sharey=False, figsize=(10,3))
     k=0
     ax[0].set_ylabel("y", fontsize=fontsize)
     for i in i_list:
         norm = matplotlib.cm.colors.Normalize(vmin=0.0, vmax=np.max(data[i].imag))
         img = ax[k].imshow(data[i].imag, extent=[x_min,x_max,y_min,y_max],alpha = 1, interpolation='nearest', cmap=plt.get_cmap("viridis"), norm=norm)
         ax[k].set_xlabel("x", fontsize=fontsize)
-        #ax[k].set_xticks(fontsize=fontsize)
-        #ax[k].set_yticks(fontsize=fontsize)
-        cbar = fig.colorbar(img, ax=ax[k],fraction=0.3,location='top',aspect = 10,shrink=0.60, pad=0.00)
+        cbar = fig.colorbar(img, ax=ax[k],fraction=1,location='top',aspect = 10,shrink=0.47, pad=0.00)
         cbar.set_label("z(x,y,t)", fontsize=fontsize)
-        #cbar.ax.tick_params(labelsize=fontsize)
         time_txt = ax[k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
                         horizontalalignment="right", verticalalignment="top", fontsize=fontsize)
         k += 1
-    #plt.tight_layout()
+    fig.set_constrained_layout_pads(w_pad=-1 / 72, h_pad=-1 / 72, hspace=-10, wspace=-0.5)
     plt.savefig("imag_snapshots_"+filename+".pdf")
 
 elif choice==3:
