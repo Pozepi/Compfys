@@ -229,11 +229,27 @@ elif choice==4:
     ax.plot(t, abs(p))
     ax.set_ylabel('Absolute value of probability deviation')
     ax.set_xlabel('Dimensionless time [1]')
-    ax.grid(); plt.show()
+    ax.grid(); plt.savefig('QT_time'); plt.show()
+
+    
+
+    fig, ax = plt.subplots()
+    X = len(z_data_list[0,0])//2
+    #print(X)
+    prob = np.sum(z_data_list[:,:,X:], axis=(1,2))
+    #prob2 = np.sum(z_data_list[:,:,:X], axis=(1,2))
+    ax.plot(t, prob, label='Probability of right side')
+    #ax.plot(t, prob2, label='Probability of left side')
+    ax.set_xlabel('Dimensionless time [1]')
+    ax.set_ylabel('Probability')
+    #ax.legend()
+    ax.grid(); plt.savefig('QT_probability'); plt.show()
+
+    #plt.contourf(z_data_list[0]); plt.show()
 
     z_data_list = np.sqrt(z_data_list)
     #print(np.shape(z_data_list))
-    
+    """
     fontsize = 12
     t_min = 0
     x_min, x_max = 0, 1
@@ -263,4 +279,4 @@ elif choice==4:
     fig.set_constrained_layout_pads(w_pad=-1 / 72, h_pad=-1 / 72, hspace=0.0, wspace=-0.01)
     plt.savefig("snapshots_"+filename+".pdf")
 
-    animate(z_data_list, name = filename)
+    animate(z_data_list, name = filename)"""
