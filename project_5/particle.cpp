@@ -200,6 +200,9 @@ void Particle::update_system()
 
 void Particle::simulate_system()
 {
+    /*
+    Runs the simulation 
+    */
     double ti = 0;
     int n = T/dt;
 
@@ -248,6 +251,10 @@ void Particle::simulate_system()
 
 void Particle::potential(int slits)
 {  
+    /*Creates a potential matrix containing a wall of high potential and 0,1,2 or 3 slits in the wall.
+    Args:
+        slits   (int)   :   number of slits in the wall
+    */
     double thickx = 0.02;
     double posxy = 0.5;
     double index_start = std::ceil(posxy/h-thickx/(h*2));
@@ -263,15 +270,6 @@ void Particle::potential(int slits)
             V(j, index_start-std::floor(cols/2)+i) = v0;
         }
     }   
-    /*
-    for (int i = 0; i < M; i++)
-    {
-        V(0,i) = v0;
-        V(i,0) = v0;
-        V(M-1,i) = v0;
-        V(i,M-1) = v0;
-    }
-    */
 
     switch(slits)
     {
@@ -292,7 +290,6 @@ void Particle::potential(int slits)
         }
         case 2:
         {
-
             for(int i = index_start-std::floor(cols/2); i <= index_start+std::floor(cols/2); i++)
             {
                 for(int j = 0; j < rows; j++)
@@ -312,7 +309,6 @@ void Particle::potential(int slits)
                     V(index_starty+j, i) = 0;
                 }
             }
-            
             for(int i = index_start - std::floor(cols/2); i <= index_start+std::floor(cols/2); i++)
             {
                 for(int j = 0; j < rows; j++)
