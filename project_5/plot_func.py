@@ -9,6 +9,8 @@ import pyarma as pa
 # where each frame can be plotted as a 2D image using imshow. Let's
 # animate it!
 #
+
+folder = 'animations/'
 fontsize = 12
 t_min = 0
 x_min, x_max = 0, 1
@@ -63,7 +65,7 @@ def animate(z_data_list, name):
     plt.show()
 
     # # Save the animation
-    anim.save('./animation_'+name+'.gif', writer="ffmpeg", bitrate=-1, fps=30)
+    anim.save(folder+'animation_'+name+'.mp4', writer="ffmpeg", bitrate=-1, fps=30)
 
 # Some settings
 print("1. Compare probability deviation")
@@ -148,38 +150,32 @@ elif choice == 2:
     plt.savefig("snapshots_"+filename+".pdf")
 
 
-    # real part
-    fig, ax = plt.subplots(ncols=len(i_list), constrained_layout=True, sharey=False, figsize=(10,3))
+    # real vs imaginary part
+    fig, ax = plt.subplots(nrows = 2, ncols=len(i_list), constrained_layout=True, sharey=False, figsize=(10,6))
     k=0
-    ax[0].set_ylabel("y", fontsize=fontsize)
+    ax[0,0].set_ylabel("y", fontsize=fontsize)
     for i in i_list:
-        norm = matplotlib.cm.colors.Normalize(vmin=0.0, vmax=np.max(data[i].real))
-        img = ax[k].imshow(data[i].real, extent=[x_min,x_max,y_min,y_max],alpha = 1, interpolation='nearest', cmap=plt.get_cmap("viridis"), norm=norm)
-        ax[k].set_xlabel("x", fontsize=fontsize)
-        cbar = fig.colorbar(img, ax=ax[k],location='top',fraction=0.3,aspect = 10, shrink=0.47, pad=0.00)
-        cbar.set_label("z(x,y,t)", fontsize=fontsize)
-        time_txt = ax[k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
+        norm = matplotlib.cm.colors.Normalize(vmin=np.min(data[i].real), vmax=np.max(data[i].real))
+        img = ax[0,k].imshow(data[i].real, extent=[x_min,x_max,y_min,y_max],alpha = 1, interpolation='nearest', cmap=plt.get_cmap("viridis"), norm=norm)
+        ax[0,k].set_xlabel("x", fontsize=fontsize)
+        cbar = fig.colorbar(img, ax=ax[0,k],location='top',fraction=0.3,aspect = 10, shrink=0.47, pad=0.00)
+        cbar.set_label("Real{z(x,y,t)}", fontsize=fontsize)
+        time_txt = ax[0,k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
+                        horizontalalignment="right", verticalalignment="top", fontsize=fontsize)
+
+        norm = matplotlib.cm.colors.Normalize(vmin=np.min(data[i].imag), vmax=np.max(data[i].imag))
+        img = ax[1,k].imshow(data[i].imag, extent=[x_min,x_max,y_min,y_max],alpha = 1, interpolation='nearest', cmap=plt.get_cmap("viridis"), norm=norm)
+        ax[1,k].set_xlabel("x", fontsize=fontsize)
+        cbar = fig.colorbar(img, ax=ax[1,k],fraction=1,location='top',aspect = 10,shrink=0.47, pad=0.00)
+        cbar.set_label("Imaginary{z(x,y,t)}", fontsize=fontsize)
+        time_txt = ax[1,k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
                         horizontalalignment="right", verticalalignment="top", fontsize=fontsize)
         k += 1
-    fig.set_constrained_layout_pads(w_pad=-1 / 72, h_pad=-1 / 72, hspace=-10, wspace=-0.5)
-    plt.savefig("real_snapshots_"+filename+".pdf")
+
+    fig.set_constrained_layout_pads(w_pad=-1 / 72, h_pad=-1 / 72, wspace=-0.5)
+    plt.savefig("RI_snapshots_"+filename+".pdf")
 
 
-    # imaginary part
-    fig, ax = plt.subplots(ncols=len(i_list), constrained_layout=True, sharey=False, figsize=(10,3))
-    k=0
-    ax[0].set_ylabel("y", fontsize=fontsize)
-    for i in i_list:
-        norm = matplotlib.cm.colors.Normalize(vmin=0.0, vmax=np.max(data[i].imag))
-        img = ax[k].imshow(data[i].imag, extent=[x_min,x_max,y_min,y_max],alpha = 1, interpolation='nearest', cmap=plt.get_cmap("viridis"), norm=norm)
-        ax[k].set_xlabel("x", fontsize=fontsize)
-        cbar = fig.colorbar(img, ax=ax[k],fraction=1,location='top',aspect = 10,shrink=0.47, pad=0.00)
-        cbar.set_label("z(x,y,t)", fontsize=fontsize)
-        time_txt = ax[k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
-                        horizontalalignment="right", verticalalignment="top", fontsize=fontsize)
-        k += 1
-    fig.set_constrained_layout_pads(w_pad=-1 / 72, h_pad=-1 / 72, hspace=-10, wspace=-0.5)
-    plt.savefig("imag_snapshots_"+filename+".pdf")
 
 elif choice==3:
     filenames = ["double_slit_8", "triple_slit_9", "one_slit_9"]
@@ -249,7 +245,7 @@ elif choice==4:
 
     z_data_list = np.sqrt(z_data_list)
     #print(np.shape(z_data_list))
-    """
+    
     fontsize = 12
     t_min = 0
     x_min, x_max = 0, 1
@@ -260,23 +256,22 @@ elif choice==4:
     i1 = np.where(t==0.001)[0][0]
     i2 = np.where(t==0.002)[0][0]
     i_list = [i0, i1, i2]
-    fig, ax = plt.subplots(ncols=len(i_list), constrained_layout=True, sharey=True)#, figsize=(10,5))
+    
+    fig, ax = plt.subplots(ncols=len(i_list), constrained_layout=True, sharey=False, figsize = (10,3))#, figsize=(10,5))
+
     k = 0
     ax[0].set_ylabel("y", fontsize=fontsize)
     for i in i_list:
         norm = matplotlib.cm.colors.Normalize(vmin=0.0, vmax=np.max(z_data_list[i]))
-        img = ax[k].imshow(z_data_list[i], extent=[x_min,x_max,y_min,y_max], cmap=plt.get_cmap("viridis"), norm=norm)
+        img = ax[k].imshow(z_data_list[i], extent=[x_min,x_max,y_min,y_max], alpha=1, interpolation='nearest', cmap=plt.get_cmap("viridis"), norm=norm)
         ax[k].set_xlabel("x", fontsize=fontsize)
-        #ax[k].set_xticks(fontsize=fontsize)
-        #ax[k].set_yticks(fontsize=fontsize)
-        cbar = fig.colorbar(img, ax=ax[k], location='top', fraction=0.046, pad=0.0)
-        #cbar.set_label("z(x,y,t)", fontsize=fontsize)
-        #cbar.ax.tick_params(labelsize=fontsize)
+        cbar = fig.colorbar(img, ax=ax[k], location='top', fraction=0.3, aspect = 10, shrink = 0.47, pad=0.0)
+        cbar.set_label("z(x,y,t)", fontsize=fontsize)
         time_txt = ax[k].text(0.95, 0.95, "t = {:.3e}".format(t[i]), color="white", 
                         horizontalalignment="right", verticalalignment="top", fontsize=fontsize)
         k += 1
     #plt.tight_layout()
-    fig.set_constrained_layout_pads(w_pad=-1 / 72, h_pad=-1 / 72, hspace=0.0, wspace=-0.01)
+    fig.set_constrained_layout_pads(w_pad=-1 / 72, h_pad=-1 / 72, hspace=-10, wspace=-0.5)
     plt.savefig("snapshots_"+filename+".pdf")
 
-    animate(z_data_list, name = filename)"""
+    animate(z_data_list, name = filename)
